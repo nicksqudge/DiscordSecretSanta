@@ -2,6 +2,7 @@ using DiscordAuthProvider;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +16,19 @@ builder.Services.AddAuthentication(opt =>
         opt.DefaultChallengeScheme = DiscordDefaults.AuthenticationScheme;
     })
     .AddCookie()
-    .AddDiscord(x =>
+    .AddDiscord(options =>
     {
-        x.AppId = builder.Configuration["Discord:AppId"];
-        x.AppSecret = builder.Configuration["Discord:AppSecret"];
+        options.AppId = builder.Configuration["Discord:AppId"];
+        options.AppSecret = builder.Configuration["Discord:AppSecret"];
 
-        x.SaveTokens = true;
+        options.SaveTokens = true;
+        options.Events.OnCreatingTicket = context =>
+        {
+            Console.WriteLine("Signed in");
+            return Task.CompletedTask;
+        };
     });
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 

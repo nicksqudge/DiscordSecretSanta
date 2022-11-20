@@ -1,9 +1,20 @@
-﻿@inherits LayoutComponentBase
+﻿@using DiscordAuthProvider
+@inherits LayoutComponentBase
 
 <PageTitle>DiscordSecretSanta.Blazor</PageTitle>
 
 <div class="row">
     <div class="col s6 offset-s3">
+        <AuthorizeView>
+            <Authorized>
+                <a href="#">Hello, @(context.User.Identity.Name!)#@(context.User.Claims.First(c => c.Type == DiscordOptions.DiscordTagKey).Value)</a>
+                <a href="Account/Logout">Log out</a>
+            </Authorized>
+            <NotAuthorized>
+                <a href="Account/Login">Log in</a>
+            </NotAuthorized>
+        </AuthorizeView>
+        
         @Body
     </div>
 </div>

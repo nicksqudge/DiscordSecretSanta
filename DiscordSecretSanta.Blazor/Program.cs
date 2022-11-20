@@ -1,3 +1,5 @@
+using DiscordAuthProvider;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -6,6 +8,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddAuthentication(opt =>
+    {
+        opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        opt.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        opt.DefaultChallengeScheme = DiscordDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    .AddDiscord(x =>
+    {
+        x.AppId = builder.Configuration["Discord:AppId"];
+        x.AppSecret = builder.Configuration["Discord:AppSecret"];
+
+        x.SaveTokens = true;
+    });
 
 var app = builder.Build();
 
@@ -22,8 +38,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.MapDefaultControllerRoute();
 
 app.Run();

@@ -15,6 +15,7 @@ public class UserLoginTests
     private readonly UserLoginViewHandler _handler;
 
     private readonly ISetupService _setupService = Substitute.For<ISetupService>();
+    private readonly IUserService _userService = Substitute.For<IUserService>();
 
     public UserLoginTests()
     {
@@ -22,12 +23,15 @@ public class UserLoginTests
             .GetTitle()
             .ReturnsForAnyArgs(ExpectedTitle);
         
-        _handler = new UserLoginViewHandler(_setupService);
+        _handler = new UserLoginViewHandler(_setupService, _userService);
     }
     
     [Fact]
     public async void NoLoggedInUser()
     {
+        _userService.GetCurrentUser()
+            .Returns(Task.FromResult<User>(null));
+        
         var result = await _handler.OnInitAsync();
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should().BeNull();
@@ -37,6 +41,9 @@ public class UserLoginTests
     [Fact]
     public async void UserLoggedIn_NoAmazonWishlist()
     {
+        _userService.GetCurrentUser()
+            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, string.Empty));
+        
         var result = await _handler.OnInitAsync();
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
@@ -53,6 +60,9 @@ public class UserLoginTests
     [Fact]
     public async void UserLoggedIn_WithAmazonWishlist()
     {
+        _userService.GetCurrentUser()
+            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, ExpectedWishlistUrl));
+        
         var result = await _handler.OnInitAsync();
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()

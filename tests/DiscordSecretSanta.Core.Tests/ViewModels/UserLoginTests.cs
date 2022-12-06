@@ -36,6 +36,8 @@ public class UserLoginTests
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should().BeNull();
         result.WishlistUrl.Should().BeEmpty();
+        result.HasUser.Should().BeFalse();
+        result.HasWishlist.Should().BeFalse();
     }
 
     [Fact]
@@ -55,6 +57,8 @@ public class UserLoginTests
                 DiscordTagId = ExpectedDiscordTagId
             });
         result.WishlistUrl.Should().BeEmpty();
+        result.HasUser.Should().BeTrue();
+        result.HasWishlist.Should().BeFalse();
     }
 
     [Fact]
@@ -74,5 +78,7 @@ public class UserLoginTests
                 DiscordTagId = ExpectedDiscordTagId
             });
         result.WishlistUrl.Should().Be(ExpectedWishlistUrl);
+        result.HasUser.Should().BeTrue();
+        result.HasWishlist.Should().BeTrue();
     }
 }

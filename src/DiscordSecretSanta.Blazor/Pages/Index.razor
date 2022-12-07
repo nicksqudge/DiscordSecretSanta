@@ -15,7 +15,7 @@
         var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         if (authstate.User.Identity?.IsAuthenticated ?? false)
         {
-            NavigationManager.NavigateTo("/amazon-wishlist");
+            NavigationManager.NavigateTo("/");
         }
     }
 

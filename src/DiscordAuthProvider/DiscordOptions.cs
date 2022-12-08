@@ -9,7 +9,8 @@ namespace DiscordAuthProvider;
 public class DiscordOptions : OAuthOptions
 {
     public static string DiscordTagKey = "urn:discord:discriminator";
-    
+    public static string AvatarKey = "urn:discord:avatar";
+
     /// <summary> Initializes a new <see cref="DiscordOptions"/>. </summary>
     public DiscordOptions()
     {

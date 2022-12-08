@@ -1,4 +1,5 @@
 using DiscordAuthProvider;
+using DiscordSecretSanta.Blazor.Implementations;
 using DiscordSecretSanta.Core;
 using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -31,7 +32,9 @@ builder.Services.AddAuthentication(opt =>
 builder.Services.AddMudServices();
 
 // Add Domain core
-builder.Services.AddCore();
+builder.Services.AddCore()
+    .AddUserService<UserService>()
+    .AddSetupService<SetupService>();
 
 var app = builder.Build();
 

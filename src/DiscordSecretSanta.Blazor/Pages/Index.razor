@@ -1,22 +1,32 @@
 ﻿@page "/"
-@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject IUserLoginViewHandler ViewModelHandler
 @inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+@if (_viewModel is null)
+{
+    <h1>Not loaded</h1>
+}
+else
+{
+    <PageTitle>@_viewModel.Title</PageTitle>
 
-<h1>Hello, world!</h1>
-
-<MudButton Href="/Account/Login">Login with Discord</MudButton>
+    @if (_viewModel.HasUser == false)
+    {
+        <MudButton Href="/Account/Login">Login with Discord</MudButton>
+    }
+    else
+    {
+        <span>Logged in</span>
+    }
+}
 
 @code {
 
-    protected async override Task OnInitializedAsync()
+    UserLoginViewModel? _viewModel = null;
+
+    protected override async Task OnInitializedAsync()
     {
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        if (authstate.User.Identity?.IsAuthenticated ?? false)
-        {
-            NavigationManager.NavigateTo("/");
-        }
+        _viewModel = await ViewModelHandler.OnInitAsync();
     }
 
 }

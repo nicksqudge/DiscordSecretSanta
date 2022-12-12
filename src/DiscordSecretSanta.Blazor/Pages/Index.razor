@@ -1,6 +1,5 @@
 ﻿@page "/"
 @inject IUserLoginViewHandler ViewModelHandler
-@inject NavigationManager NavigationManager
 
 @if (_viewModel is null)
 {
@@ -16,7 +15,7 @@ else
     }
     else
     {
-        <span>Logged in</span>
+        <span>Logged in @_viewModel.User.Name</span>
     }
 }
 

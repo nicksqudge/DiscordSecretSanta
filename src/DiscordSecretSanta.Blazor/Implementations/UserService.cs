@@ -19,10 +19,12 @@ public class UserService : IUserService
     public async Task<User?> GetCurrentUser()
     {
         var authState = await _authenticationState.GetAuthenticationStateAsync();
-        if (authState.User.Identity?.IsAuthenticated ?? false)
-            return null;
 
-        _logger.LogInformation("User is authenticated");
+        if (authState.User is null)
+        {
+            return null;
+        }
+
         var name = authState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
         if (name is null)
         {

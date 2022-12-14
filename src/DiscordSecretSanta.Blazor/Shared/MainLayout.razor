@@ -1,6 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using MudBlazor.Utilities
+@inherits LayoutComponentBase
 
-<MudThemeProvider/>
+<MudThemeProvider Theme="_theme"/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
@@ -11,3 +12,18 @@
         @Body
     </MudMainContent>
 </MudLayout>
+
+@code {
+
+    private MudTheme _theme = new()
+    {
+        Palette = new Palette()
+        {
+            Background = new MudColor("#ECDEB9"),
+            Primary = new MudColor("#AD242C"),
+            Secondary = new MudColor("#226F61"),
+            DrawerBackground = new MudColor("#CBAF71")
+        }
+    };
+
+}

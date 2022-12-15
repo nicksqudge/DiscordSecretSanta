@@ -1,0 +1,19 @@
+﻿<MudPaper Outlined="true">
+    <MudGrid>
+        <MudItem xs="3">
+            <MudText Typo="Typo.h1" Align="Align.Center">@Step</MudText>
+        </MudItem>
+        <MudItem xs="9">
+            @ChildContent            
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+
+@code {
+    [Parameter]
+    public string Step { get; set; }
+    
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

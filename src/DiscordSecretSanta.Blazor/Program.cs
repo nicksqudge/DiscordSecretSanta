@@ -30,6 +30,7 @@ builder.Services.AddAuthentication(opt =>
         };
     });
 builder.Services.AddMudServices();
+builder.Services.AddLocalization();
 
 // Add Domain core
 builder.Services.AddCore()
@@ -56,5 +57,13 @@ app.UseAuthentication();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapDefaultControllerRoute();
+
+var supportedCultures = new[] { "en-GB" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture(supportedCultures[0])
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
 
 app.Run();

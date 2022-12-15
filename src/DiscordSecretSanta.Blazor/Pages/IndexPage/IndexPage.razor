@@ -1,0 +1,44 @@
+﻿@page "/"
+@inject IUserLoginViewHandler ViewModelHandler
+@using DiscordSecretSanta.Blazor.Pages.IndexPage.Components
+@inject IStringLocalizer<IndexPageResources> Translate
+
+@if (_viewModel is null)
+{
+    <h1>Not loaded</h1>
+}
+else
+{
+    <PageTitle>@_viewModel.Title</PageTitle>
+    
+    <MudContainer MaxWidth="MaxWidth.Medium">
+        <MudText Typo="Typo.h1" Color="Color.Primary" Align="Align.Center">@_viewModel.Title</MudText>
+
+        <div class="my-10 mx-auto" Style="width: 60%;">
+            <SignUpStep Step="1">
+                @if (_viewModel.HasUser == false)
+                {
+                    <MudButton
+                        DisableElevation="true"
+                        Size="Size.Large"
+                        Color="Color.Primary"
+                        Variant="Variant.Filled"
+                        Class="ma-8"
+                        Href="/Account/Login"
+                    >@Translate["SignInButtonText"]</MudButton>
+                }
+            </SignUpStep>
+        </div>
+    </MudContainer>
+}
+
+@code {
+
+    UserLoginViewModel? _viewModel = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _viewModel = await ViewModelHandler.OnInitAsync();
+    }
+
+}

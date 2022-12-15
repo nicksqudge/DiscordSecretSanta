@@ -29,7 +29,8 @@ public class UserLoginViewHandler : IUserLoginViewHandler
             {
                 Name = user.Name,
                 AvatarId = user.AvatarId,
-                DiscordTagId = user.DiscordId
+                DiscordTagId = user.DiscordId,
+                UserId = user.UserId
             };
 
             result.WishlistUrl = user.WishlistUrl;

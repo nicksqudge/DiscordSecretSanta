@@ -21,4 +21,7 @@
     <data name="SignInButtonText" xml:space="preserve">
         <value>Sign in with Discord</value>
     </data>
+    <data name="WishlistUrl" xml:space="preserve">
+        <value>Amazon Wishlist URL</value>
+    </data>
 </root>

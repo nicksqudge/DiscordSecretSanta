@@ -67,5 +67,14 @@ namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
                 return ResourceManager.GetString("SignInButtonText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amazon Wishlist URL.
+        /// </summary>
+        internal static string WishlistUrl {
+            get {
+                return ResourceManager.GetString("WishlistUrl", resourceCulture);
+            }
+        }
     }
 }

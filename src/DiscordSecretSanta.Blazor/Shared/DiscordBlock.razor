@@ -1,0 +1,34 @@
+﻿<MudGrid Class="@Class">
+    <MudItem xs="2">
+        <MudAvatar Image="@AvatarUrl" Size="Size.Large"></MudAvatar>
+    </MudItem>
+    <MudItem xs="10">
+        <MudText Typo="Typo.h4">@Name</MudText>
+        <MudText Typo="Typo.body1">#@TagId</MudText>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public string Name { get; set; } = string.Empty;
+
+    [Parameter]
+    public string TagId { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Avatar { get; set; } = string.Empty;
+
+    [Parameter]
+    public string UserId { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    private string AvatarUrl { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        AvatarUrl = $"https://cdn.discordapp.com/avatars/{UserId}/{Avatar}";
+    }
+}

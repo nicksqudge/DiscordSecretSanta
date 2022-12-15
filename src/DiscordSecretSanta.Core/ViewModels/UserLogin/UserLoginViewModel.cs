@@ -13,5 +13,6 @@ public class UserLoginViewModel
         public string Name { get; set; } = string.Empty;
         public string DiscordTagId { get; set; } = string.Empty;
         public string AvatarId { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
     }
 }

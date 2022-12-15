@@ -15,7 +15,7 @@ else
         <MudText Typo="Typo.h1" Color="Color.Primary" Align="Align.Center">@_viewModel.Title</MudText>
 
         <div class="my-10 mx-auto" Style="width: 60%;">
-            <SignUpStep Step="1">
+            <SignUpStep Step="1" IsDone="@_viewModel.HasUser">
                 @if (_viewModel.HasUser == false)
                 {
                     <MudButton
@@ -26,6 +26,27 @@ else
                         Class="ma-8"
                         Href="/Account/Login"
                     >@Translate["SignInButtonText"]</MudButton>
+                }
+                else
+                {
+                    <DiscordBlock
+                        Class="ma-4"
+                        TagId="@_viewModel.User!.DiscordTagId"
+                        Name="@_viewModel.User.Name"
+                        Avatar="@_viewModel.User.AvatarId"
+                        UserId="@_viewModel.User.UserId"
+                    ></DiscordBlock>
+                }
+            </SignUpStep>
+            <SignUpStep Step="2" IsDone="@_viewModel.HasWishlist">
+                @if (_viewModel.HasWishlist == false)
+                {
+                    <MudTextField @bind-Value="@_viewModel.WishlistUrl"
+                                  Label="@Translate["WishlistUrl"]"
+                                  Class="ma-4 mt-6"
+                                  Variant="Variant.Outlined"
+                                  Disabled="@(!_viewModel.HasUser)"
+                                  ></MudTextField>
                 }
             </SignUpStep>
         </div>

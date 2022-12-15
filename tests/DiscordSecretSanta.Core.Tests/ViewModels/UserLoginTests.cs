@@ -11,6 +11,7 @@ public class UserLoginTests
     private const string ExpectedUserName = "thornphoenix";
     private const string ExpectedDiscordTagId = "4567";
     private const string ExpectedWishlistUrl = "http://www.amazon.co.uk/wishlist/123";
+    private const string ExpectedUserId = "ABCASDSAD";
 
     private readonly UserLoginViewHandler _handler;
 
@@ -44,7 +45,7 @@ public class UserLoginTests
     public async void UserLoggedIn_NoAmazonWishlist()
     {
         _userService.GetCurrentUser()
-            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, string.Empty));
+            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, string.Empty, ExpectedUserId));
         
         var result = await _handler.OnInitAsync();
         result.Title.Should().Be(ExpectedTitle);
@@ -65,7 +66,7 @@ public class UserLoginTests
     public async void UserLoggedIn_WithAmazonWishlist()
     {
         _userService.GetCurrentUser()
-            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, ExpectedWishlistUrl));
+            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, ExpectedWishlistUrl, ExpectedUserId));
         
         var result = await _handler.OnInitAsync();
         result.Title.Should().Be(ExpectedTitle);

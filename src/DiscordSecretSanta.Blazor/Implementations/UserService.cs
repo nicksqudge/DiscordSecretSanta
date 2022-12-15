@@ -46,11 +46,19 @@ public class UserService : IUserService
             return null;
         }
 
+        var userId = authState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        if (userId is null)
+        {
+            _logger.LogWarning("Has no claim for user id");
+            return null;
+        }
+
         return new User(
             name.Value,
             discordTag.Value,
             avatar.Value,
-            ""
+            "",
+            userId.Value
         );
     }
 }

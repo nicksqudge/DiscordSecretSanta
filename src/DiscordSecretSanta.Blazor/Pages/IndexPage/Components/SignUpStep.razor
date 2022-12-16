@@ -1,4 +1,6 @@
-﻿<MudPaper Outlined="true" Class="mb-4">
+﻿<MudPaper Outlined="true" 
+          Class="mb-4"
+          >
     <MudGrid>
         <MudItem xs="3">
             @if (IsDone)
@@ -27,6 +29,9 @@
 
     [Parameter]
     public bool IsDone { get; set; } = false;
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
     
     [Parameter]
     public RenderFragment ChildContent { get; set; }

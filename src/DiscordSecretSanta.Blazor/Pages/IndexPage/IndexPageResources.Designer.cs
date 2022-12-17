@@ -69,6 +69,15 @@ namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        internal static string SubmitButtonText {
+            get {
+                return ResourceManager.GetString("SubmitButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Amazon Wishlist URL.
         /// </summary>
         internal static string WishlistUrl {

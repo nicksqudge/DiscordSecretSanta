@@ -1,0 +1,67 @@
+﻿@using FluentValidation
+@inject IStringLocalizer<IndexPageResources> Translate
+
+<MudForm Model="@model"
+         @ref="@form"
+         Validation="@(validator.ValidateValue)"
+         ValidationDelay="0"
+         OnValidSubmit="OnValidSubmit">
+    <MudTextField @bind-Value="@model.WishlistUrl"
+                  For="@(() => model.WishlistUrl)"
+                  Label="@Translate["WishlistUrl"]"
+                  Class="mr-2 mt-2"
+                  Variant="Variant.Outlined"
+                  Disabled="@(!IsFormEnabled)"
+                  Immediate="true"
+    ></MudTextField>
+    <MudButton Disabled="@(!IsFormEnabled)"
+               Variant="Variant.Filled"
+               DisableElevation="true"
+               OnClick="@(async () => await Submit())"
+               Class="my-2 mb-2"
+               Color="Color.Success"
+    >@Translate["SubmitButtonText"]</MudButton>
+</MudForm>
+
+@code {
+
+    [Parameter]
+    public bool IsFormEnabled { get; set; } = false;
+    
+    MudForm form;
+    FormModel model = new FormModel();
+    FormValidator validator = new FormValidator();
+
+    private async Task Submit()
+    {
+        await form.Validate();
+        if (form.IsValid)
+        {
+            Console.WriteLine("Valid form");
+        }
+    }
+    
+    public class FormModel
+    {
+        public string WishlistUrl { get; set; } = string.Empty;
+    }
+
+    public class FormValidator : AbstractValidator<FormModel>
+    {
+        public FormValidator()
+        {
+            RuleFor(x => x.WishlistUrl)
+                .NotEmpty()
+                .Must(y => y.Contains(".amazon."))
+                .Must(y => y.Contains("wishlist"));
+        }
+        
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<FormModel>.CreateWithOptions((FormModel)model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
+    }
+}

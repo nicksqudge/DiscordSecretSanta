@@ -24,4 +24,7 @@
     <data name="WishlistUrl" xml:space="preserve">
         <value>Amazon Wishlist URL</value>
     </data>
+    <data name="SubmitButtonText" xml:space="preserve">
+        <value>Submit</value>
+    </data>
 </root>

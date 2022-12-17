@@ -44,20 +44,9 @@ else
                         IsDone="@_viewModel.HasWishlist"
                         IsDisabled="@(!_viewModel.HasUser)"
                         >
-                @if (_viewModel.HasWishlist == false)
-                {
-                    <MudTextField @bind-Value="@InputWishlistUrl"
-                                  Label="@Translate["WishlistUrl"]"
-                                  Class="mr-2"
-                                  Variant="Variant.Outlined"
-                                  Disabled="@(!_viewModel.HasUser)"
-                    ></MudTextField>
-                    <MudButton Disabled="@(!_viewModel.HasUser || InputWishlistUrl == "")"
-                               Variant="Variant.Filled"
-                               DisableElevation="true"
-                               Class="my-2"
-                               >Submit</MudButton>
-                }
+                <WishlistForm
+                    IsFormEnabled="@_viewModel.HasUser"
+                ></WishlistForm>
             </SignUpStep>
         </div>
     </MudContainer>
@@ -66,8 +55,6 @@ else
 @code {
 
     UserLoginViewModel? _viewModel = null;
-
-    private string InputWishlistUrl { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {

@@ -27,4 +27,7 @@
     <data name="SubmitButtonText" xml:space="preserve">
         <value>Submit</value>
     </data>
+    <data name="NotLoggedIn" xml:space="preserve">
+        <value>You must be logged in to set a wishlist url</value>
+    </data>
 </root>

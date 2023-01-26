@@ -5,8 +5,10 @@ public class UserLoginViewModel
     public string Title { get; set; } = string.Empty;
     public CurrentUser? User { get; set; } = null;
     public string WishlistUrl { get; set; } = string.Empty;
+    public string ErrorMessage { get; set; } = string.Empty;
     public bool HasUser => User is not null;
     public bool HasWishlist => !string.IsNullOrWhiteSpace(WishlistUrl);
+    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     public class CurrentUser
     {

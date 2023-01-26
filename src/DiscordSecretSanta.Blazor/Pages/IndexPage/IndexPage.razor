@@ -46,6 +46,7 @@ else
                         >
                 <WishlistForm
                     IsFormEnabled="@_viewModel.HasUser"
+                    OnSubmit="@OnWishlistSubmit"
                 ></WishlistForm>
             </SignUpStep>
         </div>
@@ -61,4 +62,7 @@ else
         _viewModel = await ViewModelHandler.OnInitAsync();
     }
 
+    protected async Task OnWishlistSubmit(string wishlistUrl)
+    {
+    }
 }

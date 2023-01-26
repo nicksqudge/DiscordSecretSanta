@@ -5,6 +5,7 @@
          @ref="@form"
          Validation="@(validator.ValidateValue)"
          ValidationDelay="0"
+         IsValidChanged="@IsValidCheck"
          OnValidSubmit="OnValidSubmit">
     <MudTextField @bind-Value="@model.WishlistUrl"
                   For="@(() => model.WishlistUrl)"
@@ -14,7 +15,7 @@
                   Disabled="@(!IsFormEnabled)"
                   Immediate="true"
     ></MudTextField>
-    <MudButton Disabled="@(!IsFormEnabled)"
+    <MudButton Disabled="@(IsSubmitButtonDisabled)"
                Variant="Variant.Filled"
                DisableElevation="true"
                OnClick="@(async () => await Submit())"
@@ -27,6 +28,11 @@
 
     [Parameter]
     public bool IsFormEnabled { get; set; } = false;
+
+    [Parameter]
+    public Func<string, Task> OnSubmit { get; set; }
+
+    private bool IsSubmitButtonDisabled = true;
     
     MudForm form;
     FormModel model = new FormModel();
@@ -37,8 +43,13 @@
         await form.Validate();
         if (form.IsValid)
         {
-            Console.WriteLine("Valid form");
+            OnSubmit.Invoke(model.WishlistUrl);
         }
+    }
+
+    private void IsValidCheck(bool isValid)
+    {
+        IsSubmitButtonDisabled = !isValid;
     }
     
     public class FormModel

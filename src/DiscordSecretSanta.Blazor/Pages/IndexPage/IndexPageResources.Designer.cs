@@ -60,6 +60,15 @@ namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must be logged in to set a wishlist url.
+        /// </summary>
+        internal static string NotLoggedIn {
+            get {
+                return ResourceManager.GetString("NotLoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign in with Discord.
         /// </summary>
         internal static string SignInButtonText {

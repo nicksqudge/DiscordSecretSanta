@@ -30,8 +30,7 @@ public class UserLoginTests
     [Fact]
     public async void NoLoggedInUser()
     {
-        _userService.GetCurrentUser()
-            .Returns(Task.FromResult<User>(null));
+        UserServiceReturnsNoUser();
         
         var result = await _handler.OnInitAsync();
         result.Title.Should().Be(ExpectedTitle);
@@ -39,6 +38,7 @@ public class UserLoginTests
         result.WishlistUrl.Should().BeEmpty();
         result.HasUser.Should().BeFalse();
         result.HasWishlist.Should().BeFalse();
+        result.HasError.Should().BeFalse();
     }
 
     [Fact]
@@ -55,18 +55,19 @@ public class UserLoginTests
             {
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
-                DiscordTagId = ExpectedDiscordTagId
+                DiscordTagId = ExpectedDiscordTagId,
+                UserId = ExpectedUserId
             });
         result.WishlistUrl.Should().BeEmpty();
         result.HasUser.Should().BeTrue();
         result.HasWishlist.Should().BeFalse();
+        result.HasError.Should().BeFalse();
     }
 
     [Fact]
     public async void UserLoggedIn_WithAmazonWishlist()
     {
-        _userService.GetCurrentUser()
-            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, ExpectedWishlistUrl, ExpectedUserId));
+        UserServiceReturnsExpectedUser();
         
         var result = await _handler.OnInitAsync();
         result.Title.Should().Be(ExpectedTitle);
@@ -76,10 +77,73 @@ public class UserLoginTests
             {
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
-                DiscordTagId = ExpectedDiscordTagId
+                DiscordTagId = ExpectedDiscordTagId,
+                UserId = ExpectedUserId
             });
         result.WishlistUrl.Should().Be(ExpectedWishlistUrl);
         result.HasUser.Should().BeTrue();
         result.HasWishlist.Should().BeTrue();
+        result.HasError.Should().BeFalse();
+    }
+
+    [Fact]
+    public async void UserNotLoggedIn_UpdateWishListUrl()
+    {
+        string url = "a test url";
+
+        UserServiceReturnsNoUser();
+
+        var result = await _handler.SetWishlistUrl(url);
+        result.Title.Should().Be(ExpectedTitle);
+        result.User.Should().BeNull();
+        result.WishlistUrl.Should().BeEmpty();
+        result.HasUser.Should().BeFalse();
+        result.HasWishlist.Should().BeFalse();
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be("NotLoggedIn");
+        
+        await _userService
+            .DidNotReceiveWithAnyArgs()
+            .UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<string>());
+    }
+    
+    [Fact]
+    public async void UserLoggedIn_UpdateWishListUrl()
+    {
+        string url = "a test url";
+        
+        UserServiceReturnsExpectedUser();
+        
+        var result = await _handler.SetWishlistUrl(url);
+        result.Title.Should().Be(ExpectedTitle);
+        result.User.Should()
+            .NotBeNull().And
+            .BeEquivalentTo(new UserLoginViewModel.CurrentUser()
+            {
+                AvatarId = ExpectedAvatarId,
+                Name = ExpectedUserName,
+                DiscordTagId = ExpectedDiscordTagId,
+                UserId = ExpectedUserId
+            });
+        result.WishlistUrl.Should().Be(url);
+        result.HasUser.Should().BeTrue();
+        result.HasWishlist.Should().BeTrue();
+        result.HasError.Should().BeFalse();
+
+        await _userService
+            .ReceivedWithAnyArgs()
+            .UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<string>());
+    }
+
+    private void UserServiceReturnsExpectedUser()
+    {
+        _userService.GetCurrentUser()
+            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, ExpectedWishlistUrl, ExpectedUserId));
+    }
+
+    private void UserServiceReturnsNoUser()
+    {
+        _userService.GetCurrentUser()
+            .Returns(Task.FromResult<User>(null));
     }
 }

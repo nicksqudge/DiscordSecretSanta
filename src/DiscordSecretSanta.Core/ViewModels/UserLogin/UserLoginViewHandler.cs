@@ -39,9 +39,13 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         var user = await _userService.GetCurrentUser();
         if (user is not null)
         {
-            await _userService.UpdateWishlistUrl(user, url);
             PopulateUserData(result, user);
-            result.WishlistUrl = url;
+            
+            var updateResult = await _userService.UpdateWishlistUrl(user, url);
+            if (updateResult.IsSuccess)
+                result.WishlistUrl = url;
+            else
+                result.ErrorMessage = "UnableToUpdate_User";
         }
         else
             result.ErrorMessage = "NotLoggedIn";

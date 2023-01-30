@@ -1,5 +1,6 @@
 ﻿using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using FluentAssertions;
+using FluentResults;
 using NSubstitute;
 
 namespace DiscordSecretSanta.Core.Tests.ViewModels;
@@ -25,6 +26,9 @@ public class UserLoginTests
             .ReturnsForAnyArgs(ExpectedTitle);
         
         _handler = new UserLoginViewHandler(_setupService, _userService);
+
+        _userService.UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<string>())
+            .ReturnsForAnyArgs(Task.FromResult(Result.Ok()));
     }
     
     [Fact]
@@ -113,7 +117,7 @@ public class UserLoginTests
         string url = "a test url";
         
         UserServiceReturnsExpectedUser();
-        
+
         var result = await _handler.SetWishlistUrl(url);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()

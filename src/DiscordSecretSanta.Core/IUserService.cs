@@ -1,4 +1,6 @@
-﻿namespace DiscordSecretSanta.Core;
+﻿using FluentResults;
+
+namespace DiscordSecretSanta.Core;
 
 public interface IUserService
 {

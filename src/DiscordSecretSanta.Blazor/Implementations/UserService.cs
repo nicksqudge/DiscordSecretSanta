@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using DiscordAuthProvider;
 using DiscordSecretSanta.Core;
+using FluentResults;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace DiscordSecretSanta.Blazor.Implementations;
@@ -60,5 +61,10 @@ public class UserService : IUserService
             "",
             userId.Value
         );
+    }
+
+    public Task<Result> UpdateWishlistUrl(User user, string url)
+    {
+        throw new NotImplementedException();
     }
 }

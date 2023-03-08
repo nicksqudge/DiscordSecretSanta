@@ -142,7 +142,11 @@ public class UserLoginTests
     private void UserServiceReturnsExpectedUser()
     {
         _userService.GetCurrentUser()
-            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, ExpectedWishlistUrl, ExpectedUserId));
+            .Returns(new User(ExpectedUserName, 
+                ExpectedDiscordTagId, 
+                ExpectedAvatarId, 
+                ExpectedWishlistUrl, 
+                ExpectedUserId));
     }
 
     private void UserServiceReturnsNoUser()

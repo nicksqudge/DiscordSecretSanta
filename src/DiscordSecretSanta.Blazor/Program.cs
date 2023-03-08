@@ -1,9 +1,10 @@
+using Blazorise;
+using Blazorise.Bootstrap5;
+using Blazorise.Icons.FontAwesome;
 using DiscordAuthProvider;
 using DiscordSecretSanta.Blazor.Implementations;
 using DiscordSecretSanta.Core;
-using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +30,10 @@ builder.Services.AddAuthentication(opt =>
             return Task.CompletedTask;
         };
     });
-builder.Services.AddMudServices();
 builder.Services.AddLocalization();
+builder.Services.AddBlazorise(options => { options.Immediate = true; })
+    .AddBootstrap5Providers()
+    .AddFontAwesomeIcons();
 
 // Add Domain core
 builder.Services.AddCore()

@@ -1,5 +1,7 @@
 html, body {
     background-color: #e0e0e0;
+    font-family: 'Noto Sans', sans-serif;
+    color: #B8B9BF;
 }
 
 #blazor-error-ui {

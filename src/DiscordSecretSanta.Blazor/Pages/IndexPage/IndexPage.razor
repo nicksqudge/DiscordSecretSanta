@@ -1,6 +1,5 @@
 ﻿@page "/"
 @inject IUserLoginViewHandler ViewModelHandler
-@using DiscordSecretSanta.Blazor.Pages.IndexPage.Components
 @inject IStringLocalizer<IndexPageResources> Translate
 
 @if (_viewModel is null)
@@ -11,46 +10,12 @@ else
 {
     <PageTitle>@_viewModel.Title</PageTitle>
     
-    <MudContainer MaxWidth="MaxWidth.Medium">
-        <MudText Typo="Typo.h1" Color="Color.Primary" Align="Align.Center">@_viewModel.Title</MudText>
-
-        <div class="my-10 mx-auto" Style="width: 60%;">
-            <SignUpStep Step="1" 
-                        IsDone="@_viewModel.HasUser"
-            >
-                @if (_viewModel.HasUser == false)
-                {
-                    <MudButton
-                        DisableElevation="true"
-                        Size="Size.Large"
-                        Color="Color.Primary"
-                        Variant="Variant.Filled"
-                        Class="my-8"
-                        Href="/Account/Login"
-                    >@Translate["SignInButtonText"]</MudButton>
-                }
-                else
-                {
-                    <DiscordBlock
-                        Class="my-4"
-                        TagId="@_viewModel.User!.DiscordTagId"
-                        Name="@_viewModel.User.Name"
-                        Avatar="@_viewModel.User.AvatarId"
-                        UserId="@_viewModel.User.UserId"
-                    ></DiscordBlock>
-                }
-            </SignUpStep>
-            <SignUpStep Step="2" 
-                        IsDone="@_viewModel.HasWishlist"
-                        IsDisabled="@(!_viewModel.HasUser)"
-                        >
-                <WishlistForm
-                    IsFormEnabled="@_viewModel.HasUser"
-                    OnSubmit="@OnWishlistSubmit"
-                ></WishlistForm>
-            </SignUpStep>
-        </div>
-    </MudContainer>
+    @if (_viewModel.HasUser == false)
+    {
+        <CenterBlock>
+            Some centre text
+        </CenterBlock>
+    }
 }
 
 @code {
@@ -64,5 +29,6 @@ else
 
     protected async Task OnWishlistSubmit(string wishlistUrl)
     {
+        _viewModel = await ViewModelHandler.SetWishlistUrl(wishlistUrl);
     }
 }

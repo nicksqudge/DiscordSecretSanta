@@ -1,29 +1,9 @@
-﻿@using MudBlazor.Utilities
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
-<MudThemeProvider Theme="_theme"/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
+<PageTitle>Discord Secret Santa</PageTitle>
 
-<PageTitle>DiscordSecretSanta.Blazor</PageTitle>
-
-<MudLayout>
-    <MudMainContent>
+<Layout>
+    <LayoutContent>
         @Body
-    </MudMainContent>
-</MudLayout>
-
-@code {
-
-    private MudTheme _theme = new()
-    {
-        Palette = new Palette()
-        {
-            Background = new MudColor("#ECDEB9"),
-            Primary = new MudColor("#AD242C"),
-            Secondary = new MudColor("#226F61"),
-            DrawerBackground = new MudColor("#CBAF71")
-        }
-    };
-
-}
+    </LayoutContent>
+</Layout>

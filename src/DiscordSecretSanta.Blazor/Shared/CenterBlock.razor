@@ -1,0 +1,12 @@
+﻿<div style="display: flex; align-items:  center; justify-content:  center;">
+    <Card Style="width: 500px; margin-top: 15%;" Background="Background.Dark">
+        <CardBody>
+            @ChildContent
+        </CardBody>
+    </Card>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

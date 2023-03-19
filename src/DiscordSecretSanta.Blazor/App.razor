@@ -17,17 +17,30 @@
     </Router>
 </ThemeProvider>
 
+<ModalProvider />
+
 @code{
     private Theme theme = new()
     {
         ColorOptions = new()
         {
-            Dark = "31333D",
+            Dark = "#31333D",
+            Primary = "#5865F2",
+        },
+        BackgroundOptions = new()
+        {
+            Light = "#313338",
+            Dark = "#2A2D30"
         },
         IsRounded = true,
         CardOptions = new()
         {
             BorderRadius = "5px",
+        },
+        ButtonOptions = new()
+        {
+            Padding = "10px 32px",
+            BorderRadius = "3px"
         }
     };
 }

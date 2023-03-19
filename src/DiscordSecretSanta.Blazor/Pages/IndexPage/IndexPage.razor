@@ -1,5 +1,8 @@
 ﻿@page "/"
+@using DiscordSecretSanta.Core.Validators
+@using FluentValidation
 @inject IUserLoginViewHandler ViewModelHandler
+@inject NavigationManager NavigationManager
 @inject IStringLocalizer<IndexPageResources> Translate
 
 @if (_viewModel is null)
@@ -13,7 +16,33 @@ else
     @if (_viewModel.HasUser == false)
     {
         <CenterBlock>
-            Some centre text
+            <Heading 
+                Size="HeadingSize.Is5"
+                TextColor="TextColor.White"
+                TextAlignment="TextAlignment.Center"
+                Class="mb-3"
+            >@_viewModel.Title</Heading>
+            
+            <FullWidthButton Clicked="@ClickSignInButton">@Translate["SignInButtonText"]</FullWidthButton>
+        </CenterBlock>
+    }
+    else
+    {
+        <CenterBlock>
+            <DiscordBlock
+                Avatar="@_viewModel.User!.AvatarId"
+                Name="@_viewModel.User.Name"
+                TagId="@_viewModel.User.DiscordTagId"
+                UserId="@_viewModel.User.UserId"
+            />
+            
+            <EditField 
+                Label="@Translate["WishlistUrl"]"
+                Value="@_viewModel.WishlistUrl"
+                Validator="@WishlistValidator"
+                OnSubmit="@(async (value) => await OnWishlistSubmit(value))"
+                ModalTitle="@Translate["WishlistUrlHeader"]"
+            />
         </CenterBlock>
     }
 }
@@ -21,13 +50,20 @@ else
 @code {
 
     UserLoginViewModel? _viewModel = null;
+    private string LoginUrl = "/Account/Login";
+    private IValidator<string> WishlistValidator = new WishlistUrlValidator();
 
     protected override async Task OnInitializedAsync()
     {
         _viewModel = await ViewModelHandler.OnInitAsync();
     }
 
-    protected async Task OnWishlistSubmit(string wishlistUrl)
+    void ClickSignInButton()
+    {
+        NavigationManager.NavigateTo(LoginUrl, true);
+    }
+
+    async Task OnWishlistSubmit(string wishlistUrl)
     {
         _viewModel = await ViewModelHandler.SetWishlistUrl(wishlistUrl);
     }

@@ -1,0 +1,16 @@
+﻿<Button
+    Clicked="@Clicked"
+    Color="Color.Primary"
+    Size="Size.Small"
+    style="width: 100%;"
+>@ChildContent</Button>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback Clicked { get; set; }
+
+}

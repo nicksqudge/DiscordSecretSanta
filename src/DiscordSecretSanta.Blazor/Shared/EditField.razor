@@ -1,0 +1,54 @@
+﻿@using FluentValidation
+@using DiscordSecretSanta.Blazor.Shared.Modals
+@inject IStringLocalizer<SharedResources> Translate
+@inject IModalService ModalService
+
+<Row Class="edit-field">
+    <Column ColumnSize="@ColumnSize.Is10" Class="edit-field__text">
+        <Text TextTransform="TextTransform.Uppercase">@Label</Text>
+        <Text style="display: block">@DisplayValue</Text>
+    </Column>
+    <Column ColumnSize="@ColumnSize.Is2" Class="edit-field__button">
+        <SimpleButton 
+            Text="@Translate["Edit"]"
+            Clicked="@ShowModal"
+        />
+    </Column>
+</Row>
+
+@code {
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> OnSubmit { get; set; }
+
+    [Parameter]
+    public IValidator<string> Validator { get; set; } = null!;
+
+    [Parameter]
+    public string ModalTitle { get; set; } = string.Empty;
+    
+    string DisplayValue => !string.IsNullOrWhiteSpace(Value) ? Value : @Translate["Placeholder"];
+
+    public Task ShowModal()
+    {
+        return ModalService.Show<EditFieldModal>(x =>
+            {
+                x.Add(z => z.Title, ModalTitle);
+                x.Add(z => z.Label, Label);
+                x.Add(z => z.StartingValue, Value);
+            }, 
+            new ModalInstanceOptions()
+            {
+                UseModalStructure = false,
+                Centered = true
+            }
+        );
+    }
+
+}

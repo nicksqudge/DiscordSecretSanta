@@ -1,0 +1,15 @@
+﻿<Button
+    Clicked="@Clicked"
+    Color="Color.Primary"
+    Size="Size.Small"
+>
+@Text
+</Button>
+
+@code {
+    [Parameter]
+    public string Text { get; set; }
+    
+    [Parameter]
+    public EventCallback Clicked { get; set; }
+}

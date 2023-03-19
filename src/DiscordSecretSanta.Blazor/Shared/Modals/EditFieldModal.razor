@@ -1,0 +1,40 @@
+﻿@inject IModalService ModalService
+@inject IStringLocalizer<SharedResources> Translate
+
+<ModalHeader Background="Background.Light">
+    <ModalTitle>@Title</ModalTitle>
+    <CloseButton />
+</ModalHeader>
+<ModalBody Background="Background.Light">
+    <Field>
+        <FieldLabel>@Label</FieldLabel>
+        <TextEdit>@StartingValue</TextEdit>
+    </Field>
+</ModalBody>
+<ModalFooter Background="Background.Dark">
+    <Button Type="ButtonType.Link" Clicked="Cancel">@Translate["Cancel"]</Button>
+    <Button Color="Color.Primary" Clicked="Confirm">@Translate["Done"]</Button>
+</ModalFooter>
+    
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string StartingValue { get; set; } = string.Empty;
+
+    private async Task Confirm()
+    {
+        await ModalService.Hide();
+    }
+    
+    private async Task Cancel()
+    {
+        await ModalService.Hide();
+    }
+
+}

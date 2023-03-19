@@ -1,5 +1,6 @@
 using Blazorise;
 using Blazorise.Bootstrap5;
+using Blazorise.FluentValidation;
 using Blazorise.Icons.FontAwesome;
 using DiscordAuthProvider;
 using DiscordSecretSanta.Blazor.Implementations;
@@ -31,9 +32,12 @@ builder.Services.AddAuthentication(opt =>
         };
     });
 builder.Services.AddLocalization();
+
+// Blazorise
 builder.Services.AddBlazorise(options => { options.Immediate = true; })
     .AddBootstrap5Providers()
-    .AddFontAwesomeIcons();
+    .AddFontAwesomeIcons()
+    .AddBlazoriseFluentValidation();
 
 // Add Domain core
 builder.Services.AddCore()

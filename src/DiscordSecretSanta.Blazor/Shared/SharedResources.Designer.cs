@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
+namespace DiscordSecretSanta.Blazor.Shared {
     using System;
     
     
@@ -21,14 +21,14 @@ namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class IndexPageResources {
+    internal class SharedResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal IndexPageResources() {
+        internal SharedResources() {
         }
         
         /// <summary>
@@ -38,7 +38,7 @@ namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DiscordSecretSanta.Blazor.Pages.IndexPage.IndexPageResources", typeof(IndexPageResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DiscordSecretSanta.Blazor.Shared.SharedResources", typeof(SharedResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,29 +60,11 @@ namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in with Discord.
+        ///   Looks up a localized string similar to Edit.
         /// </summary>
-        internal static string SignInButtonText {
+        internal static string Edit {
             get {
-                return ResourceManager.GetString("SignInButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Amazon Wishlist URL.
-        /// </summary>
-        internal static string WishlistUrl {
-            get {
-                return ResourceManager.GetString("WishlistUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit Amazon Wishlist URL.
-        /// </summary>
-        internal static string WishlistUrlHeader {
-            get {
-                return ResourceManager.GetString("WishlistUrlHeader", resourceCulture);
+                return ResourceManager.GetString("Edit", resourceCulture);
             }
         }
     }

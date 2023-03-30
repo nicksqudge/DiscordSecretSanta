@@ -6,18 +6,25 @@
     <CloseButton />
 </ModalHeader>
 <ModalBody Background="Background.Light">
-    <Field>
-        <FieldLabel>@Label</FieldLabel>
-        <TextEdit>@StartingValue</TextEdit>
-    </Field>
+    <Validations Mode="ValidationMode.Auto" @ref="validations">
+        <Validation Validator="@ValidationWrapper">
+            <Field>
+                <FieldLabel>@Label</FieldLabel>
+                <TextEdit @bind-Text="@StartingValue">
+                    <Feedback>
+                        <ValidationError/>
+                    </Feedback>
+                </TextEdit>
+            </Field>
+        </Validation>
+    </Validations>
 </ModalBody>
 <ModalFooter Background="Background.Dark">
     <Button Type="ButtonType.Link" Clicked="Cancel">@Translate["Cancel"]</Button>
-    <Button Color="Color.Primary" Clicked="Confirm">@Translate["Done"]</Button>
+    <Button Color="Color.Primary" Clicked="Confirm" Disabled="!isDoneButtonEnabled">@Translate["Done"]</Button>
 </ModalFooter>
     
 @code {
-
     [Parameter]
     public string Title { get; set; } = string.Empty;
 
@@ -26,6 +33,18 @@
 
     [Parameter]
     public string StartingValue { get; set; } = string.Empty;
+    
+    [Parameter]
+    public Action<ValidatorEventArgs> Validator { get; set; }
+
+    bool isDoneButtonEnabled = false;
+    Validations validations;
+
+    void ValidationWrapper(ValidatorEventArgs e)
+    {
+        Validator(e);
+        isDoneButtonEnabled = e.Status == ValidationStatus.Success;
+    }
 
     private async Task Confirm()
     {

@@ -28,7 +28,7 @@
     public EventCallback<string> OnSubmit { get; set; }
 
     [Parameter]
-    public IValidator<string> Validator { get; set; } = null!;
+    public Action<ValidatorEventArgs> Validator { get; set; } = null!;
 
     [Parameter]
     public string ModalTitle { get; set; } = string.Empty;
@@ -42,6 +42,7 @@
                 x.Add(z => z.Title, ModalTitle);
                 x.Add(z => z.Label, Label);
                 x.Add(z => z.StartingValue, Value);
+                x.Add(z => z.Validator, Validator);
             }, 
             new ModalInstanceOptions()
             {

@@ -39,9 +39,9 @@ else
             <EditField 
                 Label="@Translate["WishlistUrl"]"
                 Value="@_viewModel.WishlistUrl"
-                Validator="@WishlistValidator"
                 OnSubmit="@(async (value) => await OnWishlistSubmit(value))"
                 ModalTitle="@Translate["WishlistUrlHeader"]"
+                Validator="@ValidateWishlist"
             />
         </CenterBlock>
     }
@@ -66,5 +66,19 @@ else
     async Task OnWishlistSubmit(string wishlistUrl)
     {
         _viewModel = await ViewModelHandler.SetWishlistUrl(wishlistUrl);
+    }
+
+    void ValidateWishlist(ValidatorEventArgs e)
+    {
+        var result = WishlistValidator.Validate(e.Value.ToString());
+        if (result.IsValid)
+        {
+            e.Status = ValidationStatus.Success;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Error;
+            e.ErrorText = result.Errors.First().ErrorMessage;
+        }
     }
 }

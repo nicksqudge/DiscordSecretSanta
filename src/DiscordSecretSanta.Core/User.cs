@@ -2,18 +2,19 @@
 
 public class User
 {
-    public User(string name, string discordId, string avatarId, string wishlistUrl, string userId)
+    public User(string name, string discordId, string avatarId, UserId userId)
     {
         Name = name;
         DiscordId = discordId;
         AvatarId = avatarId;
-        WishlistUrl = wishlistUrl;
         UserId = userId;
     }
 
     public string Name { get; }
     public string DiscordId { get; }
     public string AvatarId { get; }
-    public string WishlistUrl { get; }
-    public string UserId { get; set; }
+    public Uri WishlistUrl { get; set; }
+    public UserId UserId { get; }
 }
+
+public record UserId(string Value);

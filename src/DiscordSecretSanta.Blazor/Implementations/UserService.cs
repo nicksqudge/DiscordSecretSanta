@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using DiscordAuthProvider;
 using DiscordSecretSanta.Core;
+using DiscordSecretSanta.Core.Repositories;
 using FluentResults;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -10,14 +11,16 @@ public class UserService : IUserService
 {
     private readonly AuthenticationStateProvider _authenticationState;
     private readonly ILogger<UserService> _logger;
+    private readonly IUserRepository _userRepository;
 
-    public UserService(AuthenticationStateProvider authenticationState, ILogger<UserService> logger)
+    public UserService(AuthenticationStateProvider authenticationState, ILogger<UserService> logger, IUserRepository userRepository)
     {
         _authenticationState = authenticationState;
         _logger = logger;
+        _userRepository = userRepository;
     }
 
-    public async Task<User?> GetCurrentUser()
+    public async Task<User?> GetCurrentUser(CancellationToken cancellationToken)
     {
         var authState = await _authenticationState.GetAuthenticationStateAsync();
 
@@ -54,17 +57,19 @@ public class UserService : IUserService
             return null;
         }
 
-        return new User(
+        var result = new User(
             name.Value,
             discordTag.Value,
             avatar.Value,
-            "",
-            userId.Value
+            new UserId(userId.Value)
         );
+
+        await _userRepository.GetUserWishlistUrl(result.UserId, cancellationToken)
+            .OnSuccess((url) => result.WishlistUrl = url);
+        
+        return result;
     }
 
-    public Task<Result> UpdateWishlistUrl(User user, string url)
-    {
-        throw new NotImplementedException();
-    }
+    public Task<Result> UpdateWishlistUrl(User user, Uri url, CancellationToken cancellationToken)
+        => _userRepository.SaveUserWishlistUrl(user.UserId, url, cancellationToken);
 }

@@ -4,6 +4,6 @@ namespace DiscordSecretSanta.Core;
 
 public interface IUserService
 {
-    Task<User?> GetCurrentUser();
-    Task<Result> UpdateWishlistUrl(User user, string url);
+    Task<User?> GetCurrentUser(CancellationToken cancellationToken);
+    Task<Result> UpdateWishlistUrl(UserId user, Uri url, CancellationToken cancellationToken);
 }

@@ -2,8 +2,8 @@
 
 public interface IUserLoginViewHandler
 {
-    Task<UserLoginViewModel> OnInitAsync();
-    Task<UserLoginViewModel> SetWishlistUrl(string url);
+    Task<UserLoginViewModel> OnInitAsync(CancellationToken cancellationToken);
+    Task<UserLoginViewModel> SetWishlistUrl(string url, CancellationToken cancellationToken);
 }
 
 public class UserLoginViewHandler : IUserLoginViewHandler
@@ -17,38 +17,37 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         _userService = userService;
     }
 
-    public async Task<UserLoginViewModel> OnInitAsync()
+    public async Task<UserLoginViewModel> OnInitAsync(CancellationToken cancellationToken)
     {
         var result = InitViewModel();
 
-        var user = await _userService.GetCurrentUser();
+        var user = await _userService.GetCurrentUser(cancellationToken);
         if (user is not null)
         {
             PopulateUserData(result, user);
 
-            result.WishlistUrl = user.WishlistUrl;
+            result.WishlistUrl = user.WishlistUrl.ToString();
         }
 
         return result;
     }
 
-    public async Task<UserLoginViewModel> SetWishlistUrl(string url)
+    public async Task<UserLoginViewModel> SetWishlistUrl(string url, CancellationToken cancellationToken)
     {
         var result = InitViewModel();
 
-        var user = await _userService.GetCurrentUser();
-        if (user is not null)
+        if (result.HasUser)
         {
-            PopulateUserData(result, user);
-            
-            var updateResult = await _userService.UpdateWishlistUrl(user, url);
+            var updateResult = await _userService.UpdateWishlistUrl(result.User!.UserId, new Uri(url, UriKind.Absolute), cancellationToken);
             if (updateResult.IsSuccess)
                 result.WishlistUrl = url;
             else
                 result.ErrorMessage = "UnableToUpdate_User";
         }
         else
-            result.ErrorMessage = "NotLoggedIn";
+        {
+            result.ErrorMessage = "NotLoggedIn";    
+        }
 
         return result;
     }
@@ -60,7 +59,7 @@ public class UserLoginViewHandler : IUserLoginViewHandler
             Name = user.Name,
             AvatarId = user.AvatarId,
             DiscordTagId = user.DiscordId,
-            UserId = user.UserId
+            UserId = user.UserId.Value
         };
     }
 

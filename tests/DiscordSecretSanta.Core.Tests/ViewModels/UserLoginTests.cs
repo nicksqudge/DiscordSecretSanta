@@ -1,4 +1,5 @@
-﻿using DiscordSecretSanta.Core.ViewModels.UserLogin;
+﻿using DiscordSecretSanta.Core.Repositories;
+using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using FluentAssertions;
 using FluentResults;
 using NSubstitute;
@@ -27,7 +28,7 @@ public class UserLoginTests
         
         _handler = new UserLoginViewHandler(_setupService, _userService);
 
-        _userService.UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<string>())
+        _userService.UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(Task.FromResult(Result.Ok()));
     }
     
@@ -36,7 +37,7 @@ public class UserLoginTests
     {
         UserServiceReturnsNoUser();
         
-        var result = await _handler.OnInitAsync();
+        var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should().BeNull();
         result.WishlistUrl.Should().BeEmpty();
@@ -48,10 +49,10 @@ public class UserLoginTests
     [Fact]
     public async void UserLoggedIn_NoAmazonWishlist()
     {
-        _userService.GetCurrentUser()
-            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, string.Empty, ExpectedUserId));
+        _userService.GetCurrentUser(CancellationToken.None)
+            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, new UserId(ExpectedUserId)));
         
-        var result = await _handler.OnInitAsync();
+        var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
             .NotBeNull().And
@@ -73,7 +74,7 @@ public class UserLoginTests
     {
         UserServiceReturnsExpectedUser();
         
-        var result = await _handler.OnInitAsync();
+        var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
             .NotBeNull().And
@@ -97,7 +98,7 @@ public class UserLoginTests
 
         UserServiceReturnsNoUser();
 
-        var result = await _handler.SetWishlistUrl(url);
+        var result = await _handler.SetWishlistUrl(url, CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should().BeNull();
         result.WishlistUrl.Should().BeEmpty();
@@ -108,7 +109,7 @@ public class UserLoginTests
         
         await _userService
             .DidNotReceiveWithAnyArgs()
-            .UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<string>());
+            .UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>());
     }
     
     [Fact]
@@ -118,7 +119,7 @@ public class UserLoginTests
         
         UserServiceReturnsExpectedUser();
 
-        var result = await _handler.SetWishlistUrl(url);
+        var result = await _handler.SetWishlistUrl(url, CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
             .NotBeNull().And
@@ -136,22 +137,25 @@ public class UserLoginTests
 
         await _userService
             .ReceivedWithAnyArgs()
-            .UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<string>());
+            .UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>());
     }
 
     private void UserServiceReturnsExpectedUser()
     {
-        _userService.GetCurrentUser()
+        _userService.GetCurrentUser(CancellationToken.None)
             .Returns(new User(ExpectedUserName, 
                 ExpectedDiscordTagId, 
-                ExpectedAvatarId, 
-                ExpectedWishlistUrl, 
-                ExpectedUserId));
+                ExpectedAvatarId,
+                new UserId(ExpectedUserId))
+                {
+                    WishlistUrl = new Uri(ExpectedWishlistUrl)
+                }
+            );
     }
 
     private void UserServiceReturnsNoUser()
     {
-        _userService.GetCurrentUser()
+        _userService.GetCurrentUser(CancellationToken.None)
             .Returns(Task.FromResult<User>(null));
     }
 }

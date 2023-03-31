@@ -55,7 +55,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _viewModel = await ViewModelHandler.OnInitAsync();
+        _viewModel = await ViewModelHandler.OnInitAsync(CancellationToken.None);
     }
 
     void ClickSignInButton()
@@ -65,7 +65,7 @@ else
 
     async Task OnWishlistSubmit(string wishlistUrl)
     {
-        _viewModel = await ViewModelHandler.SetWishlistUrl(wishlistUrl);
+        _viewModel = await ViewModelHandler.SetWishlistUrl(wishlistUrl, CancellationToken.None);
     }
 
     void ValidateWishlist(ValidatorEventArgs e)

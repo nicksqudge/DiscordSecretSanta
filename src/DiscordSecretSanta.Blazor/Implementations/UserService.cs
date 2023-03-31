@@ -70,6 +70,6 @@ public class UserService : IUserService
         return result;
     }
 
-    public Task<Result> UpdateWishlistUrl(User user, Uri url, CancellationToken cancellationToken)
-        => _userRepository.SaveUserWishlistUrl(user.UserId, url, cancellationToken);
+    public Task<Result> UpdateWishlistUrl(UserId userId, Uri url, CancellationToken cancellationToken)
+        => _userRepository.SaveUserWishlistUrl(userId, url, cancellationToken);
 }

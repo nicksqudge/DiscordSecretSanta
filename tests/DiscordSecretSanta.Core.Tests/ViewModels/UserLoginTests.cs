@@ -28,8 +28,18 @@ public class UserLoginTests
         
         _handler = new UserLoginViewHandler(_setupService, _userService);
 
-        _userService.UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>())
+        _userService.UpdateWishlistUrl(Arg.Any<UserId>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>())
             .ReturnsForAnyArgs(Task.FromResult(Result.Ok()));
+
+        _userService.GetCurrentUser(default)
+            .ReturnsForAnyArgs(Task.FromResult(new User(
+                ExpectedUserName, 
+                ExpectedDiscordTagId, 
+                ExpectedAvatarId,
+                new UserId(ExpectedUserId))
+            {
+                WishlistUrl = new Uri(ExpectedWishlistUrl)
+            }));
     }
     
     [Fact]
@@ -109,13 +119,13 @@ public class UserLoginTests
         
         await _userService
             .DidNotReceiveWithAnyArgs()
-            .UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>());
+            .UpdateWishlistUrl(Arg.Any<UserId>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>());
     }
     
     [Fact]
     public async void UserLoggedIn_UpdateWishListUrl()
     {
-        string url = "a test url";
+        string url = "https://amazon.co.uk/wishlist/1234";
         
         UserServiceReturnsExpectedUser();
 
@@ -137,7 +147,7 @@ public class UserLoginTests
 
         await _userService
             .ReceivedWithAnyArgs()
-            .UpdateWishlistUrl(Arg.Any<User>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>());
+            .UpdateWishlistUrl(Arg.Any<UserId>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>());
     }
 
     private void UserServiceReturnsExpectedUser()

@@ -26,7 +26,7 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         {
             PopulateUserData(result, user);
 
-            result.WishlistUrl = user.WishlistUrl.ToString();
+            result.WishlistUrl = user.WishlistUrl?.ToString() ?? string.Empty;
         }
 
         return result;
@@ -35,10 +35,17 @@ public class UserLoginViewHandler : IUserLoginViewHandler
     public async Task<UserLoginViewModel> SetWishlistUrl(string url, CancellationToken cancellationToken)
     {
         var result = InitViewModel();
-
-        if (result.HasUser)
+        
+        var user = await _userService.GetCurrentUser(cancellationToken);
+        if (user is not null)
         {
-            var updateResult = await _userService.UpdateWishlistUrl(result.User!.UserId, new Uri(url, UriKind.Absolute), cancellationToken);
+            PopulateUserData(result, user);
+
+            var updateResult = await _userService.UpdateWishlistUrl(
+                new UserId(result.User!.UserId),
+                new Uri(url, UriKind.Absolute), 
+                cancellationToken);
+            
             if (updateResult.IsSuccess)
                 result.WishlistUrl = url;
             else

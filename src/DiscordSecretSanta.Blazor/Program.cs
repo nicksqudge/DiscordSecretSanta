@@ -5,7 +5,9 @@ using Blazorise.Icons.FontAwesome;
 using DiscordAuthProvider;
 using DiscordSecretSanta.Blazor.Implementations;
 using DiscordSecretSanta.Core;
+using DiscordSecretSanta.MongoDb;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +45,12 @@ builder.Services.AddBlazorise(options => { options.Immediate = true; })
 builder.Services.AddCore()
     .AddUserService<UserService>()
     .AddSetupService<SetupService>();
+
+// Add Database
+builder.Services.AddMongoDb(
+    new MongoClient(
+            "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false")
+        .GetDatabase("DiscordSecretSanta"));
 
 var app = builder.Build();
 

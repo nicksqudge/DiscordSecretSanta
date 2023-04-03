@@ -43,13 +43,13 @@ builder.Services.AddBlazorise(options => { options.Immediate = true; })
 
 // Add Domain core
 builder.Services.AddCore()
-    .AddUserService<UserService>()
+    .AddUserService<AuthProviderService>()
     .AddSetupService<SetupService>();
 
 // Add Database
 builder.Services.AddMongoDb(
     new MongoClient(
-            "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false")
+            "mongodb://localhost:27017")
         .GetDatabase("DiscordSecretSanta"));
 
 var app = builder.Build();

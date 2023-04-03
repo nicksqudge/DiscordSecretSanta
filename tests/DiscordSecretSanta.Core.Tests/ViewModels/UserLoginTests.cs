@@ -1,7 +1,8 @@
-﻿using DiscordSecretSanta.Core.Repositories;
+﻿using CSharpFunctionalExtensions;
+using DiscordSecretSanta.Core.Repositories;
+using DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
 using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using FluentAssertions;
-using FluentResults;
 using NSubstitute;
 
 namespace DiscordSecretSanta.Core.Tests.ViewModels;
@@ -15,10 +16,20 @@ public class UserLoginTests
     private const string ExpectedWishlistUrl = "http://www.amazon.co.uk/wishlist/123";
     private const string ExpectedUserId = "ABCASDSAD";
 
+    private AuthenticatedUser ExpectedAuthUser = new AuthenticatedUser(ExpectedUserName, ExpectedDiscordTagId,
+        ExpectedAvatarId, new UserId(ExpectedUserId));
+
+    private User ExpectedUser = new User(ExpectedUserName, ExpectedDiscordTagId,
+        ExpectedAvatarId, new UserId(ExpectedUserId))
+    {
+        WishlistUrl = !string.IsNullOrWhiteSpace(ExpectedWishlistUrl) ? new Uri(ExpectedWishlistUrl) : null
+    };
+
     private readonly UserLoginViewHandler _handler;
 
     private readonly ISetupService _setupService = Substitute.For<ISetupService>();
-    private readonly IUserService _userService = Substitute.For<IUserService>();
+    private readonly AuthProviderServiceHelper _authProviderService = new();
+    private readonly UserRepositoryHelper _userRepository = new();
 
     public UserLoginTests()
     {
@@ -26,26 +37,17 @@ public class UserLoginTests
             .GetTitle()
             .ReturnsForAnyArgs(ExpectedTitle);
         
-        _handler = new UserLoginViewHandler(_setupService, _userService);
-
-        _userService.UpdateWishlistUrl(Arg.Any<UserId>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(Task.FromResult(Result.Ok()));
-
-        _userService.GetCurrentUser(default)
-            .ReturnsForAnyArgs(Task.FromResult(new User(
-                ExpectedUserName, 
-                ExpectedDiscordTagId, 
-                ExpectedAvatarId,
-                new UserId(ExpectedUserId))
-            {
-                WishlistUrl = new Uri(ExpectedWishlistUrl)
-            }));
+        _handler = new UserLoginViewHandler(
+            _setupService, 
+            _authProviderService.Object, 
+            _userRepository.Object);
     }
     
     [Fact]
     public async void NoLoggedInUser()
     {
-        UserServiceReturnsNoUser();
+        _authProviderService.HasNoUser();
+        _userRepository.HasNoUser();
         
         var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
@@ -54,14 +56,18 @@ public class UserLoginTests
         result.HasUser.Should().BeFalse();
         result.HasWishlist.Should().BeFalse();
         result.HasError.Should().BeFalse();
+
+        _userRepository.Should().NotHaveCreatedUser()
+            .And.NotHaveFetchedUser();
     }
 
     [Fact]
-    public async void UserLoggedIn_NoAmazonWishlist()
+    public async void UserLoggedIn_UserExists_NoAmazonWishlist()
     {
-        _userService.GetCurrentUser(CancellationToken.None)
-            .Returns(new User(ExpectedUserName, ExpectedDiscordTagId, ExpectedAvatarId, new UserId(ExpectedUserId)));
-        
+        _authProviderService.ReturnsGetCurrentUser(ExpectedAuthUser);
+        ExpectedUser.WishlistUrl = null;
+        _userRepository.HasUser(ExpectedUser);
+
         var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
@@ -77,12 +83,42 @@ public class UserLoginTests
         result.HasUser.Should().BeTrue();
         result.HasWishlist.Should().BeFalse();
         result.HasError.Should().BeFalse();
+
+        _userRepository.Should().NotHaveCreatedUser()
+            .And.HaveFetchedUser();
+    }
+    
+    [Fact]
+    public async void UserLoggedIn_UserDoesNotExist_NoAmazonWishlist()
+    {
+        _authProviderService.ReturnsGetCurrentUser(ExpectedAuthUser);
+        _userRepository.HasNoUser();
+
+        var result = await _handler.OnInitAsync(CancellationToken.None);
+        result.Title.Should().Be(ExpectedTitle);
+        result.User.Should()
+            .NotBeNull().And
+            .BeEquivalentTo(new UserLoginViewModel.CurrentUser()
+            {
+                AvatarId = ExpectedAvatarId,
+                Name = ExpectedUserName,
+                DiscordTagId = ExpectedDiscordTagId,
+                UserId = ExpectedUserId
+            });
+        result.WishlistUrl.Should().BeEmpty();
+        result.HasUser.Should().BeTrue();
+        result.HasWishlist.Should().BeFalse();
+        result.HasError.Should().BeFalse();
+
+        _userRepository.Should().HaveCreatedUser()
+            .And.NotHaveFetchedUser();
     }
 
     [Fact]
     public async void UserLoggedIn_WithAmazonWishlist()
     {
-        UserServiceReturnsExpectedUser();
+        _authProviderService.ReturnsGetCurrentUser(ExpectedAuthUser);
+        _userRepository.HasUser(ExpectedUser);
         
         var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
@@ -99,14 +135,17 @@ public class UserLoginTests
         result.HasUser.Should().BeTrue();
         result.HasWishlist.Should().BeTrue();
         result.HasError.Should().BeFalse();
+
+        _userRepository.Should().HaveFetchedUser()
+            .And.NotHaveCreatedUser();
     }
 
     [Fact]
     public async void UserNotLoggedIn_UpdateWishListUrl()
     {
         string url = "a test url";
-
-        UserServiceReturnsNoUser();
+        _authProviderService.HasNoUser();
+        _userRepository.HasNoUser();
 
         var result = await _handler.SetWishlistUrl(url, CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
@@ -116,18 +155,19 @@ public class UserLoginTests
         result.HasWishlist.Should().BeFalse();
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be("NotLoggedIn");
-        
-        await _userService
-            .DidNotReceiveWithAnyArgs()
-            .UpdateWishlistUrl(Arg.Any<UserId>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>());
+
+        _userRepository.Should()
+            .NotHaveCreatedUser()
+            .And.NotHaveCreatedUser()
+            .And.NotHaveSavedWishlistUrl();
     }
     
     [Fact]
     public async void UserLoggedIn_UpdateWishListUrl()
     {
+        _authProviderService.ReturnsGetCurrentUser(ExpectedAuthUser);
+        _userRepository.HasUser(ExpectedUser);
         string url = "https://amazon.co.uk/wishlist/1234";
-        
-        UserServiceReturnsExpectedUser();
 
         var result = await _handler.SetWishlistUrl(url, CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
@@ -145,27 +185,8 @@ public class UserLoginTests
         result.HasWishlist.Should().BeTrue();
         result.HasError.Should().BeFalse();
 
-        await _userService
-            .ReceivedWithAnyArgs()
-            .UpdateWishlistUrl(Arg.Any<UserId>(), Arg.Any<Uri>(), Arg.Any<CancellationToken>());
-    }
-
-    private void UserServiceReturnsExpectedUser()
-    {
-        _userService.GetCurrentUser(CancellationToken.None)
-            .Returns(new User(ExpectedUserName, 
-                ExpectedDiscordTagId, 
-                ExpectedAvatarId,
-                new UserId(ExpectedUserId))
-                {
-                    WishlistUrl = new Uri(ExpectedWishlistUrl)
-                }
-            );
-    }
-
-    private void UserServiceReturnsNoUser()
-    {
-        _userService.GetCurrentUser(CancellationToken.None)
-            .Returns(Task.FromResult<User>(null));
+        _userRepository.Should()
+            .HaveSavedWishlistUrl()
+            .And.NotHaveCreatedUser();
     }
 }

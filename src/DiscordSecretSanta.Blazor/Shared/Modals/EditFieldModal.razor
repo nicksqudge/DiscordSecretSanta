@@ -36,6 +36,9 @@
     
     [Parameter]
     public Action<ValidatorEventArgs> Validator { get; set; }
+    
+    [Parameter]
+    public EventCallback<string> OnSubmit { get; set; }
 
     bool isDoneButtonEnabled = false;
     Validations validations;
@@ -48,6 +51,7 @@
 
     private async Task Confirm()
     {
+        await OnSubmit.InvokeAsync(StartingValue);
         await ModalService.Hide();
     }
     

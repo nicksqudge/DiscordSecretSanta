@@ -13,9 +13,9 @@ public static class DependencyInjectionExtensions
     }
 
     public static IServiceCollection AddUserService<T>(this IServiceCollection services)
-        where T : class, IUserService
+        where T : class, IAuthProviderService
     {
-        return services.AddTransient<IUserService, T>();
+        return services.AddTransient<IAuthProviderService, T>();
     }
     
     public static IServiceCollection AddSetupService<T>(this IServiceCollection services)

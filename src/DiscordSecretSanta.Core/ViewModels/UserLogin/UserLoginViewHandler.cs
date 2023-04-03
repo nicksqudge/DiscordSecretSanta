@@ -1,4 +1,7 @@
-﻿namespace DiscordSecretSanta.Core.ViewModels.UserLogin;
+﻿using CSharpFunctionalExtensions;
+using DiscordSecretSanta.Core.Repositories;
+
+namespace DiscordSecretSanta.Core.ViewModels.UserLogin;
 
 public interface IUserLoginViewHandler
 {
@@ -9,25 +12,23 @@ public interface IUserLoginViewHandler
 public class UserLoginViewHandler : IUserLoginViewHandler
 {
     private readonly ISetupService _setupService;
-    private readonly IUserService _userService;
+    private readonly IAuthProviderService _authProviderService;
+    private readonly IUserRepository _userRepository;
 
-    public UserLoginViewHandler(ISetupService setupService, IUserService userService)
+    public UserLoginViewHandler(ISetupService setupService, IAuthProviderService authProviderService, IUserRepository userRepository)
     {
         _setupService = setupService;
-        _userService = userService;
+        _authProviderService = authProviderService;
+        _userRepository = userRepository;
     }
 
     public async Task<UserLoginViewModel> OnInitAsync(CancellationToken cancellationToken)
     {
         var result = InitViewModel();
 
-        var user = await _userService.GetCurrentUser(cancellationToken);
-        if (user is not null)
-        {
-            PopulateUserData(result, user);
-
-            result.WishlistUrl = user.WishlistUrl?.ToString() ?? string.Empty;
-        }
+        var user = await GetCurrentUser(cancellationToken);
+        if (user.HasValue)
+            PopulateUserData(result, user.Value);
 
         return result;
     }
@@ -36,12 +37,12 @@ public class UserLoginViewHandler : IUserLoginViewHandler
     {
         var result = InitViewModel();
         
-        var user = await _userService.GetCurrentUser(cancellationToken);
-        if (user is not null)
+        var user = await GetCurrentUser(cancellationToken);
+        if (user.HasValue)
         {
-            PopulateUserData(result, user);
+            PopulateUserData(result, user.Value);
 
-            var updateResult = await _userService.UpdateWishlistUrl(
+            var updateResult = await _userRepository.SaveUserWishlistUrl(
                 new UserId(result.User!.UserId),
                 new Uri(url, UriKind.Absolute), 
                 cancellationToken);
@@ -59,6 +60,26 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         return result;
     }
 
+    private async Task<Maybe<User>> GetCurrentUser(CancellationToken cancellationToken)
+    {
+        var (hasUser, currentUser) = await _authProviderService.GetCurrentUser(cancellationToken);
+
+        if (!hasUser)
+            return Maybe<User>.None;
+
+        if (await _userRepository.DoesUserExist(currentUser.UserId, cancellationToken))
+            return await _userRepository.GetUser(currentUser.UserId, cancellationToken);
+
+        var create = await _userRepository.CreateUser(
+            new User(currentUser.Name, currentUser.DiscordId, currentUser.AvatarId, currentUser.UserId),
+            cancellationToken);
+        
+        if (create.IsSuccess)
+            return create.Value;
+
+        return Maybe<User>.None;
+    }
+
     private void PopulateUserData(UserLoginViewModel result, User user)
     {
         result.User = new UserLoginViewModel.CurrentUser()
@@ -66,8 +87,10 @@ public class UserLoginViewHandler : IUserLoginViewHandler
             Name = user.Name,
             AvatarId = user.AvatarId,
             DiscordTagId = user.DiscordId,
-            UserId = user.UserId.Value
+            UserId = user.UserId.Value,
         };
+
+        result.WishlistUrl = user.WishlistUrl?.ToString() ?? string.Empty;
     }
 
     private UserLoginViewModel InitViewModel()

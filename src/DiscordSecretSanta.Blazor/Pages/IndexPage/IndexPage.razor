@@ -13,9 +13,12 @@ else
 {
     <PageTitle>@_viewModel.Title</PageTitle>
     
-    @if (_viewModel.HasUser == false)
-    {
-        <CenterBlock>
+    <CenterBlock>
+        <AlertBlock
+            Message="@_viewModel.ErrorMessage"
+        />
+        @if (_viewModel.HasUser == false)
+        {
             <Heading 
                 Size="HeadingSize.Is5"
                 TextColor="TextColor.White"
@@ -24,11 +27,9 @@ else
             >@_viewModel.Title</Heading>
             
             <FullWidthButton Clicked="@ClickSignInButton">@Translate["SignInButtonText"]</FullWidthButton>
-        </CenterBlock>
-    }
-    else
-    {
-        <CenterBlock>
+        }
+        else
+        {
             <DiscordBlock
                 Avatar="@_viewModel.User!.AvatarId"
                 Name="@_viewModel.User.Name"
@@ -43,8 +44,9 @@ else
                 ModalTitle="@Translate["WishlistUrlHeader"]"
                 Validator="@ValidateWishlist"
             />
-        </CenterBlock>
-    }
+            <a href="/Account/Logout">Logout</a>
+        }
+    </CenterBlock>
 }
 
 @code {

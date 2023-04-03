@@ -9,7 +9,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMongoDb(this IServiceCollection services, IMongoDatabase database)
     {
-        return services.AddSingleton(database)
+        return services
+            .AddSingleton(database)
             .AddTransient<IUserRepository, UserRepository>();
     }
 }

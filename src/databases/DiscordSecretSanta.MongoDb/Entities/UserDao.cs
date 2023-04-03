@@ -8,11 +8,11 @@ public class UserDao
     
     public string UserId { get; set; }
     
-    public string Name { get; }
+    public string Name { get; set;  }
     
-    public string DiscordId { get; }
+    public string DiscordId { get; set; }
     
-    public string AvatarId { get; }
+    public string AvatarId { get; set;  }
     
     public string WishlistUrl { get; set; }
     

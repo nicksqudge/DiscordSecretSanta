@@ -1,7 +1,7 @@
-﻿using DiscordSecretSanta.Core;
+﻿using CSharpFunctionalExtensions;
+using DiscordSecretSanta.Core;
 using DiscordSecretSanta.Core.Repositories;
 using DiscordSecretSanta.MongoDb.Entities;
-using FluentResults;
 using MongoDB.Driver;
 
 namespace DiscordSecretSanta.MongoDb;
@@ -16,23 +16,20 @@ public class UserRepository : IUserRepository
             .GetCollection<UserDao>("users");
     }
 
-    public async Task<Result<Uri>> GetUserWishlistUrl(UserId userId, CancellationToken cancellationToken)
+    public async Task<Maybe<Uri>> GetUserWishlistUrl(UserId userId, CancellationToken cancellationToken)
     {
-        var byUser = ByUserId(userId);
-
-        var query = await _collection
-            .Find(byUser)
+        var query = await FindUser(userId)
             .Project(x => new
             {
-                Id = x.UserId,
-                WishlistUrl = x.WishlistUrl
+                x.UserId,
+                x.WishlistUrl
             })
             .FirstOrDefaultAsync(cancellationToken);
-
-        if (query is null)
-            return Result.Fail("User not found by id");
-
-        return Result.Ok(new Uri(query.WishlistUrl));
+        
+        if (query is not null)
+            return Maybe<Uri>.None;
+            
+        return new Uri(query.WishlistUrl);
     }
 
     public async Task<Result> SaveUserWishlistUrl(UserId userId, Uri url, CancellationToken cancellationToken)
@@ -49,9 +46,48 @@ public class UserRepository : IUserRepository
         return Result.Fail("Could not update user");
     }
 
+    public Task<bool> DoesUserExist(UserId userId, CancellationToken cancellationToken)
+    {
+        return FindUser(userId).AnyAsync(cancellationToken);
+    }
+
+    public async Task<Maybe<User>> GetUser(UserId userId, CancellationToken cancellationToken)
+    {
+        var user = await FindUser(userId).FirstOrDefaultAsync(cancellationToken);
+
+        if (user is null)
+            return Maybe<User>.None;
+
+        return new User(user.Name, user.DiscordId, user.AvatarId, new UserId(user.UserId))
+        {
+            WishlistUrl = !string.IsNullOrWhiteSpace(user.WishlistUrl) ? new Uri(user.WishlistUrl) : null
+        };
+    }
+
+    public async Task<Result<User>> CreateUser(User user, CancellationToken cancellationToken)
+    {
+        var dao = new UserDao()
+        {
+            WishlistUrl = user.WishlistUrl?.ToString() ?? string.Empty,
+            Name = user.Name,
+            AvatarId = user.AvatarId,
+            DiscordId = user.DiscordId,
+            UserId = user.UserId.Value,
+            Created = DateTimeOffset.UtcNow,
+        };
+
+        await _collection.InsertOneAsync(dao, cancellationToken);
+        return Result.Success(user);
+    }
+
     private FilterDefinition<UserDao> ByUserId(UserId id)
     {
         return Builders<UserDao>.Filter
             .Eq(r => r.UserId, id.Value);
+    }
+
+    private IFindFluent<UserDao, UserDao> FindUser(UserId userId)
+    {
+        return _collection.Find(ByUserId(userId));
     }
 }

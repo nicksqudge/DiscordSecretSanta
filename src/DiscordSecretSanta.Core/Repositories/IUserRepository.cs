@@ -9,4 +9,6 @@ public interface IUserRepository
     Task<bool> DoesUserExist(UserId userId, CancellationToken cancellationToken);
     Task<Maybe<User>> GetUser(UserId userId, CancellationToken cancellationToken);
     Task<Result<User>> CreateUser(User user, CancellationToken cancellationToken);
+    Task<Result> MakeUserAdmin(UserId userId, CancellationToken cancellationToken);
+    Task<int> CountUsers(CancellationToken cancellationToken);
 }

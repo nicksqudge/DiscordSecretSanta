@@ -73,9 +73,15 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         var create = await _userRepository.CreateUser(
             new User(currentUser.Name, currentUser.DiscordId, currentUser.AvatarId, currentUser.UserId),
             cancellationToken);
-        
+
         if (create.IsSuccess)
+        {
+            var userCount = await _userRepository.CountUsers(cancellationToken);
+            if (userCount == 0)
+                await _userRepository.MakeUserAdmin(create.Value.UserId, cancellationToken);
+            
             return create.Value;
+        }
 
         return Maybe<User>.None;
     }

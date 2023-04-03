@@ -24,6 +24,9 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
         Object.GetUser(default, default)
             .ReturnsForAnyArgs(user);
 
+        Object.CountUsers(default)
+            .ReturnsForAnyArgs(1);
+
         return this;
     }
     
@@ -34,6 +37,9 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
 
         Object.GetUser(default, default)
             .ReturnsForAnyArgs(Maybe<User>.None);
+        
+        Object.CountUsers(default)
+            .ReturnsForAnyArgs(0);
 
         return this;
     }
@@ -85,6 +91,20 @@ public class UserRepositoryAssertions : ReferenceTypeAssertions<IUserRepository,
     public AndConstraint<UserRepositoryAssertions> HaveSavedWishlistUrl()
     {
         Subject.ReceivedWithAnyArgs().SaveUserWishlistUrl(default, default, default);
+
+        return new AndConstraint<UserRepositoryAssertions>(this);
+    }
+
+    public AndConstraint<UserRepositoryAssertions> MadeUserAdmin()
+    {
+        Subject.ReceivedWithAnyArgs().MakeUserAdmin(default, default);
+
+        return new AndConstraint<UserRepositoryAssertions>(this);
+    }
+    
+    public AndConstraint<UserRepositoryAssertions> NotMadeUserAdmin()
+    {
+        Subject.DidNotReceiveWithAnyArgs().MakeUserAdmin(default, default);
 
         return new AndConstraint<UserRepositoryAssertions>(this);
     }

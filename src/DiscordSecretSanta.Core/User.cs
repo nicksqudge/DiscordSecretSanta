@@ -15,6 +15,7 @@ public class User
     public string AvatarId { get; }
     public Uri WishlistUrl { get; set; }
     public UserId UserId { get; }
+    public bool IsAdmin { get; set; }
 }
 
 public record UserId(string Value);

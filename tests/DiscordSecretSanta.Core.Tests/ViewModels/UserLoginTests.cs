@@ -103,7 +103,8 @@ public class UserLoginTests
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
                 DiscordTagId = ExpectedDiscordTagId,
-                UserId = ExpectedUserId
+                UserId = ExpectedUserId,
+                IsAdmin = true
             });
         result.WishlistUrl.Should().BeEmpty();
         result.HasUser.Should().BeTrue();
@@ -111,7 +112,8 @@ public class UserLoginTests
         result.HasError.Should().BeFalse();
 
         _userRepository.Should().HaveCreatedUser()
-            .And.NotHaveFetchedUser();
+            .And.NotHaveFetchedUser()
+            .And.MadeUserAdmin();
     }
 
     [Fact]
@@ -129,7 +131,8 @@ public class UserLoginTests
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
                 DiscordTagId = ExpectedDiscordTagId,
-                UserId = ExpectedUserId
+                UserId = ExpectedUserId,
+                IsAdmin = false
             });
         result.WishlistUrl.Should().Be(ExpectedWishlistUrl);
         result.HasUser.Should().BeTrue();
@@ -137,7 +140,8 @@ public class UserLoginTests
         result.HasError.Should().BeFalse();
 
         _userRepository.Should().HaveFetchedUser()
-            .And.NotHaveCreatedUser();
+            .And.NotHaveCreatedUser()
+            .And.NotMadeUserAdmin();
     }
 
     [Fact]
@@ -178,7 +182,8 @@ public class UserLoginTests
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
                 DiscordTagId = ExpectedDiscordTagId,
-                UserId = ExpectedUserId
+                UserId = ExpectedUserId,
+                IsAdmin = false
             });
         result.WishlistUrl.Should().Be(url);
         result.HasUser.Should().BeTrue();

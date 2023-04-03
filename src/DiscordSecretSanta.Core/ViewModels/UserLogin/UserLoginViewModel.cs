@@ -16,5 +16,6 @@ public class UserLoginViewModel
         public string DiscordTagId { get; set; } = string.Empty;
         public string AvatarId { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
+        public bool IsAdmin { get; set; } = false;
     }
 }

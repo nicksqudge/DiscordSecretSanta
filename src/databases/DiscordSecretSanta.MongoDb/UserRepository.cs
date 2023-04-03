@@ -2,6 +2,7 @@
 using DiscordSecretSanta.Core;
 using DiscordSecretSanta.Core.Repositories;
 using DiscordSecretSanta.MongoDb.Entities;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace DiscordSecretSanta.MongoDb;
@@ -32,18 +33,13 @@ public class UserRepository : IUserRepository
         return new Uri(query.WishlistUrl);
     }
 
-    public async Task<Result> SaveUserWishlistUrl(UserId userId, Uri url, CancellationToken cancellationToken)
+    public Task<Result> SaveUserWishlistUrl(UserId userId, Uri url, CancellationToken cancellationToken)
     {
-        var byUser = ByUserId(userId);
-
-        var update = Builders<UserDao>.Update
-            .Set(x => x.WishlistUrl, url.ToString());
-
-        var result = await _collection.UpdateOneAsync(byUser, update, new UpdateOptions(), cancellationToken);
-        if (result.ModifiedCount == 1)
-            return Result.Ok();
-
-        return Result.Fail("Could not update user");
+        return UpdateUser(
+            userId,
+            Builders<UserDao>.Update.Set(x => x.WishlistUrl, url.ToString()),
+            cancellationToken
+        );
     }
 
     public Task<bool> DoesUserExist(UserId userId, CancellationToken cancellationToken)
@@ -60,7 +56,8 @@ public class UserRepository : IUserRepository
 
         return new User(user.Name, user.DiscordId, user.AvatarId, new UserId(user.UserId))
         {
-            WishlistUrl = !string.IsNullOrWhiteSpace(user.WishlistUrl) ? new Uri(user.WishlistUrl) : null
+            WishlistUrl = !string.IsNullOrWhiteSpace(user.WishlistUrl) ? new Uri(user.WishlistUrl) : null,
+            IsAdmin = user.IsAdmin
         };
     }
 
@@ -74,10 +71,26 @@ public class UserRepository : IUserRepository
             DiscordId = user.DiscordId,
             UserId = user.UserId.Value,
             Created = DateTimeOffset.UtcNow,
+            IsAdmin = user.IsAdmin
         };
 
         await _collection.InsertOneAsync(dao, cancellationToken);
         return Result.Success(user);
+    }
+
+    public Task<Result> MakeUserAdmin(UserId userId, CancellationToken cancellationToken)
+    {
+        return UpdateUser(
+            userId,
+            Builders<UserDao>.Update.Set(x => x.IsAdmin, true),
+            cancellationToken
+        );
+    }
+
+    public async Task<int> CountUsers(CancellationToken cancellationToken)
+    {
+        var count = await _collection.CountDocumentsAsync(new BsonDocument(), null, cancellationToken);
+        return (int)count;
     }
 
     private FilterDefinition<UserDao> ByUserId(UserId id)
@@ -89,5 +102,15 @@ public class UserRepository : IUserRepository
     private IFindFluent<UserDao, UserDao> FindUser(UserId userId)
     {
         return _collection.Find(ByUserId(userId));
+    }
+
+    private async Task<Result> UpdateUser(UserId userId, UpdateDefinition<UserDao> update,
+        CancellationToken cancellationToken)
+    {
+        var result = await _collection.UpdateOneAsync(ByUserId(userId), update, new UpdateOptions(), cancellationToken);
+        if (result.ModifiedCount == 1)
+            return Result.Ok();
+
+        return Result.Fail("Could not update user");
     }
 }

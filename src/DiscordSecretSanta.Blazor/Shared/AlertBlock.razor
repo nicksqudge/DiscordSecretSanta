@@ -1,0 +1,12 @@
+﻿<Alert Color="Color.Danger" Visible="@hasMessage">
+    <AlertMessage>@Message</AlertMessage>
+</Alert>
+
+@code {
+
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+
+    private bool hasMessage => !string.IsNullOrWhiteSpace(Message);
+
+}

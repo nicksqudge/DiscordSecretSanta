@@ -77,9 +77,12 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         if (create.IsSuccess)
         {
             var userCount = await _userRepository.CountUsers(cancellationToken);
-            if (userCount == 0)
+            if (userCount <= 1)
+            {
                 await _userRepository.MakeUserAdmin(create.Value.UserId, cancellationToken);
-            
+                create.Value.IsAdmin = true;
+            }
+
             return create.Value;
         }
 
@@ -94,6 +97,7 @@ public class UserLoginViewHandler : IUserLoginViewHandler
             AvatarId = user.AvatarId,
             DiscordTagId = user.DiscordId,
             UserId = user.UserId.Value,
+            IsAdmin = user.IsAdmin
         };
 
         result.WishlistUrl = user.WishlistUrl?.ToString() ?? string.Empty;

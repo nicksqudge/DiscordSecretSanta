@@ -1,6 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using DiscordSecretSanta.Core.Repositories;
-using DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
+﻿using DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
 using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using FluentAssertions;
 using NSubstitute;
@@ -66,7 +64,9 @@ public class UserLoginTests
     {
         _authProviderService.ReturnsGetCurrentUser(ExpectedAuthUser);
         ExpectedUser.WishlistUrl = null;
-        _userRepository.HasUser(ExpectedUser);
+        _userRepository
+            .HasUser(ExpectedUser)
+            .CountOfUsersIs(10);
 
         var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
@@ -92,7 +92,8 @@ public class UserLoginTests
     public async void UserLoggedIn_UserDoesNotExist_NoAmazonWishlist()
     {
         _authProviderService.ReturnsGetCurrentUser(ExpectedAuthUser);
-        _userRepository.HasNoUser();
+        _userRepository.HasNoUser()
+            .CountOfUsersIs(1);
 
         var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
@@ -120,7 +121,8 @@ public class UserLoginTests
     public async void UserLoggedIn_WithAmazonWishlist()
     {
         _authProviderService.ReturnsGetCurrentUser(ExpectedAuthUser);
-        _userRepository.HasUser(ExpectedUser);
+        _userRepository.HasUser(ExpectedUser)
+            .CountOfUsersIs(2);
         
         var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
@@ -149,7 +151,7 @@ public class UserLoginTests
     {
         string url = "a test url";
         _authProviderService.HasNoUser();
-        _userRepository.HasNoUser();
+        _userRepository.HasNoUser().CountOfUsersIs(2);
 
         var result = await _handler.SetWishlistUrl(url, CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
@@ -170,7 +172,7 @@ public class UserLoginTests
     public async void UserLoggedIn_UpdateWishListUrl()
     {
         _authProviderService.ReturnsGetCurrentUser(ExpectedAuthUser);
-        _userRepository.HasUser(ExpectedUser);
+        _userRepository.HasUser(ExpectedUser).CountOfUsersIs(2);
         string url = "https://amazon.co.uk/wishlist/1234";
 
         var result = await _handler.SetWishlistUrl(url, CancellationToken.None);

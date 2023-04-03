@@ -23,10 +23,7 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
         
         Object.GetUser(default, default)
             .ReturnsForAnyArgs(user);
-
-        Object.CountUsers(default)
-            .ReturnsForAnyArgs(1);
-
+        
         return this;
     }
     
@@ -37,9 +34,14 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
 
         Object.GetUser(default, default)
             .ReturnsForAnyArgs(Maybe<User>.None);
-        
+
+        return this;
+    }
+
+    public UserRepositoryHelper CountOfUsersIs(int count)
+    {
         Object.CountUsers(default)
-            .ReturnsForAnyArgs(0);
+            .ReturnsForAnyArgs(count);
 
         return this;
     }

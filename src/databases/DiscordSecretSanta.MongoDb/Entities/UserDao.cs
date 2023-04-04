@@ -17,5 +17,6 @@ public class UserDao
     public string WishlistUrl { get; set; }
     
     public DateTimeOffset Created { get; set; }
+    
     public bool IsAdmin { get; set; }
 }

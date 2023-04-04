@@ -39,7 +39,7 @@ else
             
             <EditField 
                 Label="@Translate["WishlistUrl"]"
-                Value="@_viewModel.WishlistUrl"
+                Value="@_viewModel.User.WishlistUrl"
                 OnSubmit="@(async (value) => await OnWishlistSubmit(value))"
                 ModalTitle="@Translate["WishlistUrlHeader"]"
                 Validator="@ValidateWishlist"

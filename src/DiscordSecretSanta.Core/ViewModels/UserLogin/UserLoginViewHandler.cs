@@ -28,7 +28,7 @@ public class UserLoginViewHandler : IUserLoginViewHandler
 
         var user = await GetCurrentUser(cancellationToken);
         if (user.HasValue)
-            PopulateUserData(result, user.Value);
+            result.User = new UserViewModel(user.Value);
 
         return result;
     }
@@ -40,7 +40,7 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         var user = await GetCurrentUser(cancellationToken);
         if (user.HasValue)
         {
-            PopulateUserData(result, user.Value);
+            result.User = new UserViewModel(user.Value);
 
             var updateResult = await _userRepository.SaveUserWishlistUrl(
                 new UserId(result.User!.UserId),
@@ -48,7 +48,7 @@ public class UserLoginViewHandler : IUserLoginViewHandler
                 cancellationToken);
             
             if (updateResult.IsSuccess)
-                result.WishlistUrl = url;
+                result.User.WishlistUrl = url;
             else
                 result.ErrorMessage = "UnableToUpdate_User";
         }
@@ -87,20 +87,6 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         }
 
         return Maybe<User>.None;
-    }
-
-    private void PopulateUserData(UserLoginViewModel result, User user)
-    {
-        result.User = new UserLoginViewModel.CurrentUser()
-        {
-            Name = user.Name,
-            AvatarId = user.AvatarId,
-            DiscordTagId = user.DiscordId,
-            UserId = user.UserId.Value,
-            IsAdmin = user.IsAdmin
-        };
-
-        result.WishlistUrl = user.WishlistUrl?.ToString() ?? string.Empty;
     }
 
     private UserLoginViewModel InitViewModel()

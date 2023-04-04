@@ -42,8 +42,8 @@ builder.Services.AddBlazorise(options => { options.Immediate = true; })
     .AddBlazoriseFluentValidation();
 
 // Add Domain core
-builder.Services.AddCore()
-    .AddUserService<AuthProviderService>()
+builder.Services.AddDiscordSecretSantaCore()
+    .AddAuthProviderService<AuthProviderService>()
     .AddSetupService<SetupService>();
 
 // Add Database

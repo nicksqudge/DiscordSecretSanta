@@ -1,4 +1,5 @@
 ﻿using DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
+using DiscordSecretSanta.Core.ViewModels;
 using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using FluentAssertions;
 using NSubstitute;
@@ -50,7 +51,6 @@ public class UserLoginTests
         var result = await _handler.OnInitAsync(CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should().BeNull();
-        result.WishlistUrl.Should().BeEmpty();
         result.HasUser.Should().BeFalse();
         result.HasWishlist.Should().BeFalse();
         result.HasError.Should().BeFalse();
@@ -72,14 +72,14 @@ public class UserLoginTests
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
             .NotBeNull().And
-            .BeEquivalentTo(new UserLoginViewModel.CurrentUser()
+            .BeEquivalentTo(new UserViewModel()
             {
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
                 DiscordTagId = ExpectedDiscordTagId,
-                UserId = ExpectedUserId
+                UserId = ExpectedUserId,
+                WishlistUrl = string.Empty
             });
-        result.WishlistUrl.Should().BeEmpty();
         result.HasUser.Should().BeTrue();
         result.HasWishlist.Should().BeFalse();
         result.HasError.Should().BeFalse();
@@ -99,15 +99,15 @@ public class UserLoginTests
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
             .NotBeNull().And
-            .BeEquivalentTo(new UserLoginViewModel.CurrentUser()
+            .BeEquivalentTo(new UserViewModel()
             {
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
                 DiscordTagId = ExpectedDiscordTagId,
                 UserId = ExpectedUserId,
-                IsAdmin = true
+                IsAdmin = true,
+                WishlistUrl = string.Empty
             });
-        result.WishlistUrl.Should().BeEmpty();
         result.HasUser.Should().BeTrue();
         result.HasWishlist.Should().BeFalse();
         result.HasError.Should().BeFalse();
@@ -128,15 +128,15 @@ public class UserLoginTests
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
             .NotBeNull().And
-            .BeEquivalentTo(new UserLoginViewModel.CurrentUser()
+            .BeEquivalentTo(new UserViewModel()
             {
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
                 DiscordTagId = ExpectedDiscordTagId,
                 UserId = ExpectedUserId,
-                IsAdmin = false
+                IsAdmin = false,
+                WishlistUrl = ExpectedWishlistUrl
             });
-        result.WishlistUrl.Should().Be(ExpectedWishlistUrl);
         result.HasUser.Should().BeTrue();
         result.HasWishlist.Should().BeTrue();
         result.HasError.Should().BeFalse();
@@ -156,7 +156,6 @@ public class UserLoginTests
         var result = await _handler.SetWishlistUrl(url, CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should().BeNull();
-        result.WishlistUrl.Should().BeEmpty();
         result.HasUser.Should().BeFalse();
         result.HasWishlist.Should().BeFalse();
         result.HasError.Should().BeTrue();
@@ -179,15 +178,15 @@ public class UserLoginTests
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
             .NotBeNull().And
-            .BeEquivalentTo(new UserLoginViewModel.CurrentUser()
+            .BeEquivalentTo(new UserViewModel()
             {
                 AvatarId = ExpectedAvatarId,
                 Name = ExpectedUserName,
                 DiscordTagId = ExpectedDiscordTagId,
                 UserId = ExpectedUserId,
-                IsAdmin = false
+                IsAdmin = false,
+                WishlistUrl = url
             });
-        result.WishlistUrl.Should().Be(url);
         result.HasUser.Should().BeTrue();
         result.HasWishlist.Should().BeTrue();
         result.HasError.Should().BeFalse();

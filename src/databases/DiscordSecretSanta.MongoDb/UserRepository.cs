@@ -17,22 +17,6 @@ public class UserRepository : IUserRepository
             .GetCollection<UserDao>("users");
     }
 
-    public async Task<Maybe<Uri>> GetUserWishlistUrl(UserId userId, CancellationToken cancellationToken)
-    {
-        var query = await FindUser(userId)
-            .Project(x => new
-            {
-                x.UserId,
-                x.WishlistUrl
-            })
-            .FirstOrDefaultAsync(cancellationToken);
-        
-        if (query is not null)
-            return Maybe<Uri>.None;
-            
-        return new Uri(query.WishlistUrl);
-    }
-
     public Task<Result> SaveUserWishlistUrl(UserId userId, Uri url, CancellationToken cancellationToken)
     {
         return UpdateUser(
@@ -54,11 +38,7 @@ public class UserRepository : IUserRepository
         if (user is null)
             return Maybe<User>.None;
 
-        return new User(user.Name, user.DiscordId, user.AvatarId, new UserId(user.UserId))
-        {
-            WishlistUrl = !string.IsNullOrWhiteSpace(user.WishlistUrl) ? new Uri(user.WishlistUrl) : null,
-            IsAdmin = user.IsAdmin
-        };
+        return ProjectUser(user);
     }
 
     public async Task<Result<User>> CreateUser(User user, CancellationToken cancellationToken)
@@ -93,6 +73,12 @@ public class UserRepository : IUserRepository
         return (int)count;
     }
 
+    public async Task<IReadOnlyList<User>> ListUsers(CancellationToken cancellationToken)
+        => await _collection
+            .Find(_ => true)
+            .Project(u => ProjectUser(u))
+            .ToListAsync(cancellationToken);
+
     private FilterDefinition<UserDao> ByUserId(UserId id)
     {
         return Builders<UserDao>.Filter
@@ -112,5 +98,14 @@ public class UserRepository : IUserRepository
             return Result.Ok();
 
         return Result.Fail("Could not update user");
+    }
+
+    private User ProjectUser(UserDao user)
+    {
+        return new User(user.Name, user.DiscordId, user.AvatarId, new UserId(user.UserId))
+        {
+            WishlistUrl = !string.IsNullOrWhiteSpace(user.WishlistUrl) ? new Uri(user.WishlistUrl) : null,
+            IsAdmin = user.IsAdmin
+        };
     }
 }

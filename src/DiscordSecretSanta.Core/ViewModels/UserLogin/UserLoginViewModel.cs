@@ -3,19 +3,9 @@
 public class UserLoginViewModel
 {
     public string Title { get; set; } = string.Empty;
-    public CurrentUser? User { get; set; } = null;
-    public string WishlistUrl { get; set; } = string.Empty;
+    public UserViewModel? User { get; set; } = null;
     public string ErrorMessage { get; set; } = string.Empty;
     public bool HasUser => User is not null;
-    public bool HasWishlist => !string.IsNullOrWhiteSpace(WishlistUrl);
+    public bool HasWishlist => !string.IsNullOrWhiteSpace(User?.WishlistUrl ?? string.Empty);
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
-
-    public class CurrentUser
-    {
-        public string Name { get; set; } = string.Empty;
-        public string DiscordTagId { get; set; } = string.Empty;
-        public string AvatarId { get; set; } = string.Empty;
-        public string UserId { get; set; } = string.Empty;
-        public bool IsAdmin { get; set; } = false;
-    }
 }

@@ -44,7 +44,13 @@ else
                 ModalTitle="@Translate["WishlistUrlHeader"]"
                 Validator="@ValidateWishlist"
             />
-            <a href="/Account/Logout">Logout</a>
+            
+            @if (_viewModel.User.IsAdmin)
+            {
+                <SimpleButton Text="@Translate["ViewUsers"]" Clicked="GoToAdminUsers"/>
+            }
+            
+            <SimpleButton Text="@Translate["Logout"]" Clicked="Logout" />
         }
     </CenterBlock>
 }
@@ -52,7 +58,6 @@ else
 @code {
 
     UserLoginViewModel? _viewModel = null;
-    private string LoginUrl = "/Account/Login";
     private IValidator<string> WishlistValidator = new WishlistUrlValidator();
 
     protected override async Task OnInitializedAsync()
@@ -62,7 +67,17 @@ else
 
     void ClickSignInButton()
     {
-        NavigationManager.NavigateTo(LoginUrl, true);
+        NavigationManager.NavigateTo("/Account/Login", true);
+    }
+
+    void GoToAdminUsers()
+    {
+        NavigationManager.NavigateTo("/admin/users");
+    }
+
+    void Logout()
+    {
+        NavigationManager.NavigateTo("/Account/Logout", true);
     }
 
     async Task OnWishlistSubmit(string wishlistUrl)

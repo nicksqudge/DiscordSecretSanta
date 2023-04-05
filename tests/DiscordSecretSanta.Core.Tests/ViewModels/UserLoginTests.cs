@@ -45,7 +45,7 @@ public class UserLoginTests
     [Fact]
     public async void NoLoggedInUser()
     {
-        _authProviderService.HasNoUser();
+        _authProviderService.ReturnsNoCurrentUser();
         _userRepository.HasNoUser();
         
         var result = await _handler.OnInitAsync(CancellationToken.None);
@@ -150,7 +150,7 @@ public class UserLoginTests
     public async void UserNotLoggedIn_UpdateWishListUrl()
     {
         string url = "a test url";
-        _authProviderService.HasNoUser();
+        _authProviderService.ReturnsNoCurrentUser();
         _userRepository.HasNoUser().CountOfUsersIs(2);
 
         var result = await _handler.SetWishlistUrl(url, CancellationToken.None);

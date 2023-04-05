@@ -70,9 +70,7 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         if (await _userRepository.DoesUserExist(currentUser.UserId, cancellationToken))
             return await _userRepository.GetUser(currentUser.UserId, cancellationToken);
 
-        var create = await _userRepository.CreateUser(
-            new User(currentUser.Name, currentUser.DiscordId, currentUser.AvatarId, currentUser.UserId),
-            cancellationToken);
+        var create = await _userRepository.CreateUser(currentUser.ToUser(), cancellationToken);
 
         if (create.IsSuccess)
         {

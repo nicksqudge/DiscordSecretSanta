@@ -15,7 +15,7 @@ public class AuthProviderServiceHelper : DependencyHelper<IAuthProviderService, 
             .ReturnsForAnyArgs(user);
     }
 
-    public void HasNoUser()
+    public void ReturnsNoCurrentUser()
     {
         Object.GetCurrentUser(default)
             .ReturnsForAnyArgs(Maybe<AuthenticatedUser>.None);

@@ -1,0 +1,42 @@
+﻿@page "/admin/users"
+@using DiscordSecretSanta.Core.ViewModels.AdminUsers
+@inject IAdminUsersViewHandler ViewModelHandler
+@inject IStringLocalizer<UsersPageResources> Translate
+
+@if (_viewModel is null)
+{
+    <h1>Not loaded</h1>
+}
+else
+{
+    if (_viewModel.Authorised == false)
+    {
+        <AlertBlock Message="@Translate["NotAuthorised"]" />
+    }
+    else
+    {
+        <PageTitle>@Translate["PageTitle"]</PageTitle>
+
+        <CenterBlock>
+            @foreach (var user in _viewModel.Users)
+            {
+                <DiscordBlock
+                    Avatar="@user.AvatarId"
+                    Name="@user.Name"
+                    TagId="@user.DiscordTagId"
+                    UserId="@user.UserId"/>
+            }
+        </CenterBlock>
+    }
+}
+
+@code {
+
+    AdminUsersViewModel? _viewModel = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _viewModel = await ViewModelHandler.OnInitAsync(CancellationToken.None);
+    }
+
+}

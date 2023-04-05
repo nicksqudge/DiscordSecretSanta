@@ -18,19 +18,10 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="SignInButtonText" xml:space="preserve">
-        <value>Sign in with Discord</value>
+    <data name="PageTitle" xml:space="preserve">
+        <value>Admin : Users</value>
     </data>
-    <data name="WishlistUrl" xml:space="preserve">
-        <value>Amazon Wishlist URL</value>
-    </data>
-    <data name="WishlistUrlHeader" xml:space="preserve">
-        <value>Edit Amazon Wishlist URL</value>
-    </data>
-    <data name="Logout" xml:space="preserve">
-        <value>Logout</value>
-    </data>
-    <data name="ViewUsers" xml:space="preserve">
-        <value>(Admin) View Users</value>
+    <data name="NotAuthorised" xml:space="preserve">
+        <value>You do not have permission to view this page</value>
     </data>
 </root>

@@ -2,7 +2,11 @@
 
 namespace DiscordSecretSanta.Core;
 
-public record AuthenticatedUser(string Name, string DiscordId, string AvatarId, UserId UserId);
+public record AuthenticatedUser(string Name, string DiscordId, string AvatarId, UserId UserId)
+{
+    public User ToUser()
+        => new User(Name, DiscordId, AvatarId, UserId);
+}
 
 public interface IAuthProviderService
 {

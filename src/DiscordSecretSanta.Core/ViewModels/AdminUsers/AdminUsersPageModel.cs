@@ -2,5 +2,6 @@
 
 public class AdminUsersViewModel
 {
-    public IReadOnlyList<UserViewModel> Users { get; set; }
+    public bool Authorised { get; set; }
+    public IReadOnlyList<UserViewModel> Users { get; set; } = new List<UserViewModel>();
 }

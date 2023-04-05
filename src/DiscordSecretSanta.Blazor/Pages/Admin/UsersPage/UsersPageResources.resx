@@ -24,4 +24,7 @@
     <data name="NotAuthorised" xml:space="preserve">
         <value>You do not have permission to view this page</value>
     </data>
+    <data name="UserOptions" xml:space="preserve">
+        <value>Edit</value>
+    </data>
 </root>

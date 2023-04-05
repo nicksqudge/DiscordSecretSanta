@@ -1,0 +1,32 @@
+﻿@inject IStringLocalizer<UsersPageResources> Translate
+
+<ModalHeader Background="Background.Light">
+    <ModalTitle>Edit User: @Model.Name</ModalTitle>
+    <CloseButton />
+</ModalHeader>
+<ModalBody Background="Background.Light">
+    @if (Model.IsAdmin == false)
+    {
+        <FullWidthButton>@Translate["Make Admin"]</FullWidthButton>
+    }
+    else
+    {
+        <FullWidthButton>@Translate["Remove Admin"]</FullWidthButton>
+    }
+    
+    @if (Model.HasWishlist)
+    {
+        <FullWidthButton Color="Color.Success">@Translate["Edit Wishlist Url"]</FullWidthButton>
+        <FullWidthButton Color="Color.Info">@Translate["View Wishlist"]</FullWidthButton>
+    }
+    else
+    {
+        <FullWidthButton Color="Color.Danger">@Translate["Add Wishlist Url"]</FullWidthButton>
+    }
+</ModalBody>
+
+@code {
+
+    [Parameter]
+    public UserOptionsModel Model { get; set; }
+}

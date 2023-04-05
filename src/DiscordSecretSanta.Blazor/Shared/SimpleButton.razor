@@ -3,12 +3,12 @@
     Color="@Color"
     Size="Size.Small"
 >
-@Text
+    @ChildContent
 </Button>
 
 @code {
     [Parameter]
-    public string Text { get; set; }
+    public RenderFragment ChildContent { get; set; } = null!;
     
     [Parameter]
     public EventCallback Clicked { get; set; }

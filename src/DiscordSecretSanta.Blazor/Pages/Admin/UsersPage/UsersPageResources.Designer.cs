@@ -76,5 +76,14 @@ namespace DiscordSecretSanta.Blazor.Pages.Admin.UsersPage {
                 return ResourceManager.GetString("PageTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string UserOptions {
+            get {
+                return ResourceManager.GetString("UserOptions", resourceCulture);
+            }
+        }
     }
 }

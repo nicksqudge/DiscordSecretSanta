@@ -1,7 +1,9 @@
 ﻿@page "/admin/users"
 @using DiscordSecretSanta.Core.ViewModels.AdminUsers
+@using DiscordSecretSanta.Core.ViewModels
 @inject IAdminUsersViewHandler ViewModelHandler
 @inject IStringLocalizer<UsersPageResources> Translate
+@inject IModalService ModalService
 
 @if (_viewModel is null)
 {
@@ -20,7 +22,17 @@ else
         <CenterBlock>
             @foreach (var user in _viewModel.Users)
             {
-                <DiscordBlock User="@user"/>
+                <Row>
+                    <Column ColumnSize="ColumnSize.Is9">
+                        <DiscordBlock User="@user"/>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is3">
+                        <SimpleButton 
+                            Color="Color.Primary"
+                            Clicked="@(() => UserOptionsClicked(user))"
+                        >@Translate["UserOptions"]</SimpleButton>
+                    </Column>
+                </Row>
             }
         </CenterBlock>
     }
@@ -28,11 +40,33 @@ else
 
 @code {
 
-    AdminUsersViewModel? _viewModel = null;
+    AdminUsersViewModel _viewModel = null;
 
     protected override async Task OnInitializedAsync()
     {
         _viewModel = await ViewModelHandler.OnInitAsync(CancellationToken.None);
     }
 
+    private void UserOptionsClicked(UserViewModel user)
+    {
+        var option = new UserOptionsModel()
+        {
+            WishlistUrl = user.WishlistUrl,
+            UserId = user.UserId,
+            IsAdmin = user.IsAdmin,
+            Name = user.Name,
+            HasWishlist = !string.IsNullOrWhiteSpace(user.WishlistUrl)
+        };
+        
+        ModalService.Show<UserOptionsModal>(x =>
+            {
+                x.Add(z => z.Model, option);   
+            }, 
+            new ModalInstanceOptions()
+            {
+                UseModalStructure = false,
+                Centered = true
+            }
+        );
+    }
 }

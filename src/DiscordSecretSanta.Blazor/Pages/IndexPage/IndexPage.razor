@@ -47,15 +47,14 @@ else
                         Size="HeadingSize.Is6"
                         TextColor="TextColor.Success"
                     >@Translate["AdminHeading"]</Heading>
-                    <SimpleButton 
-                        Text="@Translate["ViewUsers"]" 
+                    <SimpleButton
                         Clicked="GoToAdminUsers"
                         Color="Color.Success"
-                    />
+                    >@Translate["ViewUsers"]</SimpleButton>
                 </div>
             }
             
-            <SimpleButton Text="@Translate["Logout"]" Clicked="Logout" />
+            <SimpleButton Clicked="Logout">@Translate["Logout"]</SimpleButton>
         }
     </CenterBlock>
 }

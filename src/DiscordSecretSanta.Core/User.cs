@@ -13,7 +13,7 @@ public class User
     public string Name { get; }
     public string DiscordId { get; }
     public string AvatarId { get; }
-    public Uri WishlistUrl { get; set; }
+    public Uri? WishlistUrl { get; set; }
     public UserId UserId { get; }
     public bool IsAdmin { get; set; }
 }

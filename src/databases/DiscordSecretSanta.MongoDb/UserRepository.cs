@@ -38,7 +38,7 @@ public class UserRepository : IUserRepository
         if (user is null)
             return Maybe<User>.None;
 
-        return ProjectUser(user);
+        return Project(user);
     }
 
     public async Task<Result<User>> CreateUser(User user, CancellationToken cancellationToken)
@@ -74,10 +74,16 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<IReadOnlyList<User>> ListUsers(CancellationToken cancellationToken)
-        => await _collection
-            .Find(_ => true)
-            .Project(u => ProjectUser(u))
-            .ToListAsync(cancellationToken);
+    {
+        var users = await _collection
+                .Find(_ => true)
+                .ToListAsync(cancellationToken);
+
+        if (users.Any())
+            return users.Select(x => Project(x)).ToList();
+
+        return new List<User>();
+    }
 
     private FilterDefinition<UserDao> ByUserId(UserId id)
     {
@@ -99,13 +105,11 @@ public class UserRepository : IUserRepository
 
         return Result.Fail("Could not update user");
     }
-
-    private User ProjectUser(UserDao user)
-    {
-        return new User(user.Name, user.DiscordId, user.AvatarId, new UserId(user.UserId))
-        {
-            WishlistUrl = !string.IsNullOrWhiteSpace(user.WishlistUrl) ? new Uri(user.WishlistUrl) : null,
-            IsAdmin = user.IsAdmin
-        };
-    }
+    
+    private User Project(UserDao dao)
+     => new User(dao.Name, dao.DiscordId, dao.AvatarId, new UserId(dao.UserId))
+     {
+         IsAdmin = dao.IsAdmin,
+         WishlistUrl = string.IsNullOrWhiteSpace(dao.WishlistUrl) ? null : new Uri(dao.WishlistUrl)
+     };
 }

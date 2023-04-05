@@ -1,4 +1,7 @@
-﻿<Row>
+﻿@using DiscordSecretSanta.Core.ViewModels
+@inject IStringLocalizer<SharedResources> Translate
+
+<Row>
     <Column ColumnSize="@ColumnSize.Is2">
         <Figure>
             <FigureImage 
@@ -8,29 +11,26 @@
         </Figure>
     </Column>
     <Column ColumnSize="@ColumnSize.Is10" Style="padding-top: 10px;">
-        <Heading Size="HeadingSize.Is4" Style="display: inline-block;">@Name</Heading>
-        <Text TextColor="TextColor.White">#@TagId</Text>
+        <Heading Size="HeadingSize.Is4" Style="display: inline-block;">@User.Name</Heading>
+        <Text TextColor="TextColor.White">#@User.DiscordTagId</Text>
+        <div>
+            @if (User.IsAdmin)
+            {
+                <Badge Color="Color.Primary">@Translate["Admin"]</Badge>
+            }
+        </div>
     </Column>
 </Row>
 
 @code {
-
+    
     [Parameter]
-    public string Name { get; set; } = string.Empty;
-
-    [Parameter]
-    public string TagId { get; set; } = string.Empty;
-
-    [Parameter]
-    public string Avatar { get; set; } = string.Empty;
-
-    [Parameter]
-    public string UserId { get; set; } = string.Empty;
+    public UserViewModel User { get; set; }
 
     private string AvatarUrl { get; set; } = string.Empty;
 
     protected override void OnInitialized()
     {
-        AvatarUrl = $"https://cdn.discordapp.com/avatars/{UserId}/{Avatar}";
+        AvatarUrl = $"https://cdn.discordapp.com/avatars/{User.UserId}/{User.AvatarId}";
     }
 }

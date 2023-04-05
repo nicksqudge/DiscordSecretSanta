@@ -9,9 +9,6 @@ public class AccessCheckTests
     private readonly UserRepositoryHelper _userRepository = new();
     private readonly AuthProviderServiceHelper _authProviderService = new();
 
-    private readonly AuthenticatedUser _authenticatedUser =
-        new AuthenticatedUser("Test", "1234", "1234", new UserId("1234"));
-    
     public AccessCheckTests()
     {
         _target = new AccessCheck(
@@ -48,7 +45,7 @@ public class AccessCheckTests
     [Fact]
     public async Task UserIsLoggedIn_AndIsRequiredToBe_CanAccess()
     {
-        _authProviderService.ReturnsGetCurrentUser(_authenticatedUser);
+        _authProviderService.ReturnsGetCurrentUser();
         
         var checks = new AccessCheckInputBuilder()
             .MustBeLoggedIn();
@@ -61,7 +58,7 @@ public class AccessCheckTests
     [Fact]
     public async Task UserIsLoggedInButHasNoUser_IsRequiredToHaveAUser_CanNotAccess()
     {
-        _authProviderService.ReturnsGetCurrentUser(_authenticatedUser);
+        _authProviderService.ReturnsGetCurrentUser();
         _userRepository.HasNoUser();
         
         var checks = new AccessCheckInputBuilder()
@@ -76,8 +73,8 @@ public class AccessCheckTests
     [Fact]
     public async Task UserIsLoggedInAndHasUser_IsRequiredToHaveOne_CanAccess()
     {
-        _authProviderService.ReturnsGetCurrentUser(_authenticatedUser);
-        _userRepository.HasUser(_authenticatedUser.ToUser());
+        _authProviderService.ReturnsGetCurrentUser();
+        _userRepository.HasUser();
         
         var checks = new AccessCheckInputBuilder()
             .MustBeLoggedIn()
@@ -91,10 +88,8 @@ public class AccessCheckTests
     [Fact]
     public async Task UserIsLoggedInAndIsNotAnAdmin_IsRequiredToBeAdmin_CanNotAccess()
     {
-        _authProviderService.ReturnsGetCurrentUser(_authenticatedUser);
-        var user = _authenticatedUser.ToUser();
-        user.IsAdmin = false;
-        _userRepository.HasUser(user);
+        _authProviderService.ReturnsGetCurrentUser();
+        _userRepository.HasUser(user => user.IsAdmin = false);
         
         var checks = new AccessCheckInputBuilder()
             .MustBeLoggedIn()
@@ -109,10 +104,8 @@ public class AccessCheckTests
     [Fact]
     public async Task UserIsLoggedInAndIsAdmin_IsRequiredToBeAdmin_CanAccess()
     {
-        _authProviderService.ReturnsGetCurrentUser(_authenticatedUser);
-        var user = _authenticatedUser.ToUser();
-        user.IsAdmin = true;
-        _userRepository.HasUser(user);
+        _authProviderService.ReturnsGetCurrentUser();
+        _userRepository.HasUser(user => user.IsAdmin = true);
         
         var checks = new AccessCheckInputBuilder()
             .MustBeLoggedIn()

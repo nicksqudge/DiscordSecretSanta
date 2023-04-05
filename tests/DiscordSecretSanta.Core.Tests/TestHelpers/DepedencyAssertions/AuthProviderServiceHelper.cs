@@ -15,6 +15,11 @@ public class AuthProviderServiceHelper : DependencyHelper<IAuthProviderService, 
             .ReturnsForAnyArgs(user);
     }
 
+    public void ReturnsGetCurrentUser()
+    {
+        ReturnsGetCurrentUser(new AuthenticatedUser("Test", "1234", "1234", new UserId("1234")));
+    }
+
     public void ReturnsNoCurrentUser()
     {
         Object.GetCurrentUser(default)

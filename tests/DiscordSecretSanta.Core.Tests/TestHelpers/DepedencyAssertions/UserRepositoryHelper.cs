@@ -26,6 +26,18 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
         
         return this;
     }
+
+    public UserRepositoryHelper HasUser()
+    {
+        return HasUser(new User("Test", "1234", "1234", new UserId("1234")));
+    }
+
+    public UserRepositoryHelper HasUser(Action<User> transform)
+    {
+        var user = new User("Test", "1234", "1234", new UserId("1234"));
+        transform.Invoke(user);
+        return HasUser(user);
+    }
     
     public UserRepositoryHelper HasNoUser()
     {

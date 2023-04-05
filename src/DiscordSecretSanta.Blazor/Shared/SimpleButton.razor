@@ -1,6 +1,6 @@
 ﻿<Button
     Clicked="@Clicked"
-    Color="Color.Primary"
+    Color="@Color"
     Size="Size.Small"
 >
 @Text
@@ -12,4 +12,8 @@
     
     [Parameter]
     public EventCallback Clicked { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+
 }

@@ -6,6 +6,17 @@ html, body {
     color: #B8B9BF;
 }
 
+h6.h6 {
+    margin-bottom: 8px;
+    margin-top: 4px;
+    box-sizing: border-box;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

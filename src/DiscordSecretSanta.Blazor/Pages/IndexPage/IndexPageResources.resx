@@ -31,6 +31,9 @@
         <value>Logout</value>
     </data>
     <data name="ViewUsers" xml:space="preserve">
-        <value>(Admin) View Users</value>
+        <value>View Users</value>
+    </data>
+    <data name="AdminHeading" xml:space="preserve">
+        <value>Admin Actions</value>
     </data>
 </root>

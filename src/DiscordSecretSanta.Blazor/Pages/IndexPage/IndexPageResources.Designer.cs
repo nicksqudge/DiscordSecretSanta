@@ -60,6 +60,15 @@ namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Admin Actions.
+        /// </summary>
+        internal static string AdminHeading {
+            get {
+                return ResourceManager.GetString("AdminHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logout.
         /// </summary>
         internal static string Logout {
@@ -78,7 +87,7 @@ namespace DiscordSecretSanta.Blazor.Pages.IndexPage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Admin) View Users.
+        ///   Looks up a localized string similar to View Users.
         /// </summary>
         internal static string ViewUsers {
             get {

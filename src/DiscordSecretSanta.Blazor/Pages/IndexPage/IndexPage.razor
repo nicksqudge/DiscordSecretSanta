@@ -30,12 +30,7 @@ else
         }
         else
         {
-            <DiscordBlock
-                Avatar="@_viewModel.User!.AvatarId"
-                Name="@_viewModel.User.Name"
-                TagId="@_viewModel.User.DiscordTagId"
-                UserId="@_viewModel.User.UserId"
-            />
+            <DiscordBlock User="@_viewModel.User" />
             
             <EditField 
                 Label="@Translate["WishlistUrl"]"
@@ -45,9 +40,19 @@ else
                 Validator="@ValidateWishlist"
             />
             
-            @if (_viewModel.User.IsAdmin)
+            @if (_canViewAdminActions)
             {
-                <SimpleButton Text="@Translate["ViewUsers"]" Clicked="GoToAdminUsers"/>
+                <div class="my-5">
+                    <Heading
+                        Size="HeadingSize.Is6"
+                        TextColor="TextColor.Success"
+                    >@Translate["AdminHeading"]</Heading>
+                    <SimpleButton 
+                        Text="@Translate["ViewUsers"]" 
+                        Clicked="GoToAdminUsers"
+                        Color="Color.Success"
+                    />
+                </div>
             }
             
             <SimpleButton Text="@Translate["Logout"]" Clicked="Logout" />
@@ -57,8 +62,9 @@ else
 
 @code {
 
-    UserLoginViewModel? _viewModel = null;
-    private IValidator<string> WishlistValidator = new WishlistUrlValidator();
+    UserLoginViewModel _viewModel = null;
+    private IValidator<string> _wishlistValidator = new WishlistUrlValidator();
+    bool _canViewAdminActions => _viewModel is not null && _viewModel.HasUser && _viewModel.User!.IsAdmin;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,7 +93,7 @@ else
 
     void ValidateWishlist(ValidatorEventArgs e)
     {
-        var result = WishlistValidator.Validate(e.Value.ToString());
+        var result = _wishlistValidator.Validate(e.Value.ToString());
         if (result.IsValid)
         {
             e.Status = ValidationStatus.Success;

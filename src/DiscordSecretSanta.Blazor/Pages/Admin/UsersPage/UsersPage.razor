@@ -20,11 +20,7 @@ else
         <CenterBlock>
             @foreach (var user in _viewModel.Users)
             {
-                <DiscordBlock
-                    Avatar="@user.AvatarId"
-                    Name="@user.Name"
-                    TagId="@user.DiscordTagId"
-                    UserId="@user.UserId"/>
+                <DiscordBlock User="@user"/>
             }
         </CenterBlock>
     }

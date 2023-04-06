@@ -9,6 +9,7 @@ public interface IUserRepository
     Task<Maybe<User>> GetUser(UserId userId, CancellationToken cancellationToken);
     Task<Result<User>> CreateUser(User user, CancellationToken cancellationToken);
     Task<Result> MakeUserAdmin(UserId userId, CancellationToken cancellationToken);
+    Task<Result> RemoveUserAdmin(UserId userId, CancellationToken cancellationToken);
     Task<int> CountUsers(CancellationToken cancellationToken);
     Task<IReadOnlyList<User>> ListUsers(CancellationToken cancellationToken);
 }

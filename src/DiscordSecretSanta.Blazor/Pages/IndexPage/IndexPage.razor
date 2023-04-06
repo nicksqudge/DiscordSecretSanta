@@ -62,7 +62,7 @@ else
 @code {
 
     UserLoginViewModel _viewModel = null;
-    private IValidator<string> _wishlistValidator = new WishlistUrlValidator();
+    IValidator<string> _wishlistValidator = new WishlistUrlValidator();
     bool _canViewAdminActions => _viewModel is not null && _viewModel.HasUser && _viewModel.User!.IsAdmin;
 
     protected override async Task OnInitializedAsync()

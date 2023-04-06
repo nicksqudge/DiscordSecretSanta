@@ -1,9 +1,10 @@
 ﻿@page "/admin/users"
 @using DiscordSecretSanta.Core.ViewModels.AdminUsers
 @using DiscordSecretSanta.Core.ViewModels
+@using FluentValidation
+@using DiscordSecretSanta.Core.Validators
 @inject IAdminUsersViewHandler ViewModelHandler
 @inject IStringLocalizer<UsersPageResources> Translate
-@inject IModalService ModalService
 
 @if (_viewModel is null)
 {
@@ -18,8 +19,45 @@ else
     else
     {
         <PageTitle>@Translate["PageTitle"]</PageTitle>
+        
+        <Modal @ref="_modalRef">
+            @if (_currentUser is not null)
+            {
+                <ModalContent Centered>
+                    <ModalHeader Background="Background.Light">
+                        <ModalTitle>Edit User: @_currentUser.Name</ModalTitle>
+                        <CloseButton/>
+                    </ModalHeader>
+                    <ModalBody Background="Background.Light">
+                        @if (_currentUser.IsAdmin == false)
+                        {
+                            <FullWidthButton Clicked="@(async () => await MakeUserAdmin())">@Translate["Make Admin"]</FullWidthButton>
+                        }
+                        else
+                        {
+                            <FullWidthButton Clicked="@(async () => await RemoveUserAdmin())">@Translate["Remove Admin"]</FullWidthButton>
+                        }
+
+                        <EditField 
+                            Label="@Translate["Wishlist URL"]"
+                            Value="@_currentUser.WishlistUrl"
+                            OnSubmit="@(async (value) => await OnWishlistSubmit(value))"
+                            ModalTitle="@Translate["Edit Wishlist URL"]"
+                            Validator="@ValidateWishlist"
+                            Class="mb-2"
+                        />
+                        @if (!string.IsNullOrWhiteSpace(_currentUser.WishlistUrl))
+                        {
+                            <FullWidthButton Color="Color.Info">@Translate["View Wishlist"]</FullWidthButton>
+                        }
+                    </ModalBody>
+                </ModalContent>
+            }
+        </Modal>
 
         <CenterBlock>
+            <AlertBlock Message="@Translate[_viewModel.ErrorMessage]"></AlertBlock>
+            
             @foreach (var user in _viewModel.Users)
             {
                 <Row>
@@ -27,10 +65,9 @@ else
                         <DiscordBlock User="@user"/>
                     </Column>
                     <Column ColumnSize="ColumnSize.Is3">
-                        <SimpleButton 
+                        <SimpleButton
                             Color="Color.Primary"
-                            Clicked="@(() => UserOptionsClicked(user))"
-                        >@Translate["UserOptions"]</SimpleButton>
+                            Clicked="@(() => UserOptionsClicked(user))">@Translate["UserOptions"]</SimpleButton>
                     </Column>
                 </Row>
             }
@@ -40,7 +77,10 @@ else
 
 @code {
 
+    Modal _modalRef;
     AdminUsersViewModel _viewModel = null;
+    UserViewModel? _currentUser = null;
+    IValidator<string> _wishlistValidator = new WishlistUrlValidator();
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,24 +89,45 @@ else
 
     private void UserOptionsClicked(UserViewModel user)
     {
-        var option = new UserOptionsModel()
-        {
-            WishlistUrl = user.WishlistUrl,
-            UserId = user.UserId,
-            IsAdmin = user.IsAdmin,
-            Name = user.Name,
-            HasWishlist = !string.IsNullOrWhiteSpace(user.WishlistUrl)
-        };
+        _currentUser = user;
+        _modalRef.Show();
+    }
+
+    async Task MakeUserAdmin()
+    {
+        if (_currentUser is null)
+            return;
         
-        ModalService.Show<UserOptionsModal>(x =>
-            {
-                x.Add(z => z.Model, option);   
-            }, 
-            new ModalInstanceOptions()
-            {
-                UseModalStructure = false,
-                Centered = true
-            }
-        );
+        _viewModel = await ViewModelHandler.MakeUserAdmin(_viewModel, new UserId(_currentUser.UserId), CancellationToken.None);
+    }
+    
+    async Task RemoveUserAdmin()
+    {
+        if (_currentUser is null)
+            return;
+        
+        _viewModel = await ViewModelHandler.RemoveUserAdmin(_viewModel, new UserId(_currentUser.UserId), CancellationToken.None);
+    }
+    
+    async Task OnWishlistSubmit(string wishlistUrl)
+    {
+        if (_currentUser is null)
+            return;
+        
+        _viewModel = await ViewModelHandler.SetUserWishlistUrl(_viewModel, new UserId(_currentUser.UserId), wishlistUrl, CancellationToken.None);
+    }
+    
+    void ValidateWishlist(ValidatorEventArgs e)
+    {
+        var result = _wishlistValidator.Validate(e.Value.ToString());
+        if (result.IsValid)
+        {
+            e.Status = ValidationStatus.Success;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Error;
+            e.ErrorText = result.Errors.First().ErrorMessage;
+        }
     }
 }

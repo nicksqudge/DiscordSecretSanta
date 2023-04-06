@@ -5,6 +5,14 @@ namespace DiscordSecretSanta.Core.ViewModels.AdminUsers;
 public interface IAdminUsersViewHandler
 {
     Task<AdminUsersViewModel> OnInitAsync(CancellationToken cancellationToken);
+
+    Task<AdminUsersViewModel> MakeUserAdmin(AdminUsersViewModel context, UserId userId, CancellationToken cancellationToken);
+
+    Task<AdminUsersViewModel> RemoveUserAdmin(AdminUsersViewModel context, UserId userId,
+        CancellationToken cancellationToken);
+
+    Task<AdminUsersViewModel> SetUserWishlistUrl(AdminUsersViewModel context, UserId userId, string wishlistUrl,
+        CancellationToken cancellationToken);
 }
 
 public class AdminUsersViewHandler : IAdminUsersViewHandler
@@ -37,6 +45,34 @@ public class AdminUsersViewHandler : IAdminUsersViewHandler
         };
     }
 
+    public async Task<AdminUsersViewModel> MakeUserAdmin(AdminUsersViewModel context, UserId userId, CancellationToken cancellationToken)
+    {
+        var result = await _userRepository.MakeUserAdmin(userId, cancellationToken);
+        if (result.IsFailure)
+            context.ErrorMessage = "CouldNotMakeUserAdmin";
+
+        return ModifyUser(context, userId, user => user.IsAdmin = true);
+    }
+
+    public async Task<AdminUsersViewModel> RemoveUserAdmin(AdminUsersViewModel context, UserId userId, CancellationToken cancellationToken)
+    {
+        var result = await _userRepository.RemoveUserAdmin(userId, cancellationToken);
+        if (result.IsFailure)
+            context.ErrorMessage = "CouldNotRemoveUserAdmin";
+
+        return ModifyUser(context, userId, user => user.IsAdmin = false);
+    }
+
+    public async Task<AdminUsersViewModel> SetUserWishlistUrl(AdminUsersViewModel context, UserId userId, string wishlistUrl,
+        CancellationToken cancellationToken)
+    {
+        var result = await _userRepository.SaveUserWishlistUrl(userId, new Uri(wishlistUrl), cancellationToken);
+        if (result.IsFailure)
+            context.ErrorMessage = "CouldNotUpdateWishlistUrl";
+
+        return ModifyUser(context, userId, user => user.WishlistUrl = wishlistUrl);
+    }
+
     private AdminUsersViewModel NotAuthorised()
     {
         return new AdminUsersViewModel()
@@ -44,5 +80,16 @@ public class AdminUsersViewHandler : IAdminUsersViewHandler
             Authorised = false,
             Users = new List<UserViewModel>()
         };
+    }
+
+    private AdminUsersViewModel ModifyUser(AdminUsersViewModel context, UserId userId, Action<UserViewModel> changeAction)
+    {
+        var users = context.Users.ToList();
+        var user = users.FirstOrDefault(u => u.UserId == userId.Value);
+        if (user is not null)
+            changeAction.Invoke(user);
+
+        context.Users = users;
+        return context;
     }
 }

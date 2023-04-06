@@ -67,6 +67,15 @@ public class UserRepository : IUserRepository
         );
     }
 
+    public Task<Result> RemoveUserAdmin(UserId userId, CancellationToken cancellationToken)
+    {
+        return UpdateUser(
+            userId,
+            Builders<UserDao>.Update.Set(x => x.IsAdmin, false),
+            cancellationToken
+        );
+    }
+
     public async Task<int> CountUsers(CancellationToken cancellationToken)
     {
         var count = await _collection.CountDocumentsAsync(new BsonDocument(), null, cancellationToken);
@@ -107,7 +116,7 @@ public class UserRepository : IUserRepository
     }
     
     private User Project(UserDao dao)
-     => new User(dao.Name, dao.DiscordId, dao.AvatarId, new UserId(dao.UserId))
+     => new (dao.Name, dao.DiscordId, dao.AvatarId, new UserId(dao.UserId))
      {
          IsAdmin = dao.IsAdmin,
          WishlistUrl = string.IsNullOrWhiteSpace(dao.WishlistUrl) ? null : new Uri(dao.WishlistUrl)

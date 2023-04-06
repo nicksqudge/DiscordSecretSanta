@@ -3,8 +3,11 @@
 @using DiscordSecretSanta.Core.ViewModels
 @using FluentValidation
 @using DiscordSecretSanta.Core.Validators
+@using DiscordSecretSanta.Core.AssignSecretSantas
 @inject IAdminUsersViewHandler ViewModelHandler
+@inject IAssignSecretSantas AssignSecretSantas
 @inject IStringLocalizer<UsersPageResources> Translate
+@inject INotificationService NotificationService
 
 @if (_viewModel is null)
 {
@@ -29,15 +32,6 @@ else
                         <CloseButton/>
                     </ModalHeader>
                     <ModalBody Background="Background.Light">
-                        @if (_currentUser.IsAdmin == false)
-                        {
-                            <FullWidthButton Clicked="@(async () => await MakeUserAdmin())">@Translate["Make Admin"]</FullWidthButton>
-                        }
-                        else
-                        {
-                            <FullWidthButton Clicked="@(async () => await RemoveUserAdmin())">@Translate["Remove Admin"]</FullWidthButton>
-                        }
-
                         <EditField 
                             Label="@Translate["Wishlist URL"]"
                             Value="@_currentUser.WishlistUrl"
@@ -50,12 +44,21 @@ else
                         {
                             <FullWidthButton Color="Color.Info">@Translate["View Wishlist"]</FullWidthButton>
                         }
+                        
+                        @if (_currentUser.IsAdmin == false)
+                        {
+                            <FullWidthButton Clicked="@(async () => await MakeUserAdmin())">@Translate["Make Admin"]</FullWidthButton>
+                        }
+                        else
+                        {
+                            <FullWidthButton Clicked="@(async () => await RemoveUserAdmin())">@Translate["Remove Admin"]</FullWidthButton>
+                        }
                     </ModalBody>
                 </ModalContent>
             }
         </Modal>
 
-        <CenterBlock>
+        <CenterBlock Title="@Translate["PageTitle"]">
             <AlertBlock Message="@Translate[_viewModel.ErrorMessage]"></AlertBlock>
             
             @foreach (var user in _viewModel.Users)
@@ -71,6 +74,10 @@ else
                     </Column>
                 </Row>
             }
+
+            <SimpleButton
+                Clicked="@(async () => await AssignSecretSanta())"
+            >@Translate["Assign Secret Santa"]</SimpleButton>
         </CenterBlock>
     }
 }
@@ -93,12 +100,28 @@ else
         _modalRef.Show();
     }
 
+    async Task AssignSecretSanta()
+    {
+        var result = await AssignSecretSantas.Run(CancellationToken.None);
+        if (result.IsSuccess)
+        {
+            await NotificationService.Success(Translate["Secret Santas assigned"]);
+            _viewModel = await ViewModelHandler.OnInitAsync(CancellationToken.None);
+        }
+        else
+        {
+            await NotificationService.Error(result.Error);
+            _viewModel.ErrorMessage = result.Error;
+        }
+    }
+
     async Task MakeUserAdmin()
     {
         if (_currentUser is null)
             return;
         
         _viewModel = await ViewModelHandler.MakeUserAdmin(_viewModel, new UserId(_currentUser.UserId), CancellationToken.None);
+        await NotificationService.Success($"{_currentUser.Name} {Translate["is now an admin"]}");
     }
     
     async Task RemoveUserAdmin()
@@ -107,6 +130,7 @@ else
             return;
         
         _viewModel = await ViewModelHandler.RemoveUserAdmin(_viewModel, new UserId(_currentUser.UserId), CancellationToken.None);
+        await NotificationService.Success($"{_currentUser.Name} {Translate["is no longer an admin"]}");
     }
     
     async Task OnWishlistSubmit(string wishlistUrl)
@@ -115,6 +139,7 @@ else
             return;
         
         _viewModel = await ViewModelHandler.SetUserWishlistUrl(_viewModel, new UserId(_currentUser.UserId), wishlistUrl, CancellationToken.None);
+        await NotificationService.Success($"{_currentUser.Name} {Translate["wishlist is updated"]}");
     }
     
     void ValidateWishlist(ValidatorEventArgs e)

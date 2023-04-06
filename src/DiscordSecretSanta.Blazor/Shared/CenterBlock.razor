@@ -1,6 +1,16 @@
 ﻿<div style="display: flex; align-items:  center; justify-content:  center;">
     <Card Style="width: 500px; margin-top: 15%;" Background="Background.Dark">
         <CardBody>
+            @if (!string.IsNullOrWhiteSpace(Title))
+            {
+                <Heading 
+                    Size="HeadingSize.Is5"
+                    TextColor="TextColor.White"
+                    TextAlignment="TextAlignment.Center"
+                    Class="mb-3"
+                >@Title</Heading>
+            }
+            
             @ChildContent
         </CardBody>
     </Card>
@@ -10,4 +20,6 @@
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
 
+    [Parameter]
+    public string Title { get; set; }
 }

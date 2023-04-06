@@ -17,17 +17,19 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
         Object.CreateUser(Arg.Any<User>(), default)
             .ReturnsForAnyArgs(args => Result.Success(args[0] as User));
 
-        Object.SetSecretSanta(default, default, default)
+        Object.UpdateSecretSanta(default, default, default, default)
             .ReturnsForAnyArgs(args =>
             {
                 var targetUserId = args[0] as UserId;
                 var secretSanta = args[1] as UserId;
+                var status = (SecretSantaStatus)args[2];
 
                 var user = Users.FirstOrDefault(u => u.UserId.Value == targetUserId.Value);
                 if (user is null)
                     return Result.Failure("No such user");
 
                 user.SecretSantaUserId = secretSanta;
+                user.SecretSantaStatus = status;
 
                 return Result.Success();
             });
@@ -152,7 +154,11 @@ public class UserRepositoryAssertions : ReferenceTypeAssertions<IUserRepository,
 
     public AndConstraint<UserRepositoryAssertions> AllUsersShouldHaveSecretSanta()
     {
-        _userList.All(x => x.SecretSantaUserId != null && x.SecretSantaUserId.Value != x.UserId.Value).Should()
+        _userList.All(x => 
+                x.SecretSantaUserId != null && 
+                x.SecretSantaUserId.Value != x.UserId.Value &&
+                x.SecretSantaStatus == SecretSantaStatus.Assigned
+            ).Should()
             .BeTrue("Not all users have a secret santa id");
         
         return new AndConstraint<UserRepositoryAssertions>(this);

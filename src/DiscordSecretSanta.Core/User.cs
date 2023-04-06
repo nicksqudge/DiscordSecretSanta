@@ -17,4 +17,5 @@ public class User
     public UserId UserId { get; }
     public bool IsAdmin { get; set; }
     public UserId? SecretSantaUserId { get; set; }
+    public SecretSantaStatus SecretSantaStatus { get; set; } = SecretSantaStatus.Unassigned;
 }

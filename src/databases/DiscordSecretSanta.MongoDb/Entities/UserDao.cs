@@ -24,4 +24,5 @@ public class UserDao
     public bool IsAdmin { get; set; }
     
     public string SecretSantaId { get; set; }
+    public SecretSantaStatus SecretSantaStatus { get; set; }
 }

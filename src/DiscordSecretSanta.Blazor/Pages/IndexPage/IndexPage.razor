@@ -13,19 +13,12 @@ else
 {
     <PageTitle>@_viewModel.Title</PageTitle>
     
-    <CenterBlock>
+    <CenterBlock Title="@_viewModel.Title">
         <AlertBlock
             Message="@_viewModel.ErrorMessage"
         />
         @if (_viewModel.HasUser == false)
         {
-            <Heading 
-                Size="HeadingSize.Is5"
-                TextColor="TextColor.White"
-                TextAlignment="TextAlignment.Center"
-                Class="mb-3"
-            >@_viewModel.Title</Heading>
-            
             <FullWidthButton Clicked="@ClickSignInButton">@Translate["SignInButtonText"]</FullWidthButton>
         }
         else

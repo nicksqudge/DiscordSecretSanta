@@ -42,7 +42,7 @@ public class AssignSecretSanta : IAssignSecretSantas
                 otherUserId = pool[otherUserIndex];
             }
 
-            var result = await _userRepository.SetSecretSanta(user, otherUserId, cancellationToken);
+            var result = await _userRepository.UpdateSecretSanta(user, otherUserId, SecretSantaStatus.Assigned, cancellationToken);
             if (result.IsFailure)
                 return result;
         }

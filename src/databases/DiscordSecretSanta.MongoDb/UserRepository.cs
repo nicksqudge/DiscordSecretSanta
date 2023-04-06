@@ -95,11 +95,13 @@ public class UserRepository : IUserRepository
         return new List<User>();
     }
 
-    public Task<Result> SetSecretSanta(UserId targetUserId, UserId secretSantaId, CancellationToken cancellationToken)
+    public Task<Result> UpdateSecretSanta(UserId targetUserId, UserId secretSantaId, SecretSantaStatus status, CancellationToken cancellationToken)
     {
         return UpdateUser(
             targetUserId,
-            Builders<UserDao>.Update.Set(x => x.SecretSantaId, secretSantaId.Value),
+            Builders<UserDao>.Update
+                .Set(x => x.SecretSantaId, secretSantaId.Value)
+                .Set(x => x.SecretSantaStatus, SecretSantaStatus.Assigned),
             cancellationToken
         );
     }

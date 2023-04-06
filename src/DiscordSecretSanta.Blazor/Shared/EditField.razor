@@ -3,10 +3,17 @@
 @inject IStringLocalizer<SharedResources> Translate
 @inject IModalService ModalService
 
-<Row>
-    <Column ColumnSize="@ColumnSize.Is9">
-        <Text TextTransform="TextTransform.Uppercase">@Label</Text>
-        <Text style="display: block">@DisplayValue</Text>
+<Row Class="@Class">
+    <Column ColumnSize="@ColumnSize.Is9" Class="text-truncate">
+        <Text 
+            TextTransform="TextTransform.Uppercase" 
+            TextWeight="TextWeight.Bold"
+            Display="Display.Block"
+        >@Label</Text>
+        <Text 
+            style="height: 16px;"
+            TextColor="TextColor.White"
+        >@DisplayValue</Text>
     </Column>
     <Column ColumnSize="@ColumnSize.Is3" TextAlignment="TextAlignment.End">
         <SimpleButton 
@@ -30,9 +37,12 @@
     public Action<ValidatorEventArgs> Validator { get; set; } = null!;
 
     [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    [Parameter]
     public string ModalTitle { get; set; } = string.Empty;
     
-    string DisplayValue => !string.IsNullOrWhiteSpace(Value) ? Value : @Translate["Placeholder"];
+    string DisplayValue => !string.IsNullOrWhiteSpace(Value) ? Value : string.Empty;
 
     public Task ShowModal()
     {

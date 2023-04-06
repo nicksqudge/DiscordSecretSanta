@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using DiscordSecretSanta.Core.AuthProvider;
 using FluentAssertions.Primitives;
 using Microsoft.VisualBasic.CompilerServices;
 using NSubstitute;

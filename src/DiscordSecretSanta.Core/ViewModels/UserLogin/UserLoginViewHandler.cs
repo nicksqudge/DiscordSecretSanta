@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using DiscordSecretSanta.Core.AuthProvider;
 using DiscordSecretSanta.Core.Repositories;
 
 namespace DiscordSecretSanta.Core.ViewModels.UserLogin;

@@ -8,12 +8,32 @@ namespace DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
 
 public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserRepositoryAssertions>
 {
-    protected override UserRepositoryAssertions _assertions => new(Object);
+    public List<User> Users = new();
+    
+    protected override UserRepositoryAssertions _assertions => new(Object, Users);
 
     public UserRepositoryHelper()
     {
         Object.CreateUser(Arg.Any<User>(), default)
             .ReturnsForAnyArgs(args => Result.Success(args[0] as User));
+
+        Object.SetSecretSanta(default, default, default)
+            .ReturnsForAnyArgs(args =>
+            {
+                var targetUserId = args[0] as UserId;
+                var secretSanta = args[1] as UserId;
+
+                var user = Users.FirstOrDefault(u => u.UserId.Value == targetUserId.Value);
+                if (user is null)
+                    return Result.Failure("No such user");
+
+                user.SecretSantaUserId = secretSanta;
+
+                return Result.Success();
+            });
+
+        Object.ListUsers(default)
+            .ReturnsForAnyArgs(Users);
     }
 
     public UserRepositoryHelper HasUser(User user)
@@ -23,18 +43,20 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
         
         Object.GetUser(default, default)
             .ReturnsForAnyArgs(user);
+
+        Users.Add(user);
         
         return this;
     }
 
     public UserRepositoryHelper HasUser()
     {
-        return HasUser(new User("Test", "1234", "1234", new UserId("1234")));
+        return HasUser(new User("Test", "1234", "1234", new UserId(new Random().Next(1, 100).ToString())));
     }
 
     public UserRepositoryHelper HasUser(Action<User> transform)
     {
-        var user = new User("Test", "1234", "1234", new UserId("1234"));
+        var user = new User("Test", "1234", "1234", new UserId(new Random().Next(1, 100).ToString()));
         transform.Invoke(user);
         return HasUser(user);
     }
@@ -46,6 +68,8 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
 
         Object.GetUser(default, default)
             .ReturnsForAnyArgs(Maybe<User>.None);
+
+        Users = new();
 
         return this;
     }
@@ -61,8 +85,11 @@ public class UserRepositoryHelper : DependencyHelper<IUserRepository, UserReposi
 
 public class UserRepositoryAssertions : ReferenceTypeAssertions<IUserRepository, UserRepositoryAssertions>
 {
-    public UserRepositoryAssertions(IUserRepository subject) : base(subject)
+    private readonly List<User> _userList;
+
+    public UserRepositoryAssertions(IUserRepository subject, List<User> userList) : base(subject)
     {
+        _userList = userList;
     }
 
     protected override string Identifier => nameof(UserRepositoryAssertions);
@@ -120,6 +147,25 @@ public class UserRepositoryAssertions : ReferenceTypeAssertions<IUserRepository,
     {
         Subject.DidNotReceiveWithAnyArgs().MakeUserAdmin(default, default);
 
+        return new AndConstraint<UserRepositoryAssertions>(this);
+    }
+
+    public AndConstraint<UserRepositoryAssertions> AllUsersShouldHaveSecretSanta()
+    {
+        _userList.All(x => x.SecretSantaUserId != null && x.SecretSantaUserId.Value != x.UserId.Value).Should()
+            .BeTrue("Not all users have a secret santa id");
+        
+        return new AndConstraint<UserRepositoryAssertions>(this);
+    }
+
+    public AndConstraint<UserRepositoryAssertions> NoneShouldHaveDuplicatesAssigned()
+    {
+        _userList
+            .Where(x => x.SecretSantaUserId != null)
+            .Select(x => x.SecretSantaUserId!.Value)
+            .ToHashSet()
+            .Count().Should().Be(_userList.Count, "There are duplicates in the list");
+        
         return new AndConstraint<UserRepositoryAssertions>(this);
     }
 }

@@ -1,17 +1,18 @@
-﻿using DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
+﻿using DiscordSecretSanta.Core.AccessCheck;
+using DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
 using FluentAssertions;
 
 namespace DiscordSecretSanta.Core.Tests;
 
 public class AccessCheckTests
 {
-    private readonly AccessCheck _target;
+    private readonly AccessCheck.AccessCheck _target;
     private readonly UserRepositoryHelper _userRepository = new();
     private readonly AuthProviderServiceHelper _authProviderService = new();
 
     public AccessCheckTests()
     {
-        _target = new AccessCheck(
+        _target = new AccessCheck.AccessCheck(
             _userRepository.Object,
             _authProviderService.Object
         );

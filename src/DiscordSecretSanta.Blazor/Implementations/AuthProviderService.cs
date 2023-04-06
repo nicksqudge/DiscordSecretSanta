@@ -2,6 +2,7 @@
 using CSharpFunctionalExtensions;
 using DiscordAuthProvider;
 using DiscordSecretSanta.Core;
+using DiscordSecretSanta.Core.AuthProvider;
 using DiscordSecretSanta.Core.Repositories;
 using Microsoft.AspNetCore.Components.Authorization;
 

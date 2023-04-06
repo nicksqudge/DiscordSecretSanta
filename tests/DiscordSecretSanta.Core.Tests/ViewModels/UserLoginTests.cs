@@ -1,4 +1,5 @@
-﻿using DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
+﻿using DiscordSecretSanta.Core.AuthProvider;
+using DiscordSecretSanta.Core.Tests.TestHelpers.DepedencyAssertions;
 using DiscordSecretSanta.Core.ViewModels;
 using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using FluentAssertions;

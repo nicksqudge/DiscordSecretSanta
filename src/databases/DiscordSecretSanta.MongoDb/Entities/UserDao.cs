@@ -22,4 +22,6 @@ public class UserDao
     public DateTimeOffset Created { get; set; }
     
     public bool IsAdmin { get; set; }
+    
+    public string SecretSantaId { get; set; }
 }

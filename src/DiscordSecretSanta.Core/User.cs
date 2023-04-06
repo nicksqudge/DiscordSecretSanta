@@ -16,6 +16,5 @@ public class User
     public Uri? WishlistUrl { get; set; }
     public UserId UserId { get; }
     public bool IsAdmin { get; set; }
+    public UserId? SecretSantaUserId { get; set; }
 }
-
-public record UserId(string Value);

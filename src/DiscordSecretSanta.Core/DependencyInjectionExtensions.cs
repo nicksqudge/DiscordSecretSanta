@@ -1,4 +1,6 @@
-﻿using DiscordSecretSanta.Core.ViewModels.AdminUsers;
+﻿using DiscordSecretSanta.Core.AccessCheck;
+using DiscordSecretSanta.Core.AuthProvider;
+using DiscordSecretSanta.Core.ViewModels.AdminUsers;
 using DiscordSecretSanta.Core.ViewModels.UserLogin;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +13,7 @@ public static class DependencyInjectionExtensions
         return services
             .AddTransient<IUserLoginViewHandler, UserLoginViewHandler>()
             .AddTransient<IAdminUsersViewHandler, AdminUsersViewHandler>()
-            .AddTransient<IAccessCheck, AccessCheck>();
+            .AddTransient<IAccessCheck, AccessCheck.AccessCheck>();
     }
 
     public static IServiceCollection AddAuthProviderService<T>(this IServiceCollection services)

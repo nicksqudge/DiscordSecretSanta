@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Reflection;
+using CSharpFunctionalExtensions;
 using DiscordSecretSanta.Core;
 using DiscordSecretSanta.Core.Repositories;
 using DiscordSecretSanta.MongoDb.Entities;
@@ -94,6 +95,15 @@ public class UserRepository : IUserRepository
         return new List<User>();
     }
 
+    public Task<Result> SetSecretSanta(UserId targetUserId, UserId secretSantaId, CancellationToken cancellationToken)
+    {
+        return UpdateUser(
+            targetUserId,
+            Builders<UserDao>.Update.Set(x => x.SecretSantaId, secretSantaId.Value),
+            cancellationToken
+        );
+    }
+
     private FilterDefinition<UserDao> ByUserId(UserId id)
     {
         return Builders<UserDao>.Filter
@@ -119,6 +129,7 @@ public class UserRepository : IUserRepository
      => new (dao.Name, dao.DiscordId, dao.AvatarId, new UserId(dao.UserId))
      {
          IsAdmin = dao.IsAdmin,
-         WishlistUrl = string.IsNullOrWhiteSpace(dao.WishlistUrl) ? null : new Uri(dao.WishlistUrl)
+         WishlistUrl = string.IsNullOrWhiteSpace(dao.WishlistUrl) ? null : new Uri(dao.WishlistUrl),
+         SecretSantaUserId = string.IsNullOrEmpty(dao.SecretSantaId) ? null : new UserId(dao.SecretSantaId)
      };
 }

@@ -53,6 +53,29 @@ else
                         {
                             <FullWidthButton Clicked="@(async () => await RemoveUserAdmin())">@Translate["Remove Admin"]</FullWidthButton>
                         }
+                        
+                        @if (!_showSecretSanta)
+                        {
+                            <FullWidthButton Clicked="@ShowSecretSanta">@Translate["Show Secret Santa"]</FullWidthButton>
+                        }
+                        else
+                        {
+                            @if (_buyingFor is not null)
+                            {
+                                <div class="mb-2">
+                                    <Heading Size="HeadingSize.Is4">@Translate["Is Buying For"]</Heading>
+                                    <DiscordBlock User="@_buyingFor" />
+                                </div>
+                            }
+                            
+                            @if (_beingBoughtBy is not null)
+                            {
+                                <div class="mb-2">
+                                    <Heading Size="HeadingSize.Is4">@Translate["Is being bought for by"]</Heading>
+                                    <DiscordBlock User="@_beingBoughtBy" />
+                                </div>
+                            }
+                        }
                     </ModalBody>
                 </ModalContent>
             }
@@ -87,6 +110,9 @@ else
     Modal _modalRef;
     AdminUsersViewModel _viewModel = null;
     UserViewModel? _currentUser = null;
+    UserViewModel? _buyingFor = null;
+    UserViewModel? _beingBoughtBy = null;
+    bool _showSecretSanta = false;
     IValidator<string> _wishlistValidator = new WishlistUrlValidator();
 
     protected override async Task OnInitializedAsync()
@@ -97,6 +123,14 @@ else
     private void UserOptionsClicked(UserViewModel user)
     {
         _currentUser = user;
+        _showSecretSanta = false;
+
+        _buyingFor = _viewModel.Users
+            .FirstOrDefault(x => x.UserId == user.SecretSantaUserId);
+        
+        _beingBoughtBy = _viewModel.Users
+            .FirstOrDefault(x => x.SecretSantaUserId == user.UserId);
+        
         _modalRef.Show();
     }
 
@@ -140,6 +174,11 @@ else
         
         _viewModel = await ViewModelHandler.SetUserWishlistUrl(_viewModel, new UserId(_currentUser.UserId), wishlistUrl, CancellationToken.None);
         await NotificationService.Success($"{_currentUser.Name} {Translate["wishlist is updated"]}");
+    }
+
+    void ShowSecretSanta()
+    {
+        _showSecretSanta = true;
     }
     
     void ValidateWishlist(ValidatorEventArgs e)

@@ -55,7 +55,7 @@ public class UserRepository : IUserRepository
             IsAdmin = user.IsAdmin
         };
 
-        await _collection.InsertOneAsync(dao, cancellationToken);
+        await _collection.InsertOneAsync(dao, new InsertOneOptions(), cancellationToken);
         return Result.Success(user);
     }
 
@@ -122,9 +122,9 @@ public class UserRepository : IUserRepository
     {
         var result = await _collection.UpdateOneAsync(ByUserId(userId), update, new UpdateOptions(), cancellationToken);
         if (result.ModifiedCount == 1)
-            return Result.Ok();
+            return Result.Success();
 
-        return Result.Fail("Could not update user");
+        return Result.Failure("Could not update user");
     }
     
     private User Project(UserDao dao)
@@ -132,6 +132,7 @@ public class UserRepository : IUserRepository
      {
          IsAdmin = dao.IsAdmin,
          WishlistUrl = string.IsNullOrWhiteSpace(dao.WishlistUrl) ? null : new Uri(dao.WishlistUrl),
-         SecretSantaUserId = string.IsNullOrEmpty(dao.SecretSantaId) ? null : new UserId(dao.SecretSantaId)
+         SecretSantaUserId = string.IsNullOrEmpty(dao.SecretSantaId) ? null : new UserId(dao.SecretSantaId),
+         SecretSantaStatus = dao.SecretSantaStatus
      };
 }

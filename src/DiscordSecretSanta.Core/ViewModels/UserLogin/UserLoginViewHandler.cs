@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using DiscordSecretSanta.Core.AuthProvider;
+using DiscordSecretSanta.Core.Extensions;
 using DiscordSecretSanta.Core.Repositories;
 
 namespace DiscordSecretSanta.Core.ViewModels.UserLogin;
@@ -25,24 +26,15 @@ public class UserLoginViewHandler : IUserLoginViewHandler
 
     public async Task<UserLoginViewModel> OnInitAsync(CancellationToken cancellationToken)
     {
-        var result = InitViewModel();
-
-        var user = await GetCurrentUser(cancellationToken);
-        if (user.HasValue)
-            result.User = new UserViewModel(user.Value);
-
+        var result = await InitViewModel(cancellationToken);
         return result;
     }
 
     public async Task<UserLoginViewModel> SetWishlistUrl(string url, CancellationToken cancellationToken)
     {
-        var result = InitViewModel();
-        
-        var user = await GetCurrentUser(cancellationToken);
-        if (user.HasValue)
+        var result = await InitViewModel(cancellationToken);
+        if (result.HasUser)
         {
-            result.User = new UserViewModel(user.Value);
-
             var updateResult = await _userRepository.SaveUserWishlistUrl(
                 new UserId(result.User!.UserId),
                 new Uri(url, UriKind.Absolute), 
@@ -72,7 +64,6 @@ public class UserLoginViewHandler : IUserLoginViewHandler
             return await _userRepository.GetUser(currentUser.UserId, cancellationToken);
 
         var create = await _userRepository.CreateUser(currentUser.ToUser(), cancellationToken);
-
         if (create.IsSuccess)
         {
             var userCount = await _userRepository.CountUsers(cancellationToken);
@@ -88,11 +79,25 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         return Maybe<User>.None;
     }
 
-    private UserLoginViewModel InitViewModel()
+    private async Task<UserLoginViewModel> InitViewModel(CancellationToken cancellationToken)
     {
         var result = new UserLoginViewModel();
 
         result.Title = _setupService.GetTitle();
+        
+        var user = await GetCurrentUser(cancellationToken);
+        if (user.HasValue)
+        {
+            result.User = new UserViewModel(user.Value);
+
+            if (user.Value.SecretSantaUserId is not null)
+            {
+                await _userRepository
+                    .GetUser(user.Value.SecretSantaUserId, cancellationToken)
+                    .OnHasValue((secretUser) => result.SecretSantaUser = new UserViewModel(secretUser));
+            }
+        }
+
         return result;
     }
 }

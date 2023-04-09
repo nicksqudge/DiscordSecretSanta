@@ -5,7 +5,7 @@
     <Column ColumnSize="@ColumnSize.Is2">
         <Figure>
             <FigureImage 
-                Source="@AvatarUrl"
+                Source="@_avatarUrl"
                 Style="border-radius: 50%;"
             />
         </Figure>
@@ -14,23 +14,29 @@
         <Heading Size="HeadingSize.Is4" Style="display: inline-block;">@User.Name</Heading>
         <Text TextColor="TextColor.White">#@User.DiscordTagId</Text>
         <div>
-            @if (User.IsAdmin)
+            @if (User.IsAdmin && ShowIsAdmin)
             {
                 <Badge Color="Color.Primary">@Translate["Admin"]</Badge>
+            }
+            
+            @if (ChildContent is not null)
+            {
+                @ChildContent
             }
         </div>
     </Column>
 </Row>
 
 @code {
+    private string _avatarUrl => $"https://cdn.discordapp.com/avatars/{User.UserId}/{User.AvatarId}";
     
     [Parameter]
     public UserViewModel User { get; set; }
+    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; } = null;
 
-    private string AvatarUrl { get; set; } = string.Empty;
+    [Parameter]
+    public bool ShowIsAdmin { get; set; } = true;
 
-    protected override void OnInitialized()
-    {
-        AvatarUrl = $"https://cdn.discordapp.com/avatars/{User.UserId}/{User.AvatarId}";
-    }
 }

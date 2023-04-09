@@ -1,0 +1,16 @@
+﻿@inject IStringLocalizer<SharedResources> Translate
+
+<Badge Color="@BadgeColor">@Translate[Status.ToString()]</Badge>
+
+@code {
+    [Parameter]
+    public SecretSantaStatus Status { get; set; }
+
+    Color BadgeColor => Status switch
+    {
+        SecretSantaStatus.Unassigned => Color.Danger,
+        SecretSantaStatus.Arrived => Color.Success,
+        SecretSantaStatus.Assigned => Color.Warning,
+        SecretSantaStatus.Posted => Color.Info
+    };
+}

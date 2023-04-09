@@ -33,17 +33,33 @@ else
                 Validator="@ValidateWishlist"
             />
             
+            @if (_viewModel.User.SecretSantaStatus == SecretSantaStatus.Unassigned || _viewModel.SecretSantaUser is null)
+            {
+                <Alert Color="Color.Info">
+                    <AlertMessage>@Translate["Secret Santa has not been assigned yet"]</AlertMessage>
+                </Alert>
+            }
+            else
+            {
+                <div class="mt-5">
+                    <Heading Size="HeadingSize.Is6" TextAlignment="TextAlignment.Center">@Translate["Your Secret Santa"]</Heading>
+                    <SecretSantaView User="@_viewModel.SecretSantaUser" />
+                </div>
+            }
+            
             @if (_canViewAdminActions)
             {
                 <div class="my-5">
                     <Heading
                         Size="HeadingSize.Is6"
-                        TextColor="TextColor.Success"
-                    >@Translate["AdminHeading"]</Heading>
+                        TextColor="TextColor.Success">
+                        @Translate["AdminHeading"]
+                    </Heading>
                     <SimpleButton
                         Clicked="GoToAdminUsers"
-                        Color="Color.Success"
-                    >@Translate["ViewUsers"]</SimpleButton>
+                        Color="Color.Success">
+                        @Translate["ViewUsers"]
+                    </SimpleButton>
                 </div>
             }
             

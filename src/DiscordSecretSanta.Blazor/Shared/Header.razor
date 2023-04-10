@@ -1,0 +1,43 @@
+﻿<Heading
+    Size="_size"
+    TextColor="@_color"
+    TextAlignment="@Alignment"
+    Class="@Class"
+>
+    @ChildContent
+</Heading>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public HeaderType HeadingType { get; set; } = HeaderType.SubHeader;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    [Parameter]
+    public TextAlignment Alignment { get; set; } = TextAlignment.Start;
+
+    HeadingSize _size => HeadingType switch
+    {
+        HeaderType.MainHeader => HeadingSize.Is4,
+        HeaderType.SubHeader => HeadingSize.Is6,
+        HeaderType.AdminHeader => HeadingSize.Is6
+    };
+
+    TextColor _color => HeadingType switch
+    {
+        HeaderType.MainHeader => TextColor.White,
+        HeaderType.SubHeader => TextColor.Default,
+        HeaderType.AdminHeader => TextColor.Success
+    };
+
+    public enum HeaderType
+    {
+        MainHeader,
+        SubHeader,
+        AdminHeader
+    }
+}

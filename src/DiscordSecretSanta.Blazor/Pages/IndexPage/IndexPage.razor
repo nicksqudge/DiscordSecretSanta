@@ -41,20 +41,16 @@ else
             }
             else
             {
-                <div class="mt-5">
-                    <Heading Size="HeadingSize.Is6" TextAlignment="TextAlignment.Center">@Translate["Your Secret Santa"]</Heading>
-                    <SecretSantaView User="@_viewModel.SecretSantaUser" />
-                </div>
+                <Header Alignment="TextAlignment.Center" Class="mt-5">@Translate["Your Secret Santa"]</Header>
+                <LightBlock>
+                    <SecretSantaView User="@_viewModel.SecretSantaUser"/>
+                </LightBlock>
             }
             
             @if (_canViewAdminActions)
             {
                 <div class="my-5">
-                    <Heading
-                        Size="HeadingSize.Is6"
-                        TextColor="TextColor.Success">
-                        @Translate["AdminHeading"]
-                    </Heading>
+                    <Header HeadingType="Header.HeaderType.AdminHeader">@Translate["AdminHeading"]</Header>
                     <SimpleButton
                         Clicked="GoToAdminUsers"
                         Color="Color.Success">

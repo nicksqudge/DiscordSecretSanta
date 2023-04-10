@@ -1,0 +1,15 @@
+﻿<Div 
+    Background="Background.Light" 
+    Class="@Class"
+    style="padding: 16px 16px 0px 16px; border-radius:  8px;"
+>
+    @ChildContent
+</Div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+}

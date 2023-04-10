@@ -76,16 +76,16 @@ else
                             @if (_buyingFor is not null)
                             {
                                 <div class="mb-2">
-                                    <Heading Size="HeadingSize.Is4">@Translate["Is Buying For"]</Heading>
-                                    <SecretSantaView User="@_buyingFor" />
+                                    <Header HeadingType="Header.HeaderType.MainHeader">@Translate["Is Buying For"]</Header>
+                                    <SecretSantaView User="@_buyingFor"/>
                                 </div>
                             }
                             
                             @if (_beingBoughtBy is not null)
                             {
                                 <div class="mb-2">
-                                    <Heading Size="HeadingSize.Is4">@Translate["Is being bought for by"]</Heading>
-                                    <SecretSantaView User="@_beingBoughtBy" />
+                                    <Header HeadingType="Header.HeaderType.MainHeader">@Translate["Is being bought for by"]</Header>
+                                    <SecretSantaView User="@_beingBoughtBy"/>
                                 </div>
                             }
                         }
@@ -113,11 +113,9 @@ else
                 </Row>
             }
 
-            <Heading
-                Size="HeadingSize.Is6"
-                TextColor="TextColor.Success">
+            <Header HeadingType="Header.HeaderType.AdminHeader">
                 @Translate["Actions"]
-            </Heading>
+            </Header>
             <SimpleButton
                 Clicked="@(async () => await AssignSecretSanta())">
                 @Translate["Assign Secret Santa"]

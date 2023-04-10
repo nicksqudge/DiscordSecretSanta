@@ -3,12 +3,13 @@
         <CardBody>
             @if (!string.IsNullOrWhiteSpace(Title))
             {
-                <Heading 
-                    Size="HeadingSize.Is5"
-                    TextColor="TextColor.White"
-                    TextAlignment="TextAlignment.Center"
+                <Header
+                    Alignment="TextAlignment.Center"
+                    HeadingType="Header.HeaderType.MainHeader"
                     Class="mb-3"
-                >@Title</Heading>
+                >
+                    @Title
+                </Header>
             }
             
             @ChildContent

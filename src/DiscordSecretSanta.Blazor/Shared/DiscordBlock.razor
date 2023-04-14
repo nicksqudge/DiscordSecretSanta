@@ -5,7 +5,7 @@
     <Column ColumnSize="@ColumnSize.Is2">
         <Figure>
             <FigureImage 
-                Source="@_avatarUrl"
+                Source="@AvatarUrl"
                 Style="border-radius: 50%;"
             />
         </Figure>
@@ -28,13 +28,13 @@
 </Row>
 
 @code {
-    private string _avatarUrl => $"https://cdn.discordapp.com/avatars/{User.UserId}/{User.AvatarId}";
+    string AvatarUrl => $"https://cdn.discordapp.com/avatars/{User.UserId}/{User.AvatarId}";
     
     [Parameter]
     public UserViewModel User { get; set; }
     
     [Parameter]
-    public RenderFragment? ChildContent { get; set; } = null;
+    public RenderFragment ChildContent { get; set; } = null;
 
     [Parameter]
     public bool ShowIsAdmin { get; set; } = true;

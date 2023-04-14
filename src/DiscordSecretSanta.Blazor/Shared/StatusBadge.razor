@@ -1,16 +1,47 @@
 ﻿@inject IStringLocalizer<SharedResources> Translate
 
-<Badge Color="@BadgeColor">@Translate[Status.ToString()]</Badge>
+@if (Large == false)
+{
+    <Badge Color="@BackgroundColor">@ShortText</Badge>
+}
+else
+{
+    <Alert Color="@BackgroundColor" Visible>
+        <AlertMessage>@LongText</AlertMessage>
+    </Alert>
+}
 
 @code {
     [Parameter]
-    public SecretSantaStatus Status { get; set; }
+    public SecretSantaStatus? Status { get; set; }
 
-    Color BadgeColor => Status switch
+    [Parameter]
+    public bool Large { get; set; } = false;
+
+    Color BackgroundColor => Status switch
     {
         SecretSantaStatus.Unassigned => Color.Danger,
         SecretSantaStatus.Arrived => Color.Success,
         SecretSantaStatus.Assigned => Color.Warning,
-        SecretSantaStatus.Posted => Color.Info
+        SecretSantaStatus.Posted => Color.Info,
+        _ => Color.Danger
+    };
+
+    string LongText => Status switch
+    {
+        SecretSantaStatus.Unassigned => Translate["Secret Santa's have not been rolled yet, you shouldn't see this"],
+        SecretSantaStatus.Arrived => Translate["You have received your Secret Santa Gift"],
+        SecretSantaStatus.Assigned => Translate["Someone has been selected "],
+        SecretSantaStatus.Posted => Translate["Your gift is on the way"],
+        _ => Translate["No status set"]
+    };
+    
+    string ShortText => Status switch
+    {
+        SecretSantaStatus.Unassigned => Translate["No Secret Santa yet"],
+        SecretSantaStatus.Arrived => Translate["Gift has arrived"],
+        SecretSantaStatus.Assigned => Translate["Secret Santa assigned"],
+        SecretSantaStatus.Posted => Translate["Secret Santa gift en-route"],
+        _ => Translate["No status set"]
     };
 }

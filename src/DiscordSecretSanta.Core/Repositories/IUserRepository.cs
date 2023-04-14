@@ -13,4 +13,5 @@ public interface IUserRepository
     Task<int> CountUsers(CancellationToken cancellationToken);
     Task<IReadOnlyList<User>> ListUsers(CancellationToken cancellationToken);
     Task<Result> UpdateSecretSanta(UserId targetUserId, UserId secretSantaId, SecretSantaStatus status, CancellationToken cancellationToken);
+    Task<Maybe<SecretSantaStatus>> GetStatusOfThisUsersGift(UserId targetUserId, CancellationToken cancellationToken);
 }

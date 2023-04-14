@@ -106,6 +106,14 @@ public class UserRepository : IUserRepository
         );
     }
 
+    public async Task<Maybe<SecretSantaStatus>> GetStatusOfThisUsersGift(UserId targetUserId, CancellationToken cancellationToken)
+    {
+        return await _collection
+            .Find(ByUserId(targetUserId))
+            .Project(x => x.SecretSantaStatus)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
     private FilterDefinition<UserDao> ByUserId(UserId id)
     {
         return Builders<UserDao>.Filter

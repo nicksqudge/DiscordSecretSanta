@@ -128,9 +128,9 @@ else
 
     Modal _modalRef;
     AdminUsersViewModel _viewModel = null;
-    UserViewModel? _currentUser = null;
-    UserViewModel? _buyingFor = null;
-    UserViewModel? _beingBoughtBy = null;
+    UserViewModel _currentUser = null;
+    UserViewModel _buyingFor = null;
+    UserViewModel _beingBoughtBy = null;
     bool _showSecretSanta = false;
     readonly IValidator<string> _wishlistValidator = new WishlistUrlValidator();
 

@@ -1,15 +1,28 @@
 ﻿<Div 
     Background="Background.Light" 
     Class="@Class"
-    style="padding: 16px 16px 0px 16px; border-radius:  8px;"
+    style="@($"padding: {padding}; border-radius:  8px;")"
 >
     @ChildContent
 </Div>
 
 @code {
+    string _padding = "16px;";
+    
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool AddBottomPadding { get; set; } = false;
+
+    string padding => string.Join(" ", new List<string>()
+    {
+        _padding,
+        _padding,
+        AddBottomPadding ? _padding : "0px",
+        _padding
+    });
 }

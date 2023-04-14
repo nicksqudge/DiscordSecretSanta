@@ -4,7 +4,8 @@ public class UserLoginViewModel
 {
     public string Title { get; set; } = string.Empty;
     public UserViewModel? User { get; set; } = null;
-    public UserViewModel? SecretSantaUser { get; set; } = null;
+    public UserViewModel? SecretSanta { get; set; } = null;
+    public SecretSantaStatus? PersonBuyingForThem { get; set; } = SecretSantaStatus.Unassigned;
     public string ErrorMessage { get; set; } = string.Empty;
     public bool HasUser => User is not null;
     public bool HasWishlist => !string.IsNullOrWhiteSpace(User?.WishlistUrl ?? string.Empty);

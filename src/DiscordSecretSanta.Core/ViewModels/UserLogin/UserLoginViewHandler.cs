@@ -94,8 +94,12 @@ public class UserLoginViewHandler : IUserLoginViewHandler
             {
                 await _userRepository
                     .GetUser(user.Value.SecretSantaUserId, cancellationToken)
-                    .OnHasValue((secretUser) => result.SecretSantaUser = new UserViewModel(secretUser));
+                    .OnHasValue((secretUser) => result.SecretSanta = new UserViewModel(secretUser));
             }
+
+            var giftStatus = await _userRepository.GetStatusOfThisUsersGift(user.Value.UserId, cancellationToken);
+            if (giftStatus.HasValue)
+                result.PersonBuyingForThem = giftStatus.Value;
         }
 
         return result;

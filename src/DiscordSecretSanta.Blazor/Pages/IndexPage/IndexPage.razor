@@ -33,7 +33,7 @@ else
                 Validator="@ValidateWishlist"
             />
             
-            @if (_viewModel.User.SecretSantaStatus == SecretSantaStatus.Unassigned || _viewModel.SecretSantaUser is null)
+            @if (_showSecretSanta == false)
             {
                 <Alert Color="Color.Info">
                     <AlertMessage>@Translate["Secret Santa has not been assigned yet"]</AlertMessage>
@@ -43,8 +43,14 @@ else
             {
                 <Header Alignment="TextAlignment.Center" Class="mt-5">@Translate["Your Secret Santa"]</Header>
                 <LightBlock>
-                    <SecretSantaView User="@_viewModel.SecretSantaUser"/>
+                    <SecretSantaView User="@_viewModel.SecretSanta"/>
                 </LightBlock>
+            }
+
+            if (_viewModel.PersonBuyingForThem is not null)
+            {
+                <Header Alignment="TextAlignment.Center" Class="mt-3">@Translate["Your gift"]</Header>
+                <StatusBadge Status="@_viewModel.PersonBuyingForThem" Large="true" />
             }
             
             @if (_canViewAdminActions)
@@ -69,6 +75,7 @@ else
     UserLoginViewModel _viewModel = null;
     IValidator<string> _wishlistValidator = new WishlistUrlValidator();
     bool _canViewAdminActions => _viewModel is not null && _viewModel.HasUser && _viewModel.User!.IsAdmin;
+    bool _showSecretSanta => _viewModel?.User?.SecretSantaStatus == SecretSantaStatus.Unassigned || _viewModel?.SecretSanta is null || _viewModel.PersonBuyingForThem is not null;
 
     protected override async Task OnInitializedAsync()
     {

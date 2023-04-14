@@ -1,6 +1,6 @@
 ﻿<Heading
-    Size="_size"
-    TextColor="@_color"
+    Size="Size"
+    TextColor="@Color"
     TextAlignment="@Alignment"
     Class="@Class"
 >
@@ -20,18 +20,17 @@
     [Parameter]
     public TextAlignment Alignment { get; set; } = TextAlignment.Start;
 
-    HeadingSize _size => HeadingType switch
+    HeadingSize Size => HeadingType switch
     {
         HeaderType.MainHeader => HeadingSize.Is4,
-        HeaderType.SubHeader => HeadingSize.Is6,
-        HeaderType.AdminHeader => HeadingSize.Is6
+        _ => HeadingSize.Is6,
     };
 
-    TextColor _color => HeadingType switch
+    TextColor Color => HeadingType switch
     {
         HeaderType.MainHeader => TextColor.White,
-        HeaderType.SubHeader => TextColor.Default,
-        HeaderType.AdminHeader => TextColor.Success
+        HeaderType.AdminHeader => TextColor.Success,
+        _ => TextColor.Default,
     };
 
     public enum HeaderType

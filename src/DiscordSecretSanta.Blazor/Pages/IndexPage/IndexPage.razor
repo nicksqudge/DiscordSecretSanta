@@ -85,17 +85,20 @@ else
         </Row>
     }
 
-    <Buttons>
-        @if (CanViewAdminActions)
-        {
-            <SimpleButton
-                Clicked="GoToAdminUsers"
-                Color="Color.Success">
-                @Translate["ViewUsers"]
-            </SimpleButton>
-        }
-        <SimpleButton Clicked="Logout">@Translate["Logout"]</SimpleButton>
-    </Buttons>
+    @if (_viewModel.HasUser)
+    {
+        <Buttons>
+            @if (CanViewAdminActions)
+            {
+                <SimpleButton
+                    Clicked="GoToAdminUsers"
+                    Color="Color.Success">
+                    @Translate["ViewUsers"]
+                </SimpleButton>
+            }
+            <SimpleButton Clicked="Logout">@Translate["Logout"]</SimpleButton>
+        </Buttons>
+    }
 }
 
 @code {
@@ -103,7 +106,12 @@ else
     UserLoginViewModel _viewModel = null;
     readonly IValidator<string> _wishlistValidator = new WishlistUrlValidator();
     bool CanViewAdminActions => _viewModel is not null && _viewModel.HasUser && _viewModel.User!.IsAdmin;
-    bool ShowSecretSanta => _viewModel?.User?.SecretSantaStatus == SecretSantaStatus.Unassigned || _viewModel?.SecretSanta is null || _viewModel.PersonBuyingForThem is not null;
+    bool ShowSecretSanta => _viewModel.HasUser &&
+                            (
+                                _viewModel?.User?.SecretSantaStatus == SecretSantaStatus.Unassigned || 
+                                _viewModel?.SecretSanta is null || 
+                                _viewModel.PersonBuyingForThem is not null
+                            );
 
     protected override async Task OnInitializedAsync()
     {

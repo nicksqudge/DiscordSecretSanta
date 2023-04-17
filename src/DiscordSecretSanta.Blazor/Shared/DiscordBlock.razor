@@ -1,33 +1,35 @@
 ﻿@using DiscordSecretSanta.Core.ViewModels
 @inject IStringLocalizer<SharedResources> Translate
 
-<Row>
-    <Column ColumnSize="@AvatarColumnSize">
-        <Figure>
-            <FigureImage 
-                Source="@AvatarUrl"
-                Style="border-radius: 50%;"
-            />
-        </Figure>
-    </Column>
-    <Column ColumnSize="@NameColumnSize">
-        <Heading Size="@HeadingSize" TextWeight="TextWeight.Bold">
-            <Span TextColor="TextColor.White">@User.Name</Span>
-            <Span>#@User.DiscordTagId</Span>
-        </Heading>
-        <div>
-            @if (User.IsAdmin && ShowIsAdmin)
-            {
-                <Badge Color="Color.Primary">@Translate["Admin"]</Badge>
-            }
-            
-            @if (ChildContent is not null)
-            {
-                @ChildContent
-            }
-        </div>
-    </Column>
-</Row>
+@if (User is not null)
+{
+    <Row>
+        <Column ColumnSize="@AvatarColumnSize">
+            <Figure>
+                <FigureImage
+                    Source="@AvatarUrl"
+                    Style="border-radius: 50%;"/>
+            </Figure>
+        </Column>
+        <Column ColumnSize="@NameColumnSize">
+            <Heading Size="@HeadingSize" TextWeight="TextWeight.Bold">
+                <Span TextColor="TextColor.White">@User.Name</Span>
+                <Span>#@User.DiscordTagId</Span>
+            </Heading>
+            <div>
+                @if (User.IsAdmin && ShowIsAdmin)
+                {
+                    <Badge Color="Color.Primary">@Translate["Admin"]</Badge>
+                }
+
+                @if (ChildContent is not null)
+                {
+                    @ChildContent
+                }
+            </div>
+        </Column>
+    </Row>
+}
 
 @code {
     string AvatarUrl => $"https://cdn.discordapp.com/avatars/{User.UserId}/{User.AvatarId}";

@@ -101,7 +101,7 @@ public class UserRepository : IUserRepository
             targetUserId,
             Builders<UserDao>.Update
                 .Set(x => x.SecretSantaId, secretSantaId.Value)
-                .Set(x => x.SecretSantaStatus, SecretSantaStatus.Assigned),
+                .Set(x => x.SecretSantaStatus, status),
             cancellationToken
         );
     }
@@ -109,9 +109,24 @@ public class UserRepository : IUserRepository
     public async Task<Maybe<SecretSantaStatus>> GetStatusOfThisUsersGift(UserId targetUserId, CancellationToken cancellationToken)
     {
         return await _collection
-            .Find(ByUserId(targetUserId))
+            .Find(x => x.SecretSantaId == targetUserId.Value)
             .Project(x => x.SecretSantaStatus)
             .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<Result> SetGifterOfUserStatus(UserId targetUserId, SecretSantaStatus status, CancellationToken cancellationToken)
+    {
+        var result = await _collection.UpdateOneAsync(
+            x => x.SecretSantaId == targetUserId.Value,
+            Builders<UserDao>.Update.Set(x => x.SecretSantaStatus, status),
+            new UpdateOptions(),
+            cancellationToken
+        );
+        
+        if (result.ModifiedCount == 1)
+            return Result.Success();
+
+        return Result.Failure("Could not update gifter for user");
     }
 
     private FilterDefinition<UserDao> ByUserId(UserId id)

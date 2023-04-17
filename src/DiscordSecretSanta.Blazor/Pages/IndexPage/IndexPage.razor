@@ -140,7 +140,17 @@ else
 
     async Task OnWishlistSubmit(string wishlistUrl)
     {
-        _viewModel = await ViewModelHandler.SetWishlistUrl(wishlistUrl, CancellationToken.None);
+        _viewModel = await ViewModelHandler.SetWishlistUrl(_viewModel, wishlistUrl, CancellationToken.None);
+    }
+
+    async Task UpdateSecretSantaStatus(SecretSantaStatus status)
+    {
+        _viewModel = await ViewModelHandler.SetSecretSantaStatus(_viewModel, status, CancellationToken.None);
+    }
+
+    async Task SetMyGiftAsDelivered()
+    {
+        _viewModel = await ViewModelHandler.SetMyGiftStatus(_viewModel, SecretSantaStatus.Arrived, CancellationToken.None);
     }
 
     void ValidateWishlist(ValidatorEventArgs e)

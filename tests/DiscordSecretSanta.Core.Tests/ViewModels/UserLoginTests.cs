@@ -154,7 +154,14 @@ public class UserLoginTests
         _authProviderService.ReturnsNoCurrentUser();
         _userRepository.HasNoUser().CountOfUsersIs(2);
 
-        var result = await _handler.SetWishlistUrl(url, CancellationToken.None);
+        var result = await _handler.SetWishlistUrl(new UserLoginViewModel()
+        {
+            Title = ExpectedTitle,
+            User = null,
+            PersonBuyingForThem = null,
+            ErrorMessage = string.Empty,
+            SecretSanta = null
+        }, url, CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should().BeNull();
         result.HasUser.Should().BeFalse();
@@ -175,7 +182,15 @@ public class UserLoginTests
         _userRepository.HasUser(ExpectedUser).CountOfUsersIs(2);
         string url = "https://amazon.co.uk/wishlist/1234";
 
-        var result = await _handler.SetWishlistUrl(url, CancellationToken.None);
+        var result = await _handler.SetWishlistUrl(new UserLoginViewModel()
+            {
+                Title = ExpectedTitle,
+                User = new UserViewModel(ExpectedUser),
+                PersonBuyingForThem = null,
+                ErrorMessage = string.Empty,
+                SecretSanta = null
+            },
+            url, CancellationToken.None);
         result.Title.Should().Be(ExpectedTitle);
         result.User.Should()
             .NotBeNull().And

@@ -8,7 +8,9 @@ namespace DiscordSecretSanta.Core.ViewModels.UserLogin;
 public interface IUserLoginViewHandler
 {
     Task<UserLoginViewModel> OnInitAsync(CancellationToken cancellationToken);
-    Task<UserLoginViewModel> SetWishlistUrl(string url, CancellationToken cancellationToken);
+    Task<UserLoginViewModel> SetWishlistUrl(UserLoginViewModel viewModel, string url, CancellationToken cancellationToken);
+    Task<UserLoginViewModel> SetSecretSantaStatus(UserLoginViewModel viewModel, SecretSantaStatus status, CancellationToken cancellationToken);
+    Task<UserLoginViewModel> SetMyGiftStatus(UserLoginViewModel viewModel, SecretSantaStatus status, CancellationToken cancellationToken);
 }
 
 public class UserLoginViewHandler : IUserLoginViewHandler
@@ -30,9 +32,9 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         return result;
     }
 
-    public async Task<UserLoginViewModel> SetWishlistUrl(string url, CancellationToken cancellationToken)
+    public async Task<UserLoginViewModel> SetWishlistUrl(UserLoginViewModel viewModel, string url, CancellationToken cancellationToken)
     {
-        var result = await InitViewModel(cancellationToken);
+        var result = viewModel;
         if (result.HasUser)
         {
             var updateResult = await _userRepository.SaveUserWishlistUrl(
@@ -50,6 +52,55 @@ public class UserLoginViewHandler : IUserLoginViewHandler
             result.ErrorMessage = "NotLoggedIn";    
         }
 
+        return result;
+    }
+
+    public async Task<UserLoginViewModel> SetSecretSantaStatus(UserLoginViewModel viewModel, SecretSantaStatus status, CancellationToken cancellationToken)
+    {
+        var result = viewModel;
+        if (!result.HasUser)
+        {
+            result.ErrorMessage = "NotLoggedIn";
+            return result;
+        }
+
+        if (!result.User!.HasSecretSanta)
+        {
+            result.ErrorMessage = "NoSecretSanta";
+            return result;
+        }
+
+        var userId = new UserId(result.User.UserId);
+        var targetUserId = new UserId(result.User.SecretSantaUserId);
+        var updateResult = await _userRepository.UpdateSecretSanta(targetUserId, userId, status, cancellationToken);
+        if (updateResult.IsFailure)
+        {
+            result.ErrorMessage = "CannotUpdateSecretSantaStatus";
+            return result;
+        }
+
+        result.User.SecretSantaStatus = status;
+        return result;
+    }
+
+    public async Task<UserLoginViewModel> SetMyGiftStatus(UserLoginViewModel viewModel, SecretSantaStatus status, CancellationToken cancellationToken)
+    {
+        var result = viewModel;
+        if (!result.HasUser)
+        {
+            result.ErrorMessage = "NotLoggedIn";
+            return result;
+        }
+
+        var updateResult =
+            await _userRepository.SetGifterOfUserStatus(new UserId(result.User.UserId), status, cancellationToken);
+        if (updateResult.IsFailure)
+        {
+            result.ErrorMessage = "CannotUpdateGifterStatus";
+            return result;
+        }
+
+        result.PersonBuyingForThem = status;
         return result;
     }
 

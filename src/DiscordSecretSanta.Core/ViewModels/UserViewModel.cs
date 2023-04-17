@@ -13,6 +13,9 @@ public class UserViewModel
 
     public bool HasWishlist => !string.IsNullOrWhiteSpace(WishlistUrl);
 
+    public bool HasSecretSanta => SecretSantaStatus != SecretSantaStatus.Unassigned &&
+                                  !string.IsNullOrWhiteSpace(SecretSantaUserId);
+
     public static UserViewModel Unknown()
         => new ()
         {

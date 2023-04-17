@@ -23,7 +23,7 @@ else
     {
         <PageTitle>@Translate["PageTitle"]</PageTitle>
         
-        <Modal @ref="_modalRef">
+        <Modal @ref="_userModalRef">
             @if (_currentUser is not null)
             {
                 <ModalContent Centered>
@@ -93,6 +93,17 @@ else
                 </ModalContent>
             }
         </Modal>
+        <Modal @ref="_confirmRef">
+            <ModalContent Centered>
+                <ModalBody>
+                    @Translate["Are you sure you want to assign Secret Santas? You cannot undo this action"]
+                </ModalBody>
+                <ModalFooter>
+                    <Button Color="Color.Danger" Clicked="@CloseConfirmModal">@Translate["Cancel"]</Button>
+                    <Button Color="Color.Primary" Clicked="@AssignSecretSanta">@Translate["Yes"]</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
 
         <CenterBlock Title="@Translate["PageTitle"]">
             <AlertBlock Message="@Translate[_viewModel.ErrorMessage]"></AlertBlock>
@@ -101,7 +112,16 @@ else
             {
                 <Row>
                     <Column ColumnSize="ColumnSize.Is9">
-                        <DiscordBlock User="@user"/>
+                        <DiscordBlock User="@user">
+                            @if (user.HasWishlist)
+                            {
+                                <Badge Color="Color.Success">@Translate["Has Wishlist"]</Badge>
+                            }
+                            else
+                            {
+                                <Badge Color="Color.Danger">@Translate["No wishlist"]</Badge>
+                            }
+                        </DiscordBlock>
                     </Column>
                     <Column ColumnSize="ColumnSize.Is3">
                         <SimpleButton
@@ -116,23 +136,35 @@ else
             <Header HeadingType="Header.HeaderType.AdminHeader">
                 @Translate["Actions"]
             </Header>
-            <SimpleButton
-                Clicked="@(async () => await AssignSecretSanta())">
-                @Translate["Assign Secret Santa"]
-            </SimpleButton>
+            @if (!HasBeenAssigned)
+            {
+                <Alert Color="Color.Warning" Visible="@(!DoAllUsersHaveWishlist)">
+                    <AlertMessage>@Translate["Not all users have wishlists set against them, you cannot assign Secret Santas until this has been done"]</AlertMessage>
+                </Alert>
+                <Buttons>
+                    <SimpleButton
+                        Clicked="@ShowConfirmModal"
+                        IsEnabled="@DoAllUsersHaveWishlist">
+                        @Translate["Assign Secret Santa"]
+                    </SimpleButton>
+                </Buttons>
+            }
         </CenterBlock>
     }
 }
 
 @code {
 
-    Modal _modalRef;
+    Modal _userModalRef;
+    Modal _confirmRef;
     AdminUsersViewModel _viewModel = null;
     UserViewModel _currentUser = null;
     UserViewModel _buyingFor = null;
     UserViewModel _beingBoughtBy = null;
     bool _showSecretSanta = false;
     readonly IValidator<string> _wishlistValidator = new WishlistUrlValidator();
+    bool DoAllUsersHaveWishlist => _viewModel.Users.All(x => x.HasWishlist);
+    bool HasBeenAssigned => _viewModel.Users.All(x => x.SecretSantaStatus != SecretSantaStatus.Unassigned);
 
     protected override async Task OnInitializedAsync()
     {
@@ -150,11 +182,12 @@ else
         _beingBoughtBy = _viewModel.Users
             .FirstOrDefault(x => x.SecretSantaUserId == user.UserId);
         
-        _modalRef.Show();
+        _userModalRef.Show();
     }
 
     async Task AssignSecretSanta()
     {
+        await _confirmRef.Hide();
         var result = await AssignSecretSantas.Run(CancellationToken.None);
         if (result.IsSuccess)
         {
@@ -184,6 +217,16 @@ else
         
         _viewModel = await ViewModelHandler.RemoveUserAdmin(_viewModel, new UserId(_currentUser.UserId), CancellationToken.None);
         await NotificationService.Success($"{_currentUser.Name} {Translate["is no longer an admin"]}");
+    }
+
+    Task CloseConfirmModal()
+    {
+        return _confirmRef.Hide();
+    }
+
+    Task ShowConfirmModal()
+    {
+        return _confirmRef.Show();
     }
     
     async Task OnWishlistSubmit(string wishlistUrl)

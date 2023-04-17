@@ -2,7 +2,7 @@
 @inject IStringLocalizer<SharedResources> Translate
 
 <Row>
-    <Column ColumnSize="@ColumnSize.Is2">
+    <Column ColumnSize="@AvatarColumnSize">
         <Figure>
             <FigureImage 
                 Source="@AvatarUrl"
@@ -10,9 +10,11 @@
             />
         </Figure>
     </Column>
-    <Column ColumnSize="@ColumnSize.Is10">
-        <Heading Size="HeadingSize.Is4" Style="display: inline-block;">@User.Name</Heading>
-        <Text TextColor="TextColor.White">#@User.DiscordTagId</Text>
+    <Column ColumnSize="@NameColumnSize">
+        <Heading Size="@HeadingSize" TextWeight="TextWeight.Bold">
+            <Span TextColor="TextColor.White">@User.Name</Span>
+            <Span>#@User.DiscordTagId</Span>
+        </Heading>
         <div>
             @if (User.IsAdmin && ShowIsAdmin)
             {
@@ -29,6 +31,9 @@
 
 @code {
     string AvatarUrl => $"https://cdn.discordapp.com/avatars/{User.UserId}/{User.AvatarId}";
+    IFluentColumnOnBreakpointWithOffsetAndSize AvatarColumnSize => IsSmall ? ColumnSize.Is3 : ColumnSize.Is2;
+    IFluentColumnOnBreakpointWithOffsetAndSize NameColumnSize => IsSmall ? ColumnSize.Is9 : ColumnSize.Is10;
+    HeadingSize HeadingSize => IsSmall ? HeadingSize.Is5 : HeadingSize.Is4;
     
     [Parameter]
     public UserViewModel User { get; set; }
@@ -38,5 +43,8 @@
 
     [Parameter]
     public bool ShowIsAdmin { get; set; } = true;
+
+    [Parameter]
+    public bool IsSmall { get; set; } = false;
 
 }

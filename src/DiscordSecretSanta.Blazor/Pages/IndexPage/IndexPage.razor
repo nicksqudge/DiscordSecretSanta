@@ -4,6 +4,7 @@
 @inject IUserLoginViewHandler ViewModelHandler
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<IndexPageResources> Translate
+@inject IJSRuntime Javascript
 
 @if (_viewModel is null)
 {
@@ -23,59 +24,86 @@ else
         }
         else
         {
-            <DiscordBlock User="@_viewModel.User" />
-            
-            <EditField 
+            <DiscordBlock User="@_viewModel.User"/>
+
+            <EditField
                 Label="@Translate["WishlistUrl"]"
                 Value="@_viewModel.User.WishlistUrl"
                 OnSubmit="@(async (value) => await OnWishlistSubmit(value))"
                 ModalTitle="@Translate["WishlistUrlHeader"]"
-                Validator="@ValidateWishlist"
-            />
-            
-            @if (_showSecretSanta == false)
-            {
-                <Alert Color="Color.Info">
-                    <AlertMessage>@Translate["Secret Santa has not been assigned yet"]</AlertMessage>
-                </Alert>
-            }
-            else
-            {
-                <Header Alignment="TextAlignment.Center" Class="mt-5">@Translate["Your Secret Santa"]</Header>
-                <LightBlock>
-                    <SecretSantaView User="@_viewModel.SecretSanta"/>
-                </LightBlock>
-            }
-
-            if (_viewModel.PersonBuyingForThem is not null)
-            {
-                <Header Alignment="TextAlignment.Center" Class="mt-3">@Translate["Your gift"]</Header>
-                <StatusBadge Status="@_viewModel.PersonBuyingForThem" Large="true" />
-            }
-            
-            @if (_canViewAdminActions)
-            {
-                <div class="my-5">
-                    <Header HeadingType="Header.HeaderType.AdminHeader">@Translate["AdminHeading"]</Header>
-                    <SimpleButton
-                        Clicked="GoToAdminUsers"
-                        Color="Color.Success">
-                        @Translate["ViewUsers"]
-                    </SimpleButton>
-                </div>
-            }
-            
-            <SimpleButton Clicked="Logout">@Translate["Logout"]</SimpleButton>
+                Validator="@ValidateWishlist"/>
+        }
+        
+        @if (ShowSecretSanta == false)
+        {
+            <Alert Color="Color.Info">
+                <AlertMessage>@Translate["Secret Santa has not been assigned yet"]</AlertMessage>
+            </Alert>
         }
     </CenterBlock>
+
+    @if (ShowSecretSanta)
+    {
+        <Row>
+            @if (_viewModel.PersonBuyingForThem is not null)
+            {
+                <Column ColumnSize="ColumnSize.Is6">
+                    <CenterBlock Title="@Translate["Your Secret Santa"]">
+                        <Div Margin="Margin.Is3.FromBottom">
+                            <SecretSantaView 
+                                IsSmall="true"
+                                User="@_viewModel.SecretSanta"
+                            />
+                        </Div>
+                        
+                        @if (_viewModel.SecretSanta?.HasWishlist ?? false)
+                        {
+                            <FullWidthButton
+                                Color="Color.Primary"
+                                Clicked="@(async () => await ViewTheirWishlist())">
+                                @Translate["View their wishlist"]
+                            </FullWidthButton>
+                        }
+                        else
+                        {
+                            <Alert Color="Color.Danger"Visible>
+                                <AlertMessage>@Translate["User does not have a wishlist"]</AlertMessage>
+                            </Alert>
+                        }
+                    </CenterBlock>
+                </Column>
+            }
+            
+            @if (_viewModel.PersonBuyingForThem is not null)
+            {
+                <Column ColumnSize="ColumnSize.Is6">
+                    <CenterBlock Title="@Translate["Your Gift"]">
+                        <StatusBadge Status="@_viewModel.PersonBuyingForThem" Large="true"/>    
+                    </CenterBlock>
+                </Column>
+            }
+        </Row>
+    }
+
+    <Buttons>
+        @if (CanViewAdminActions)
+        {
+            <SimpleButton
+                Clicked="GoToAdminUsers"
+                Color="Color.Success">
+                @Translate["ViewUsers"]
+            </SimpleButton>
+        }
+        <SimpleButton Clicked="Logout">@Translate["Logout"]</SimpleButton>
+    </Buttons>
 }
 
 @code {
 
     UserLoginViewModel _viewModel = null;
-    IValidator<string> _wishlistValidator = new WishlistUrlValidator();
-    bool _canViewAdminActions => _viewModel is not null && _viewModel.HasUser && _viewModel.User!.IsAdmin;
-    bool _showSecretSanta => _viewModel?.User?.SecretSantaStatus == SecretSantaStatus.Unassigned || _viewModel?.SecretSanta is null || _viewModel.PersonBuyingForThem is not null;
+    readonly IValidator<string> _wishlistValidator = new WishlistUrlValidator();
+    bool CanViewAdminActions => _viewModel is not null && _viewModel.HasUser && _viewModel.User!.IsAdmin;
+    bool ShowSecretSanta => _viewModel?.User?.SecretSantaStatus == SecretSantaStatus.Unassigned || _viewModel?.SecretSanta is null || _viewModel.PersonBuyingForThem is not null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,6 +123,11 @@ else
     void Logout()
     {
         NavigationManager.NavigateTo("/Account/Logout", true);
+    }
+
+    async Task ViewTheirWishlist()
+    {
+        await Javascript.InvokeAsync<object>("open", CancellationToken.None, _viewModel.SecretSanta!.WishlistUrl.ToString());
     }
 
     async Task OnWishlistSubmit(string wishlistUrl)

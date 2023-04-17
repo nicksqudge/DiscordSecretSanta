@@ -1,23 +1,21 @@
-﻿<div style="display: flex; align-items:  center; justify-content:  center;">
-    <Card Style="width: 500px; margin-top: 15%;" Background="Background.Dark">
-        <CardBody>
-            @if (!string.IsNullOrWhiteSpace(Title))
-            {
-                <Header
-                    Alignment="TextAlignment.Center"
-                    HeadingType="Header.HeaderType.MainHeader"
-                    Class="mb-3"
-                >
-                    @Title
-                </Header>
-            }
-            
-            @ChildContent
-        </CardBody>
-    </Card>
-</div>
+﻿<Card Background="Background.Dark" Margin="Margin.Is4.FromBottom">
+    <CardBody>
+        @if (!string.IsNullOrWhiteSpace(Title))
+        {
+            <Header
+                Alignment="TextAlignment.Center"
+                HeadingType="Header.HeaderType.MainHeader"
+                Class="mb-3"
+            >
+                @Title
+            </Header>
+        }
+        
+        @ChildContent
+    </CardBody>
+</Card>
 
-@code {
+    @code {
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
 

@@ -3,19 +3,18 @@
 
 @if (User is not null)
 {
-    <Row>
-        <Column ColumnSize="@AvatarColumnSize">
-            <Figure>
-                <FigureImage
-                    Source="@AvatarUrl"
-                    Style="border-radius: 50%;"/>
-            </Figure>
-        </Column>
-        <Column ColumnSize="@NameColumnSize">
-            <Heading Size="@HeadingSize" TextWeight="TextWeight.Bold">
-                <Span TextColor="TextColor.White">@User.Name</Span>
-                <Span>#@User.DiscordTagId</Span>
-            </Heading>
+    <Div Display="Display.Flex">
+        <Figure 
+            Margin="@(IsSmall ? Margin.Is2 : Margin.Is4)"
+            Style="@Size"
+        >
+            <FigureImage
+                Source="@AvatarUrl"
+                Style="border-radius: 50%;"/>
+        </Figure>
+        <Div>
+            <Span TextColor="TextColor.White" Display="Display.InlineBlock">@User.Name</Span>
+            <Span Display="Display.InlineBlock">#@User.DiscordTagId</Span>
             <div>
                 @if (User.IsAdmin && ShowIsAdmin)
                 {
@@ -27,8 +26,8 @@
                     @ChildContent
                 }
             </div>
-        </Column>
-    </Row>
+        </Div>
+    </Div>
 }
 
 @code {
@@ -36,7 +35,8 @@
     IFluentColumnOnBreakpointWithOffsetAndSize AvatarColumnSize => IsSmall ? ColumnSize.Is3 : ColumnSize.Is2;
     IFluentColumnOnBreakpointWithOffsetAndSize NameColumnSize => IsSmall ? ColumnSize.Is9 : ColumnSize.Is10;
     HeadingSize HeadingSize => IsSmall ? HeadingSize.Is5 : HeadingSize.Is4;
-    
+    string Size => IsSmall ? "width: 32px; height: 32px;" : "width: 64px; height: 64px;";
+
     [Parameter]
     public UserViewModel User { get; set; }
     
@@ -48,5 +48,4 @@
 
     [Parameter]
     public bool IsSmall { get; set; } = false;
-
 }

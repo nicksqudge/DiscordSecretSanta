@@ -139,7 +139,7 @@ public class UserLoginViewHandler : IUserLoginViewHandler
         var user = await GetCurrentUser(cancellationToken);
         if (user.HasValue)
         {
-            result.User = new UserViewModel(user.Value);
+            result.User = new UserAndSecretSantaViewModel(user.Value);
 
             if (user.Value.SecretSantaUserId is not null)
             {

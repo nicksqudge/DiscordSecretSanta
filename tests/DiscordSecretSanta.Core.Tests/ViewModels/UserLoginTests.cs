@@ -185,7 +185,7 @@ public class UserLoginTests
         var result = await _handler.SetWishlistUrl(new UserLoginViewModel()
             {
                 Title = ExpectedTitle,
-                User = new UserViewModel(ExpectedUser),
+                User = new UserAndSecretSantaViewModel(ExpectedUser),
                 PersonBuyingForThem = null,
                 ErrorMessage = string.Empty,
                 SecretSanta = null

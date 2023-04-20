@@ -8,26 +8,9 @@ public class UserViewModel
     public string UserId { get; set; } = string.Empty;
     public bool IsAdmin { get; set; } = false;
     public string WishlistUrl { get; set; } = string.Empty;
-    public SecretSantaStatus SecretSantaStatus { get; set; } = SecretSantaStatus.Unassigned;
-    public string SecretSantaUserId { get; set; } = string.Empty;
 
     public bool HasWishlist => !string.IsNullOrWhiteSpace(WishlistUrl);
-
-    public bool HasSecretSanta => SecretSantaStatus != SecretSantaStatus.Unassigned &&
-                                  !string.IsNullOrWhiteSpace(SecretSantaUserId);
-
-    public static UserViewModel Unknown()
-        => new ()
-        {
-            IsAdmin = false,
-            Name = "??????",
-            AvatarId = string.Empty,
-            UserId = string.Empty,
-            WishlistUrl = string.Empty,
-            DiscordTagId = string.Empty,
-            SecretSantaUserId = string.Empty,
-            SecretSantaStatus = SecretSantaStatus.Unassigned
-        };
+    
 
     public UserViewModel()
     {
@@ -42,6 +25,19 @@ public class UserViewModel
         DiscordTagId = user.DiscordId;
         UserId = user.UserId.Value;
         IsAdmin = user.IsAdmin;
+    }
+}
+
+public class UserAndSecretSantaViewModel : UserViewModel
+{
+    public SecretSantaStatus SecretSantaStatus { get; set; } = SecretSantaStatus.Unassigned;
+    public string SecretSantaUserId { get; set; } = string.Empty;
+    
+    public bool HasSecretSanta => SecretSantaStatus != SecretSantaStatus.Unassigned &&
+                                  !string.IsNullOrWhiteSpace(SecretSantaUserId);
+    
+    public UserAndSecretSantaViewModel(User user) : base(user)
+    {
         SecretSantaUserId = user.SecretSantaUserId?.Value ?? string.Empty;
         SecretSantaStatus = user.SecretSantaStatus;
     }

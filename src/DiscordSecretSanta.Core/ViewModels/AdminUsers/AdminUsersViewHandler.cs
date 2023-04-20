@@ -42,7 +42,7 @@ public class AdminUsersViewHandler : IAdminUsersViewHandler
         return new AdminUsersViewModel()
         {
             Authorised = true,
-            Users = users.Select(u => new UserViewModel(u)).ToList()
+            Users = users.Select(u => new UserAndSecretSantaViewModel(u)).ToList()
         };
     }
 
@@ -79,7 +79,7 @@ public class AdminUsersViewHandler : IAdminUsersViewHandler
         return new AdminUsersViewModel()
         {
             Authorised = false,
-            Users = new List<UserViewModel>()
+            Users = new List<UserAndSecretSantaViewModel>()
         };
     }
 

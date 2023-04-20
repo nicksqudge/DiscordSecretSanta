@@ -110,27 +110,29 @@ else
             
             @foreach (var user in _viewModel.Users)
             {
-                <Row>
-                    <Column ColumnSize="ColumnSize.Is9">
-                        <DiscordBlock User="@user">
-                            @if (user.HasWishlist)
-                            {
-                                <Badge Color="Color.Success">@Translate["Has Wishlist"]</Badge>
-                            }
-                            else
-                            {
-                                <Badge Color="Color.Danger">@Translate["No wishlist"]</Badge>
-                            }
-                        </DiscordBlock>
-                    </Column>
-                    <Column ColumnSize="ColumnSize.Is3">
-                        <SimpleButton
-                            Color="Color.Primary"
-                            Clicked="@(() => UserOptionsClicked(user))">
-                            @Translate["UserOptions"]
-                        </SimpleButton>
-                    </Column>
-                </Row>
+                <LightBlock Class="mt-2">
+                    <Row>
+                        <Column ColumnSize="ColumnSize.Is9">
+                            <DiscordBlock User="@user">
+                                @if (user.HasWishlist)
+                                {
+                                    <Badge Color="Color.Success">@Translate["Has Wishlist"]</Badge>
+                                }
+                                else
+                                {
+                                    <Badge Color="Color.Danger">@Translate["No wishlist"]</Badge>
+                                }
+                            </DiscordBlock>
+                        </Column>
+                        <Column ColumnSize="ColumnSize.Is3">
+                            <SimpleButton
+                                Color="Color.Primary"
+                                Clicked="@(() => UserOptionsClicked(user))">
+                                @Translate["UserOptions"]
+                            </SimpleButton>
+                        </Column>
+                    </Row>
+                </LightBlock>
             }
 
             <Header HeadingType="Header.HeaderType.AdminHeader">
@@ -158,9 +160,9 @@ else
     Modal _userModalRef;
     Modal _confirmRef;
     AdminUsersViewModel _viewModel = null;
-    UserViewModel _currentUser = null;
-    UserViewModel _buyingFor = null;
-    UserViewModel _beingBoughtBy = null;
+    UserAndSecretSantaViewModel _currentUser = null;
+    UserAndSecretSantaViewModel _buyingFor = null;
+    UserAndSecretSantaViewModel _beingBoughtBy = null;
     bool _showSecretSanta = false;
     readonly IValidator<string> _wishlistValidator = new WishlistUrlValidator();
     bool DoAllUsersHaveWishlist => _viewModel.Users.All(x => x.HasWishlist);
@@ -171,7 +173,7 @@ else
         _viewModel = await ViewModelHandler.OnInitAsync(CancellationToken.None);
     }
 
-    private void UserOptionsClicked(UserViewModel user)
+    private void UserOptionsClicked(UserAndSecretSantaViewModel user)
     {
         _currentUser = user;
         _showSecretSanta = false;

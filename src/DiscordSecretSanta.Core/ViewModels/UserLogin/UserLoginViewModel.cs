@@ -3,7 +3,7 @@
 public class UserLoginViewModel
 {
     public string Title { get; set; } = string.Empty;
-    public UserViewModel? User { get; set; } = null;
+    public UserAndSecretSantaViewModel? User { get; set; } = null;
     public UserViewModel? SecretSanta { get; set; } = null;
     public SecretSantaStatus? PersonBuyingForThem { get; set; } = SecretSantaStatus.Unassigned;
     public string ErrorMessage { get; set; } = string.Empty;

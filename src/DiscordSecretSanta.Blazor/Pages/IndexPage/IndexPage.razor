@@ -1,10 +1,12 @@
 ﻿@page "/"
 @using DiscordSecretSanta.Core.Validators
+@using DiscordSecretSanta.Blazor.Pages.IndexPage.Components
 @using FluentValidation
 @inject IUserLoginViewHandler ViewModelHandler
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<IndexPageResources> Translate
 @inject IJSRuntime Javascript
+@inject IModalService ModalService
 
 @if (_viewModel is null)
 {
@@ -48,38 +50,22 @@ else
             @if (_viewModel.PersonBuyingForThem is not null)
             {
                 <Column ColumnSize="ColumnSize.Is6">
-                    <CenterBlock Title="@Translate["Your Secret Santa"]">
-                        <Div Margin="Margin.Is3.FromBottom">
-                            <SecretSantaView 
-                                IsSmall="true"
-                                User="@_viewModel.SecretSanta"
-                            />
-                        </Div>
-                        
-                        @if (_viewModel.SecretSanta?.HasWishlist ?? false)
-                        {
-                            <FullWidthButton
-                                Color="Color.Primary"
-                                Clicked="@(async () => await ViewTheirWishlist())">
-                                @Translate["View their wishlist"]
-                            </FullWidthButton>
-                        }
-                        else
-                        {
-                            <Alert Color="Color.Danger"Visible>
-                                <AlertMessage>@Translate["User does not have a wishlist"]</AlertMessage>
-                            </Alert>
-                        }
-                    </CenterBlock>
+                    <YourSecretSanta 
+                        User="@_viewModel.SecretSanta"
+                        Status="@_viewModel.User!.SecretSantaStatus"
+                        OnPostedClicked="@UpdateSecretSantaStatus"
+                        ViewTheirWishlist="@ViewTheirWishlist"
+                    />
                 </Column>
             }
             
             @if (_viewModel.PersonBuyingForThem is not null)
             {
                 <Column ColumnSize="ColumnSize.Is6">
-                    <CenterBlock Title="@Translate["Your Gift"]">
-                        <StatusBadge Status="@_viewModel.PersonBuyingForThem" Large="true"/>    
-                    </CenterBlock>
+                    <YourGift 
+                        Status="@_viewModel.PersonBuyingForThem"
+                        SetGiftAsDelivered="@SetMyGiftAsDelivered"
+                    />
                 </Column>
             }
         </Row>

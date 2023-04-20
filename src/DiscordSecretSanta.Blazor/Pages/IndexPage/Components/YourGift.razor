@@ -1,0 +1,22 @@
+﻿@inject IStringLocalizer<IndexPageResources> Translate
+
+<CenterBlock Title="@Translate["Your Gift"]">
+    <StatusBadge Status="@Status" Large="true"/>
+    
+    @if (Status is SecretSantaStatus.Assigned or SecretSantaStatus.Posted)
+    {
+        <FullWidthButton
+            Color="Color.Success"
+            Clicked="@(async () => await SetGiftAsDelivered())">
+            @Translate["Gift has arrived"]
+        </FullWidthButton>
+    }
+</CenterBlock>
+
+@code {
+    [Parameter]
+    public SecretSantaStatus? Status { get; set; }
+    
+    [Parameter]
+    public Func<Task> SetGiftAsDelivered { get; set; }
+}

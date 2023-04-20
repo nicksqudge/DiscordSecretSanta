@@ -1,0 +1,33 @@
+﻿@inject IModalService ModalService
+@inject IStringLocalizer<SharedResources> Translate
+
+<ModalHeader Background="Background.Light">
+    <ModalTitle>@Translate["Select Status"]</ModalTitle>
+    <CloseButton />
+</ModalHeader>
+<ModalBody Background="Background.Light">
+    @foreach (var status in AvailableStatuses)
+    {
+        <FullWidthButton
+            Clicked="@(async () => await Select(status))"
+            Color="@StatusHelper.GetColourForStatus(status)"
+        >@(Translate.GetShortText(status))</FullWidthButton>
+    }
+</ModalBody>
+
+@code {
+    [Parameter]
+    public SecretSantaStatus Current { get; set; }
+    
+    [Parameter]
+    public List<SecretSantaStatus> AvailableStatuses { get; set; }
+    
+    [Parameter]
+    public Func<SecretSantaStatus, Task> OnSelect { get; set; }
+
+    private async Task Select(SecretSantaStatus status)
+    {
+        await OnSelect.Invoke(status);
+        await ModalService.Hide();
+    }
+}

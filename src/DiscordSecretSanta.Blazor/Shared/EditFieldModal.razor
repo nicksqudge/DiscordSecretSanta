@@ -6,7 +6,7 @@
     <CloseButton />
 </ModalHeader>
 <ModalBody Background="Background.Light">
-    <Validations Mode="ValidationMode.Auto" @ref="validations">
+    <Validations Mode="ValidationMode.Auto" @ref="_validations">
         <Validation Validator="@ValidationWrapper">
             <Field>
                 <FieldLabel>@Label</FieldLabel>
@@ -21,7 +21,7 @@
 </ModalBody>
 <ModalFooter Background="Background.Dark">
     <Button Type="ButtonType.Link" Clicked="Cancel">@Translate["Cancel"]</Button>
-    <Button Color="Color.Primary" Clicked="Confirm" Disabled="!isDoneButtonEnabled">@Translate["Done"]</Button>
+    <Button Color="Color.Primary" Clicked="Confirm" Disabled="@(!_isDoneButtonEnabled)">@Translate["Done"]</Button>
 </ModalFooter>
     
 @code {
@@ -40,13 +40,13 @@
     [Parameter]
     public EventCallback<string> OnSubmit { get; set; }
 
-    bool isDoneButtonEnabled = false;
-    Validations validations;
+    bool _isDoneButtonEnabled = false;
+    Validations _validations;
 
     void ValidationWrapper(ValidatorEventArgs e)
     {
         Validator(e);
-        isDoneButtonEnabled = e.Status == ValidationStatus.Success;
+        _isDoneButtonEnabled = e.Status == ValidationStatus.Success;
     }
 
     private async Task Confirm()

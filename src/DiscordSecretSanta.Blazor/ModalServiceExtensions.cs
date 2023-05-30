@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace DiscordSecretSanta.Blazor;
 
-public static class DialogServiceExtensions
+public static class ModalServiceExtensions
 {
     public static Task<ModalInstance> ShowSelectStatusModal(this IModalService modalService, SecretSantaStatus current, IEnumerable<SecretSantaStatus> available, Func<SecretSantaStatus, Task> onSelect)
     {

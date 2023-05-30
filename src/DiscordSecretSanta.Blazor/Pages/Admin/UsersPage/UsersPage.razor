@@ -8,6 +8,7 @@
 @inject IAssignSecretSantas AssignSecretSantas
 @inject IStringLocalizer<UsersPageResources> Translate
 @inject INotificationService NotificationService
+@inject IModalService ModalService
 
 @if (_viewModel is null)
 {
@@ -78,6 +79,9 @@ else
                                 <div class="mb-2">
                                     <Header HeadingType="Header.HeaderType.MainHeader">@Translate["Is Buying For"]</Header>
                                     <SecretSantaView User="@_buyingFor"/>
+                                    <SimpleButton 
+                                        Clicked="@(() => ShowSelectStatusModal(_currentUser.UserId, _buyingFor.UserId, _buyingFor.SecretSantaStatus))"
+                                    >Set Status</SimpleButton>
                                 </div>
                             }
                             
@@ -86,6 +90,9 @@ else
                                 <div class="mb-2">
                                     <Header HeadingType="Header.HeaderType.MainHeader">@Translate["Is being bought for by"]</Header>
                                     <SecretSantaView User="@_beingBoughtBy"/>
+                                    <SimpleButton 
+                                        Clicked="@(() => ShowSelectStatusModal(_beingBoughtBy.UserId, _currentUser.UserId, _beingBoughtBy.SecretSantaStatus))"
+                                    >Set Status</SimpleButton>
                                 </div>
                             }
                         }
@@ -257,5 +264,19 @@ else
             e.Status = ValidationStatus.Error;
             e.ErrorText = result.Errors.First().ErrorMessage;
         }
+    }
+
+    async Task ShowSelectStatusModal(string userId, string targetUserId, SecretSantaStatus currentStatus)
+    {
+        await ModalService.ShowSelectStatusModal(
+            currentStatus,
+            new List<SecretSantaStatus>()
+            {
+                SecretSantaStatus.Assigned,
+                SecretSantaStatus.Posted,
+                SecretSantaStatus.Arrived
+            },
+            async (status) => _viewModel = await ViewModelHandler.SetStatus(_viewModel, new UserId(userId), new UserId(targetUserId), status, CancellationToken.None)
+        );
     }
 }

@@ -14,6 +14,9 @@ public interface IAdminUsersViewHandler
 
     Task<AdminUsersViewModel> SetUserWishlistUrl(AdminUsersViewModel context, UserId userId, string wishlistUrl,
         CancellationToken cancellationToken);
+
+    Task<AdminUsersViewModel> SetStatus(AdminUsersViewModel context, UserId userId, UserId targetId, SecretSantaStatus status,
+        CancellationToken cancellationToken);
 }
 
 public class AdminUsersViewHandler : IAdminUsersViewHandler
@@ -73,6 +76,15 @@ public class AdminUsersViewHandler : IAdminUsersViewHandler
 
         return ModifyUser(context, userId, user => user.WishlistUrl = wishlistUrl);
     }
+    
+    public async Task<AdminUsersViewModel> SetStatus(AdminUsersViewModel context, UserId userId, UserId targetId, SecretSantaStatus status, CancellationToken cancellationToken)
+    {
+        var result = await _userRepository.UpdateSecretSanta(userId, targetId, status, cancellationToken);
+        if (result.IsFailure)
+            context.ErrorMessage = "CouldNotUpdateStatus";
+        
+        return ModifyUser(context, userId, user => user.SecretSantaStatus = status);
+    }
 
     private AdminUsersViewModel NotAuthorised()
     {
@@ -83,7 +95,7 @@ public class AdminUsersViewHandler : IAdminUsersViewHandler
         };
     }
 
-    private AdminUsersViewModel ModifyUser(AdminUsersViewModel context, UserId userId, Action<UserViewModel> changeAction)
+    private AdminUsersViewModel ModifyUser(AdminUsersViewModel context, UserId userId, Action<UserAndSecretSantaViewModel> changeAction)
     {
         var users = context.Users.ToList();
         var user = users.FirstOrDefault(u => u.UserId == userId.Value);

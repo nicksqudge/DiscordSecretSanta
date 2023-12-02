@@ -72,11 +72,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "DiscordSecretSanta:build:production"
+              "buildTarget": "DiscordSecretSanta:build:production"
             },
             "development": {
-              "browserTarget": "DiscordSecretSanta:build:development",
-              "proxyConfig": "proxy.conf.js"
+              "proxyConfig": "proxy.conf.js",
+              "buildTarget": "DiscordSecretSanta:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -84,7 +84,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "DiscordSecretSanta:build"
+            "buildTarget": "DiscordSecretSanta:build"
           }
         },
         "test": {

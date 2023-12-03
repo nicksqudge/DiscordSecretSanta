@@ -1,14 +1,17 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 
 namespace DiscordSecretSanta.Domain.Database;
 
 internal class DatabaseHealthCheck : IHealthCheck
 {
     private readonly IDatabaseHealthChecks _dbHealthCheck;
+    private readonly ILogger<DatabaseHealthCheck> _logger;
 
-    public DatabaseHealthCheck(IDatabaseHealthChecks dbHealthCheck)
+    public DatabaseHealthCheck(IDatabaseHealthChecks dbHealthCheck, ILogger<DatabaseHealthCheck> logger)
     {
         _dbHealthCheck = dbHealthCheck;
+        _logger = logger;
     }
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
@@ -17,8 +20,12 @@ internal class DatabaseHealthCheck : IHealthCheck
         var isHealthy = await _dbHealthCheck.CanConnectToDatabase();
 
         if (isHealthy)
+        {
+            _logger.LogDebug("Database connection is healthy");
             return HealthCheckResult.Healthy();
+        }
 
+        _logger.LogError("No database connection");
         return HealthCheckResult.Unhealthy("NO_DATABASE");
     }
 }

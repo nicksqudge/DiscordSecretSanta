@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Castle.Core.Logging;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,11 @@ public class TestApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureAppConfiguration(config => { });
 
-        builder.ConfigureTestServices(services => { _setup?.Invoke(services); });
+        builder.ConfigureTestServices(services =>
+        {
+            services.AddTransient<ILoggerFactory, NullLogFactory>();
+            _setup?.Invoke(services);
+        });
 
         builder.UseEnvironment("Development");
     }

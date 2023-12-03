@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using DiscordSecretSanta.Controllers;
 using DiscordSecretSanta.Domain.Database;
-using NSubstitute;
 
 namespace DiscordSecretSanta.Tests.Controllers;
 
@@ -11,10 +10,7 @@ public class GetHealth : ApiTestFixture
     public async Task AllWorking()
     {
         // ARRANGE
-        var dbHealthCheck = Substitute.For<IDatabaseHealthChecks>();
-        dbHealthCheck.CanConnectToDatabase()
-            .ReturnsForAnyArgs(true);
-        using var api = CreateClient();
+        using var api = CreateClient(services => services.AddDatabaseHealthCheck<AllGoodHealthCheck>());
 
         // ACT
         var response = await api.GetAsync(RootController.HealthRoute);
@@ -29,11 +25,7 @@ public class GetHealth : ApiTestFixture
     public async Task DatabaseNotSetup()
     {
         // ARRANGE
-        var dbHealthCheck = Substitute.For<IDatabaseHealthChecks>();
-        dbHealthCheck.CanConnectToDatabase()
-            .ReturnsForAnyArgs(false);
-
-        using var api = CreateClient(services => { services.AddDatabaseHealthCheck(dbHealthCheck); });
+        using var api = CreateClient(services => services.AddDatabaseHealthCheck<NoDatabaseConnectionHealthCheck>());
 
         // ACT
         var response = await api.GetAsync(RootController.HealthRoute);
@@ -42,5 +34,31 @@ public class GetHealth : ApiTestFixture
         await response.Should()
             .HaveStatusCode(HttpStatusCode.ServiceUnavailable)
             .And.HaveContent("Unhealthy");
+    }
+
+    private class NoDatabaseConnectionHealthCheck : IDatabaseHealthChecks
+    {
+        public Task<bool> CanConnectToDatabase()
+        {
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> HasDatabaseBeenSetup()
+        {
+            return Task.FromResult(true);
+        }
+    }
+
+    private class AllGoodHealthCheck : IDatabaseHealthChecks
+    {
+        public Task<bool> CanConnectToDatabase()
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> HasDatabaseBeenSetup()
+        {
+            return Task.FromResult(true);
+        }
     }
 }

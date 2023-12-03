@@ -1,4 +1,5 @@
 ﻿using DiscordSecretSanta.Controllers;
+using DiscordSecretSanta.Domain;
 
 namespace DiscordSecretSanta.Configure.HealthChecks;
 
@@ -6,7 +7,10 @@ public static class HealthCheckStartup
 {
     public static IServiceCollection HealthCheck(this IServiceCollection services)
     {
-        services.AddHealthChecks();
+        services
+            .AddHealthChecks()
+            .DomainHealthChecks();
+
         return services;
     }
 

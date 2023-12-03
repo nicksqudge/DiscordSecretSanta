@@ -1,10 +1,10 @@
 ﻿using System.Net;
-using DiscordSecretSanta.Controllers;
+using DiscordSecretSanta.Configure.HealthChecks;
 using DiscordSecretSanta.Domain.Database;
 
 namespace DiscordSecretSanta.Tests.Controllers;
 
-public class GetHealth : ApiTestFixture
+public class HealthController : ApiTestFixture
 {
     [Test]
     public async Task AllWorking()
@@ -13,12 +13,12 @@ public class GetHealth : ApiTestFixture
         using var api = CreateClient(services => services.AddDatabaseHealthCheck<AllGoodHealthCheck>());
 
         // ACT
-        var response = await api.GetAsync(RootController.HealthRoute);
+        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthController.HealthRoute);
 
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.HaveContent("Healthy");
+            .And.Match<HealthResult>(r => r.Status == "Healthy");
     }
 
     [Test]
@@ -28,12 +28,12 @@ public class GetHealth : ApiTestFixture
         using var api = CreateClient(services => services.AddDatabaseHealthCheck<NoDatabaseConnectionHealthCheck>());
 
         // ACT
-        var response = await api.GetAsync(RootController.HealthRoute);
+        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthController.HealthRoute);
 
         // ASSERT
         await response.Should()
             .HaveStatusCode(HttpStatusCode.ServiceUnavailable)
-            .And.HaveContent("Unhealthy");
+            .And.Match<HealthResult>(r => r.Status == "Unhealthy" && r.Entries.Any(x => x.Key == "database"));
     }
 
     private class NoDatabaseConnectionHealthCheck : IDatabaseHealthChecks

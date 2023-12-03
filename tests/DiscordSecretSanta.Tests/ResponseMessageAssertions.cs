@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 using FluentAssertions.Primitives;
 
 namespace DiscordSecretSanta.Tests;
@@ -30,5 +31,18 @@ public static class ResponseMessageAssertionExtensions
     public static AndConstraint<ResponseMessageAssertions> BeOk(this ResponseMessageAssertions assertions)
     {
         return assertions.HaveStatusCode(HttpStatusCode.OK);
+    }
+
+    public static async Task<AndConstraint<ResponseMessageAssertions>> Match<T>(
+        this ResponseMessageAssertions assertions, Func<T, bool> predicate)
+    {
+        var content = await assertions.Subject.Content.ReadAsStringAsync();
+
+        var result = JsonSerializer.Deserialize<T>(content);
+        result.Should().NotBeNull();
+
+        predicate.Invoke(result!).Should().BeTrue();
+
+        return new AndConstraint<ResponseMessageAssertions>(assertions);
     }
 }

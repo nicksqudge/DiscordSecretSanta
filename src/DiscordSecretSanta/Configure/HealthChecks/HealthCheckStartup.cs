@@ -1,5 +1,7 @@
 ﻿using DiscordSecretSanta.Controllers;
 using DiscordSecretSanta.Domain;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace DiscordSecretSanta.Configure.HealthChecks;
 
@@ -16,7 +18,10 @@ public static class HealthCheckStartup
 
     public static WebApplication HealthCheck(this WebApplication app)
     {
-        app.MapHealthChecks(RootController.HealthRoute);
+        app.MapHealthChecks(HealthController.HealthRoute, new HealthCheckOptions
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
         return app;
     }
 }

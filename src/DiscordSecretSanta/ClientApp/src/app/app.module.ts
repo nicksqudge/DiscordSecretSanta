@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 
 import {AppComponent} from './app.component';
+import {ThemeModule} from "./theme/theme.module";
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import {AppComponent} from './app.component';
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ThemeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

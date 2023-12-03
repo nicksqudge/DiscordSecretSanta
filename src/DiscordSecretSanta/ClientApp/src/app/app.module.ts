@@ -1,19 +1,21 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
-import {AppComponent} from './app.component';
-import {ThemeModule} from "./theme/theme.module";
+import { AppComponent } from './app.component';
+import { ThemeModule } from "./theme/theme.module";
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
+    BrowserModule,
     HttpClientModule,
     FormsModule,
+
+    // DiscordSecretSanta Modules
     ThemeModule
   ],
   providers: [],

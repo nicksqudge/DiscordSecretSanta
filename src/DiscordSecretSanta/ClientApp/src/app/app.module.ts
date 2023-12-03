@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { ThemeModule } from "./theme/theme.module";
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,9 @@ import { ThemeModule } from "./theme/theme.module";
     FormsModule,
 
     // DiscordSecretSanta Modules
-    ThemeModule
+    ThemeModule,
+
+    StoreModule.forRoot({}, {})
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -10,7 +10,8 @@
     "build": "ng build",
     "build:ssr": "ng run DiscordSecretSanta:server:dev",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test-pipeline": "ng test --no-watch --no-progress --browsers=ChromeHeadless"
   },
   "private": true,
   "dependencies": {

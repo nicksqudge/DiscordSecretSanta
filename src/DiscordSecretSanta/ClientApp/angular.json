@@ -39,7 +39,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/theme/theme.scss"
+              "src/app/theme/theme.scss"
             ],
             "scripts": []
           },

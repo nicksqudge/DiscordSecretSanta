@@ -39,7 +39,7 @@ steps:
   displayName: Npm Install
   inputs:
     command: 'install'
-    workingDir: '/src/DiscordSecretSanta/ClientApp'
+    workingDir: 'src/DiscordSecretSanta/ClientApp'
 
 - task: CmdLine@2
   displayName: Test Angular

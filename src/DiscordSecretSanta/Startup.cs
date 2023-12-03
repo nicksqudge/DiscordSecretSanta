@@ -6,14 +6,14 @@ public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddDiscordSecretSantaServices();
+        services.ConfigureDiscordSecretSantaServices();
 
         services.AddControllersWithViews();
     }
 
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
-        app.AddDiscordSecretSanta();
+        app.ConfigureDiscordSecretSanta();
 
         // Configure the HTTP request pipeline.
         if (!env.IsDevelopment())

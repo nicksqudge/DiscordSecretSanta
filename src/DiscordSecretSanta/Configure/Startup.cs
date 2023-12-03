@@ -1,16 +1,20 @@
 ﻿using DiscordSecretSanta.Configure.HealthChecks;
+using DiscordSecretSanta.Domain;
 
 namespace DiscordSecretSanta.Configure;
 
 public static class Startup
 {
-    public static void AddDiscordSecretSantaServices(this IServiceCollection services)
+    public static void ConfigureDiscordSecretSantaServices(this IServiceCollection services)
     {
-        services.AddHealthCheckServices();
+        services
+            .Domain()
+            .HealthCheck();
     }
 
-    public static void AddDiscordSecretSanta(this WebApplication app)
+    public static void ConfigureDiscordSecretSanta(this WebApplication app)
     {
-        app.ConfigureHealthChecks();
+        app
+            .HealthCheck();
     }
 }

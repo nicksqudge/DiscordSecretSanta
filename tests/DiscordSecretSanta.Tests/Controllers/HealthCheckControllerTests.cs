@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using DiscordSecretSanta.Configure.HealthChecks;
+using DiscordSecretSanta.Controllers;
 using DiscordSecretSanta.Domain.HealthCheck;
 using DiscordSecretSanta.Domain.Integrations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordSecretSanta.Tests.Controllers;
 
-public class HealthCheckController : ApiTestFixture
+public class HealthCheckControllerTests : ApiTestFixture
 {
     [Test]
     public async Task AllWorking()
@@ -19,12 +20,12 @@ public class HealthCheckController : ApiTestFixture
         });
 
         // ACT
-        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthCheckController.HealthRoute);
+        var response = await api.GetAsync(HealthCheckController.Route);
 
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.Match<HealthResult>(r => r.Status == "Healthy");
+            .And.MatchesResponse<HealthResult>(r => r.Status == "Healthy");
     }
 
     [Test]
@@ -38,13 +39,13 @@ public class HealthCheckController : ApiTestFixture
         });
 
         // ACT
-        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthCheckController.HealthRoute);
+        var response = await api.GetAsync(HealthCheckController.Route);
 
         // ASSERT
         await response.Should()
             .HaveStatusCode(HttpStatusCode.ServiceUnavailable)
-            .And.Match<HealthResult>(r => r.Status == "Unhealthy" &&
-                                          r.Entries.Any(x => x.Key == "database"));
+            .And.MatchesResponse<HealthResult>(r => r.Status == "Unhealthy" &&
+                                                    r.Entries.Any(x => x.Key == "database"));
     }
 
     [Test]
@@ -58,14 +59,14 @@ public class HealthCheckController : ApiTestFixture
         });
 
         // ACT
-        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthCheckController.HealthRoute);
+        var response = await api.GetAsync(HealthCheckController.Route);
 
         // ASSERT
         await response.Should()
             .HaveStatusCode(HttpStatusCode.ServiceUnavailable)
-            .And.Match<HealthResult>(r => r.Status == "Unhealthy" &&
-                                          r.Entries.Any(x =>
-                                              x.Key == "discord" && x.Value.Description == "Partial Outage"));
+            .And.MatchesResponse<HealthResult>(r => r.Status == "Unhealthy" &&
+                                                    r.Entries.Any(x =>
+                                                        x.Key == "discord" && x.Value.Description == "Partial Outage"));
     }
 
     private class NoDatabaseConnectionHealthCheck : IDatabaseHealthChecks

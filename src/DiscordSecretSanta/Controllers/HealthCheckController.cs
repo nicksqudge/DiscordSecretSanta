@@ -1,6 +1,8 @@
-﻿namespace DiscordSecretSanta.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public class HealthCheckController
+namespace DiscordSecretSanta.Controllers;
+
+public class HealthCheckController : ControllerBase
 {
-    public static string HealthRoute = "/health";
+    public const string HealthRoute = "/health";
 }

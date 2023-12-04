@@ -24,13 +24,10 @@ public class Startup
         app.UseStaticFiles();
         app.UseRouting();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllerRoute(
-                "default",
-                "{controller}/{action=Index}/{id?}");
+        app.MapControllerRoute(
+            "default",
+            "{controller}/{action=Index}/{id?}");
 
-            endpoints.MapFallbackToFile("index.html");
-        });
+        app.MapFallbackToFile("index.html");
     }
 }

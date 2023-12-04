@@ -1,4 +1,4 @@
-﻿using DiscordSecretSanta.Domain.Database;
+﻿using DiscordSecretSanta.Domain.HealthCheck;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordSecretSanta.Domain;

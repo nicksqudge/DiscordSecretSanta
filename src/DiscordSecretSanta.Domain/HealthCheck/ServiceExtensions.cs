@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace DiscordSecretSanta.Domain.Database;
+namespace DiscordSecretSanta.Domain.HealthCheck;
 
 public static class ServiceExtensions
 {

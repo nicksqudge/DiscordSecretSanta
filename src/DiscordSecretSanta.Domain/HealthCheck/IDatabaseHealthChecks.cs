@@ -1,4 +1,4 @@
-﻿namespace DiscordSecretSanta.Domain.Database;
+﻿namespace DiscordSecretSanta.Domain.HealthCheck;
 
 public interface IDatabaseHealthChecks
 {

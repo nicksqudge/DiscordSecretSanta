@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using DiscordSecretSanta.Configure.HealthChecks;
-using DiscordSecretSanta.Domain.Database;
+using DiscordSecretSanta.Domain.HealthCheck;
 
 namespace DiscordSecretSanta.Tests.Controllers;
 
-public class HealthController : ApiTestFixture
+public class HealthCheckController : ApiTestFixture
 {
     [Test]
     public async Task AllWorking()
@@ -13,7 +13,7 @@ public class HealthController : ApiTestFixture
         using var api = CreateClient(services => services.AddDatabaseHealthCheck<AllGoodHealthCheck>());
 
         // ACT
-        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthController.HealthRoute);
+        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthCheckController.HealthRoute);
 
         // ASSERT
         await response.Should()
@@ -28,7 +28,7 @@ public class HealthController : ApiTestFixture
         using var api = CreateClient(services => services.AddDatabaseHealthCheck<NoDatabaseConnectionHealthCheck>());
 
         // ACT
-        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthController.HealthRoute);
+        var response = await api.GetAsync(DiscordSecretSanta.Controllers.HealthCheckController.HealthRoute);
 
         // ASSERT
         await response.Should()

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
-namespace DiscordSecretSanta.Domain.Database;
+namespace DiscordSecretSanta.Domain.HealthCheck;
 
 internal class DatabaseHealthCheck : IHealthCheck
 {

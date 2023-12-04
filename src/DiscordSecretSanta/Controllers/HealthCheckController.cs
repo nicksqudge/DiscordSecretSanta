@@ -1,6 +1,6 @@
 ﻿namespace DiscordSecretSanta.Controllers;
 
-public class HealthController
+public class HealthCheckController
 {
     public static string HealthRoute = "/health";
 }

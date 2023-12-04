@@ -18,7 +18,7 @@ public static class HealthCheckStartup
 
     public static WebApplication HealthCheck(this WebApplication app)
     {
-        app.MapHealthChecks(HealthController.HealthRoute, new HealthCheckOptions
+        app.MapHealthChecks(HealthCheckController.HealthRoute, new HealthCheckOptions
         {
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });

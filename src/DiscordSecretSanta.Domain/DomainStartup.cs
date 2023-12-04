@@ -12,7 +12,9 @@ public static class DomainStartup
 
     public static IHealthChecksBuilder DomainHealthChecks(this IHealthChecksBuilder builder)
     {
-        builder.AddCheck<DatabaseHealthCheck>("database");
+        builder.AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.HealthCheckKey);
+        builder.AddCheck<DiscordStatusHealthCheck>(DiscordStatusHealthCheck.HealthCheckKey);
+
         return builder;
     }
 }

@@ -5,6 +5,7 @@ namespace DiscordSecretSanta.Domain.HealthCheck;
 
 internal class DatabaseHealthCheck : IHealthCheck
 {
+    public const string HealthCheckKey = "database";
     private readonly IDatabaseHealthChecks _dbHealthCheck;
     private readonly ILogger<DatabaseHealthCheck> _logger;
 

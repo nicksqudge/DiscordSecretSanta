@@ -21,7 +21,7 @@ describe('Setup', () => {
     cy.contains('To setup Discord Secret Santa, you will need to login. This will set your account as an administrator and you can continue the setup process');
   });
 
-  it('Has a user but no campaign so should prompt the user to enter details', () => {
+  it('Has a user but no campaign and it is the user viewing it so should prompt the user to enter details', () => {
     // ARRANGE
 
     // ACT
@@ -32,13 +32,13 @@ describe('Setup', () => {
     cy.contains('You have not setup a campaign, please enter your Discord Secret Santa campaign details below');
   });
 
-  it('Has a campaign setup so should show the campaign homepage', () => {
+  it('Has a user but its not the currently viewing user so should show a waiting message', () => {
     // ARRANGE
 
     // ACT
     cy.visit('/');
 
     // ASSERT
-    cy.contains('CampaignHome Works!');
+    cy.contains('Hold your horses! The campaign isn\'t setup yet, please contact AdminUserName on ServerName if you are expecting access');
   });
 })

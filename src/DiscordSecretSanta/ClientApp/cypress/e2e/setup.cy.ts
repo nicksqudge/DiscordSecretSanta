@@ -1,4 +1,15 @@
 describe('Setup', () => {
+  it('Has no discord configuration so prompt the user to update it', () => {
+    // ARRANGE
+
+    // ACT
+    cy.visit('/');
+
+    // ASSERT
+    cy.contains('Setup');
+    cy.contains('Your configuration details are incorrect, please view the ReadMe Setup Guide for more information');
+  });
+
   it('Has no users so should prompt for user to login', () => {
     // ARRANGE
 

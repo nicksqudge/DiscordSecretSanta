@@ -48,3 +48,11 @@ steps:
       cd src/DiscordSecretSanta/ClientApp
       
       npm run test-pipeline
+      
+- task: CmdLine@2
+  displayName: Test E2E
+  inputs:
+    script: |
+      cd src/DiscordSecretSanta/ClientApp
+      
+      npm run e2e

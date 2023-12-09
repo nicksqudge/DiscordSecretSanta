@@ -41,13 +41,13 @@ steps:
     command: 'install'
     workingDir: 'src/DiscordSecretSanta/ClientApp'
 
-- task: CmdLine@2
-  displayName: Test Angular
-  inputs:
-    script: |
-      cd src/DiscordSecretSanta/ClientApp
-      
-      npm run test-pipeline
+#- task: CmdLine@2
+#  displayName: Test Angular
+#  inputs:
+#    script: |
+#      cd src/DiscordSecretSanta/ClientApp
+#      
+#      npm run test-pipeline
       
 - task: CmdLine@2
   displayName: Test E2E

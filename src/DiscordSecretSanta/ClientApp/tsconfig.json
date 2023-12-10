@@ -19,8 +19,25 @@
       "es2018",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "paths": {
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@request/*": [
+        "src/app/shared/requests/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ],
+      "@theme/*": [
+        "src/app/theme/*"
+      ]
+    }
   },
+  "exclude": [
+    "**/*.spec.ts"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

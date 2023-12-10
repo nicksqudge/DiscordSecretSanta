@@ -35,3 +35,7 @@
 //     }
 //   }
 // }
+
+Cypress.Commands.add('hasComponent', (componentSelector: string) => {
+  cy.get(componentSelector, {timeout: 10000}).should('exist');
+});

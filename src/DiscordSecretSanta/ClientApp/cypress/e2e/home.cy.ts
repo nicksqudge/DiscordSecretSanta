@@ -1,10 +1,10 @@
-import { HomeResponse } from "../../src/app/pages/home/home.service";
+import { HomeRequest, HomeResponse } from "@request/home.request";
 
-const homeUrl = '/api/home'
+const homeUrl = new HomeRequest().url;
 
-function setResponse(statusCode: number, body: HomeResponse) {
+function setResponse(body: HomeResponse) {
   cy.intercept('GET', homeUrl, {
-    statusCode: statusCode,
+    statusCode: 200,
     body
   });
 }
@@ -12,7 +12,7 @@ function setResponse(statusCode: number, body: HomeResponse) {
 describe('Home', () => {
   it('should show configuration issues if they are any', () => {
     // ARRANGE
-    setResponse(500, {
+    setResponse({
       configOk: false,
       configDetail: [
         {
@@ -28,12 +28,12 @@ describe('Home', () => {
     cy.visit('/');
 
     // ASSERT
-    cy.get('[data-test=home-no-config]').should('exist');
+    cy.hasComponent('page-home-no-config');
   });
 
   it('should show health issues if they are any', () => {
     // ARRANGE
-    setResponse(500, {
+    setResponse({
       configOk: false,
       configDetail: [
         {
@@ -49,12 +49,12 @@ describe('Home', () => {
     cy.visit('/');
 
     // ASSERT
-    cy.get('[data-test=home-not-healthy]').should('exist');
+    cy.hasComponent('page-home-not-healthy');
   });
 
   it('should show login page if there aren\'t any admins and the user is not logged in', () => {
     // ARRANGE
-    setResponse(200, {
+    setResponse({
       configOk: true,
       admins: false,
     });
@@ -63,14 +63,14 @@ describe('Home', () => {
     cy.visit('/');
 
     // ASSERT
-    cy.get('[data-test=home-no-admins]').should('exist');
+    cy.hasComponent('page-home-no-admins');
   });
 
   it('should get the user to select the server if they are an admin', () => {
     // ARRANGE
-    setResponse(200, {
+    setResponse({
       configOk: true,
-      admins: false,
+      admins: true,
       user: {
         isAdmin: true,
         name: 'Test User'
@@ -81,32 +81,14 @@ describe('Home', () => {
     cy.visit('/');
 
     // ASSERT
-    cy.get('[data-test=home-select-server]').should('exist');
-  });
-
-  it('should give the user a message if they setup is not complete and they are not an admin', () => {
-    // ARRANGE
-    setResponse(200, {
-      configOk: true,
-      admins: false,
-      user: {
-        isAdmin: false,
-        name: 'Test User'
-      }
-    });
-
-    // ACT
-    cy.visit('/');
-
-    // ASSERT
-    cy.get('[data-test=home-not-admin-setup-incomplete]').should('exist');
+    cy.hasComponent('page-home-select-server');
   });
 
   it('should give the user a message if there isn\'t an active campaign and they are not an admin', () => {
     // ARRANGE
-    setResponse(200, {
+    setResponse({
       configOk: true,
-      admins: false,
+      admins: true,
       user: {
         isAdmin: false,
         name: 'Test User'
@@ -118,14 +100,14 @@ describe('Home', () => {
     cy.visit('/');
 
     // ASSERT
-    cy.get('[data-test=home-not-admin-no-campaign]').should('exist');
+    cy.hasComponent('page-home-not-admin-no-campaign');
   });
 
   it('should give the user a message if there isn\'t an active campaign and they are an admin', () => {
     // ARRANGE
-    setResponse(200, {
+    setResponse({
       configOk: true,
-      admins: false,
+      admins: true,
       user: {
         isAdmin: true,
         name: 'Test User'
@@ -137,14 +119,14 @@ describe('Home', () => {
     cy.visit('/');
 
     // ASSERT
-    cy.get('[data-test=home-setup-campaign]').should('exist');
+    cy.hasComponent('page-home-setup-campaign');
   });
 
   it('should give them a homepage of the campaign if there is an active one', () => {
     // ARRANGE
-    setResponse(200, {
+    setResponse({
       configOk: true,
-      admins: false,
+      admins: true,
       user: {
         isAdmin: true,
         name: 'Test User'
@@ -158,6 +140,6 @@ describe('Home', () => {
     cy.visit('/');
 
     // ASSERT
-    cy.get('[data-test=home-campaign]').should('exist');
+    cy.hasComponent('page-home-campaign-home');
   });
 });

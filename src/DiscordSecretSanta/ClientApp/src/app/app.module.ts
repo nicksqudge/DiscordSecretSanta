@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { ThemeModule } from "./theme/theme.module";
 import { StoreModule } from '@ngrx/store';
-import { HomeModule } from "./pages/home/home.module";
+import { HomeComponent } from "./pages/home/home.component";
 
 @NgModule({
   declarations: [
@@ -22,8 +22,7 @@ import { HomeModule } from "./pages/home/home.module";
     ThemeModule,
 
     // Pages
-    HomeModule,
-
+    HomeComponent,
 
     StoreModule.forRoot({}, {})
   ],

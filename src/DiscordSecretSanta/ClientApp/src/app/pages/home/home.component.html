@@ -1,1 +1,6 @@
-<p>home works!</p>
+<ng-container *ngIf="home$ | async as home; else loading">
+  <page-home-view [input]="home"/>
+</ng-container>
+<ng-template #loading>
+  Loading...
+</ng-template>

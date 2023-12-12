@@ -8,10 +8,10 @@ import { CommonModule } from "@angular/common";
   standalone: true,
   imports: [ HomeViewComponent, CommonModule ],
   selector: 'page-home',
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  templateUrl: './home-page.component.html',
+  styleUrl: './home-page.component.scss'
 })
-export class HomeComponent {
+export class HomePageComponent {
 
   home$ = new HomeRequest().send(this.http);
 

@@ -4,9 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { ThemeModule } from "./theme/theme.module";
 import { StoreModule } from '@ngrx/store';
-import { HomeComponent } from "./pages/home/home.component";
+import { HomePageComponent } from "./pages/home/home-page.component";
 
 @NgModule({
   declarations: [
@@ -18,11 +17,8 @@ import { HomeComponent } from "./pages/home/home.component";
     FormsModule,
 
     // DiscordSecretSanta
-    // Modules
-    ThemeModule,
-
     // Pages
-    HomeComponent,
+    HomePageComponent,
 
     StoreModule.forRoot({}, {})
   ],

@@ -1,6 +1,12 @@
-<ng-container *ngIf="home$ | async as home; else loading">
-  <page-home-view [input]="home"/>
-</ng-container>
-<ng-template #loading>
-  Loading...
-</ng-template>
+<div class="grid h-screen place-items-center">
+  <theme-card class="bg-white">
+    <theme-card-body>
+      <ng-container *ngIf="home$ | async as home; else loading">
+        <page-home-view [input]="home"/>
+      </ng-container>
+      <ng-template #loading>
+        Loading...
+      </ng-template>
+    </theme-card-body>
+  </theme-card>
+</div>

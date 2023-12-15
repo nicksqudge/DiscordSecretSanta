@@ -1,0 +1,3160 @@
+{
+  "pipes": [],
+  "interfaces": [
+    {
+      "name": "ApiRequest",
+      "id": "interface-ApiRequest-0969cd90ae6cf592ffba71d91fda9ba327ce933aa230168db8fb0f2d977ab938ac6753d5f2a30e75ec795cca39726b00e864d7fb54a68d237359eeb1d126e790",
+      "file": "src/app/shared/api-request.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "interface",
+      "sourceCode": "import { HttpClient } from \"@angular/common/http\";\r\nimport { Observable } from \"rxjs\";\r\n\r\nexport interface ApiRequest<TResult> {\r\n  url: string;\r\n\r\n  send(httpClient: HttpClient): Observable<TResult>;\r\n}",
+      "properties": [
+        {
+          "name": "url",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "string",
+          "optional": false,
+          "description": "",
+          "line": 5
+        }
+      ],
+      "indexSignatures": [],
+      "kind": 173,
+      "methods": [
+        {
+          "name": "send",
+          "args": [
+            {
+              "name": "httpClient",
+              "type": "HttpClient",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "Observable<TResult>",
+          "typeParameters": [],
+          "line": 7,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "jsdoctags": [
+            {
+              "name": "httpClient",
+              "type": "HttpClient",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        }
+      ],
+      "extends": []
+    },
+    {
+      "name": "CardBodyComponentInterface",
+      "id": "interface-CardBodyComponentInterface-b4f4004f339676764380e6b7d2c60e61665d2d25cbd5719d132388d7759d214af4a515aba031b81119b3dd3669ebcd56e65183e55908d50f35ff6456eb51e6d0",
+      "file": "src/app/theme/card/card-body/card-body.component-interface.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "interface",
+      "sourceCode": "import { ComponentInterface } from \"@theme/component.interface\";\r\nimport { ComponentBuilder } from \"@theme/component-builder\";\r\n\r\nexport interface CardBodyComponentInterface extends ComponentInterface {\r\n\r\n}\r\n\r\nexport class CardBodyComponentBuilder extends ComponentBuilder<CardBodyComponentInterface> {\r\n}\r\n",
+      "properties": [],
+      "indexSignatures": [],
+      "methods": [],
+      "extends": [
+        "ComponentInterface"
+      ]
+    },
+    {
+      "name": "CardComponentInterface",
+      "id": "interface-CardComponentInterface-8ff208bde3e78380869b36ab14bfd231364fdaad92b674d5af3b657870aed79fc621a4d69491d8e5ac822012b22dc0479a299951101a32fa6e62546d86675dff",
+      "file": "src/app/theme/card/card.component-interface.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "interface",
+      "sourceCode": "import { ComponentInterface } from \"@theme/component.interface\";\r\n\r\nexport interface CardComponentInterface extends ComponentInterface {\r\n  border: boolean;\r\n  mode: CardComponentMode;\r\n}\r\n\r\nexport type CardComponentMode = \"compact\" | \"normal\";\r\n",
+      "properties": [
+        {
+          "name": "border",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "boolean",
+          "optional": false,
+          "description": "",
+          "line": 4
+        },
+        {
+          "name": "mode",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "CardComponentMode",
+          "optional": false,
+          "description": "",
+          "line": 5
+        }
+      ],
+      "indexSignatures": [],
+      "kind": 171,
+      "methods": [],
+      "extends": [
+        "ComponentInterface"
+      ]
+    },
+    {
+      "name": "ComponentInterface",
+      "id": "interface-ComponentInterface-1b371fdda76695e28ddcff15f8b865b7f2123b3ab376abdee71980670d7a29026a2a1515a1f3e0d970c8ee4827147480add7a9fd58d24110f98798886494159d",
+      "file": "src/app/theme/component.interface.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "interface",
+      "sourceCode": "export interface ComponentInterface {\r\n  class: string;\r\n}\r\n",
+      "properties": [
+        {
+          "name": "class",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "string",
+          "optional": false,
+          "description": "",
+          "line": 2
+        }
+      ],
+      "indexSignatures": [],
+      "kind": 171,
+      "methods": [],
+      "extends": []
+    },
+    {
+      "name": "ThemeBuilders",
+      "id": "interface-ThemeBuilders-4f0b2da527cb03ba3904e2a98d6966de1f1430d6ad75f7a96a2fb52e4895130b49092940959c340743d662d0da6faf5890629c2d145fb8ef7542429796377692",
+      "file": "src/app/theme/themeBuilders.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "interface",
+      "sourceCode": "import { CardComponentBuilder } from \"@theme/card/card.component-builder\";\r\nimport { ComponentBuilder } from \"@theme/component-builder\";\r\nimport { CardComponentInterface } from \"@theme/card/card.component-interface\";\r\nimport {\r\n  CardBodyComponentBuilder,\r\n  CardBodyComponentInterface\r\n} from \"@theme/card/card-body/card-body.component-interface\";\r\n\r\nexport interface ThemeBuilders {\r\n  card: {\r\n    base: ComponentBuilder<CardComponentInterface>;\r\n    body: ComponentBuilder<CardBodyComponentInterface>;\r\n  }\r\n}\r\n\r\nexport class DefaultTheme implements ThemeBuilders {\r\n  card = {\r\n    base: new CardComponentBuilder('card')\r\n      .hasBorder('card-border')\r\n      .hasNoBorder('card-no-border')\r\n      .isNormal('card-normal')\r\n      .isCompact('card-compact'),\r\n    body: new CardBodyComponentBuilder('card-body')\r\n  }\r\n}\r\n",
+      "properties": [
+        {
+          "name": "card",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "literal type",
+          "optional": false,
+          "description": "",
+          "line": 10
+        }
+      ],
+      "indexSignatures": [],
+      "kind": 171,
+      "methods": [],
+      "extends": []
+    },
+    {
+      "name": "User",
+      "id": "interface-User-9c7e5f1bbbab702cb032307d130876cb68969b0cd4eedef32a0c8cad8081a54e5f8f577ed6ad4539c1b99a1d246cb34031d198c2ea8eba440e64e91b14f01fdc",
+      "file": "src/stories/User.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "interface",
+      "sourceCode": "export interface User {}\n",
+      "properties": [],
+      "indexSignatures": [],
+      "methods": [],
+      "extends": []
+    }
+  ],
+  "injectables": [
+    {
+      "name": "ThemeService",
+      "id": "injectable-ThemeService-d69a62fab15044de732463da8da0ebeaf2413844d3de8b144fe74e98d77b127f87cbadaf2201f94264d63e294c5f6e8a1f3da0dbed2ec7baa64aed482004bd02",
+      "file": "src/app/theme/theme.service.ts",
+      "properties": [],
+      "methods": [
+        {
+          "name": "getTheme",
+          "args": [],
+          "optional": false,
+          "returnType": "ThemeBuilders",
+          "typeParameters": [],
+          "line": 10,
+          "deprecated": false,
+          "deprecationMessage": ""
+        }
+      ],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "description": "",
+      "rawdescription": "\n",
+      "sourceCode": "import { Inject, Injectable } from '@angular/core';\nimport { DefaultTheme, ThemeBuilders } from \"@theme/themeBuilders\";\n\n@Injectable()\nexport class ThemeService {\n\n  constructor(@Inject('theme') private readonly theme?: ThemeBuilders) {\n  }\n\n  getTheme(): ThemeBuilders {\n    if (this.theme)\n      return this.theme;\n\n    return new DefaultTheme();\n  }\n}\n",
+      "constructorObj": {
+        "name": "constructor",
+        "description": "",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "args": [
+          {
+            "name": "theme",
+            "type": "ThemeBuilders",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "optional": true
+          }
+        ],
+        "line": 5,
+        "jsdoctags": [
+          {
+            "name": "theme",
+            "type": "ThemeBuilders",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "optional": true,
+            "tagName": {
+              "text": "param"
+            }
+          }
+        ]
+      },
+      "extends": [],
+      "type": "injectable"
+    }
+  ],
+  "guards": [],
+  "interceptors": [],
+  "classes": [
+    {
+      "name": "CardBodyComponentBuilder",
+      "id": "class-CardBodyComponentBuilder-b4f4004f339676764380e6b7d2c60e61665d2d25cbd5719d132388d7759d214af4a515aba031b81119b3dd3669ebcd56e65183e55908d50f35ff6456eb51e6d0",
+      "file": "src/app/theme/card/card-body/card-body.component-interface.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "class",
+      "sourceCode": "import { ComponentInterface } from \"@theme/component.interface\";\r\nimport { ComponentBuilder } from \"@theme/component-builder\";\r\n\r\nexport interface CardBodyComponentInterface extends ComponentInterface {\r\n\r\n}\r\n\r\nexport class CardBodyComponentBuilder extends ComponentBuilder<CardBodyComponentInterface> {\r\n}\r\n",
+      "properties": [
+        {
+          "name": "actions",
+          "defaultValue": "[]",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "ComponentBuilderAction<TComponent>[]",
+          "optional": false,
+          "description": "",
+          "line": 4,
+          "modifierKind": [
+            123
+          ],
+          "inheritance": {
+            "file": "ComponentBuilder"
+          }
+        },
+        {
+          "name": "startingCss",
+          "defaultValue": "''",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "string",
+          "optional": false,
+          "description": "",
+          "line": 5,
+          "modifierKind": [
+            123,
+            148
+          ],
+          "inheritance": {
+            "file": "ComponentBuilder"
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "add",
+          "args": [
+            {
+              "name": "is",
+              "type": "ComponentCheck<TComponent>",
+              "deprecated": false,
+              "deprecationMessage": ""
+            },
+            {
+              "name": "cssToApply",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "void",
+          "typeParameters": [],
+          "line": 24,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            124
+          ],
+          "jsdoctags": [
+            {
+              "name": "is",
+              "type": "ComponentCheck<TComponent>",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            },
+            {
+              "name": "cssToApply",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ],
+          "inheritance": {
+            "file": "ComponentBuilder"
+          }
+        },
+        {
+          "name": "buildCss",
+          "args": [
+            {
+              "name": "component",
+              "type": "TComponent",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "string",
+          "typeParameters": [],
+          "line": 11,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ],
+          "jsdoctags": [
+            {
+              "name": "component",
+              "type": "TComponent",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ],
+          "inheritance": {
+            "file": "ComponentBuilder"
+          }
+        }
+      ],
+      "indexSignatures": [],
+      "extends": [
+        "ComponentBuilder"
+      ],
+      "inputsClass": [],
+      "outputsClass": [],
+      "hostBindings": [],
+      "hostListeners": []
+    },
+    {
+      "name": "CardComponentBuilder",
+      "id": "class-CardComponentBuilder-1dfa81b24df4e6d3967da1afedf2cdce2e13aef1fa1a2f2acf7f83bccca6318eee346be5e785cdf37b1e3814061852375e919d135c981a6634235d7dfee24317",
+      "file": "src/app/theme/card/card.component-builder.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "class",
+      "sourceCode": "import { ComponentBuilder } from \"@theme/component-builder\";\r\nimport { CardComponentInterface } from \"@theme/card/card.component-interface\";\r\n\r\nexport class CardComponentBuilder extends ComponentBuilder<CardComponentInterface> {\r\n  public isNormal(css: string): CardComponentBuilder {\r\n    this.add(c => c.mode == 'normal', css);\r\n    return this;\r\n  }\r\n\r\n  public isCompact(css: string): CardComponentBuilder {\r\n    this.add(c => c.mode == 'compact', css);\r\n    return this;\r\n  }\r\n\r\n  public hasBorder(css: string): CardComponentBuilder {\r\n    this.add(c => c.border, css);\r\n    return this;\r\n  }\r\n\r\n  public hasNoBorder(css: string): CardComponentBuilder {\r\n    this.add(c => c.border === false, css);\r\n    return this;\r\n  }\r\n}\r\n",
+      "properties": [
+        {
+          "name": "actions",
+          "defaultValue": "[]",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "ComponentBuilderAction<TComponent>[]",
+          "optional": false,
+          "description": "",
+          "line": 4,
+          "modifierKind": [
+            123
+          ],
+          "inheritance": {
+            "file": "ComponentBuilder"
+          }
+        },
+        {
+          "name": "startingCss",
+          "defaultValue": "''",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "string",
+          "optional": false,
+          "description": "",
+          "line": 5,
+          "modifierKind": [
+            123,
+            148
+          ],
+          "inheritance": {
+            "file": "ComponentBuilder"
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "hasBorder",
+          "args": [
+            {
+              "name": "css",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "CardComponentBuilder",
+          "typeParameters": [],
+          "line": 15,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ],
+          "jsdoctags": [
+            {
+              "name": "css",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        },
+        {
+          "name": "hasNoBorder",
+          "args": [
+            {
+              "name": "css",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "CardComponentBuilder",
+          "typeParameters": [],
+          "line": 20,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ],
+          "jsdoctags": [
+            {
+              "name": "css",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        },
+        {
+          "name": "isCompact",
+          "args": [
+            {
+              "name": "css",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "CardComponentBuilder",
+          "typeParameters": [],
+          "line": 10,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ],
+          "jsdoctags": [
+            {
+              "name": "css",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        },
+        {
+          "name": "isNormal",
+          "args": [
+            {
+              "name": "css",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "CardComponentBuilder",
+          "typeParameters": [],
+          "line": 5,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ],
+          "jsdoctags": [
+            {
+              "name": "css",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        },
+        {
+          "name": "add",
+          "args": [
+            {
+              "name": "is",
+              "type": "ComponentCheck<TComponent>",
+              "deprecated": false,
+              "deprecationMessage": ""
+            },
+            {
+              "name": "cssToApply",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "void",
+          "typeParameters": [],
+          "line": 24,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            124
+          ],
+          "jsdoctags": [
+            {
+              "name": "is",
+              "type": "ComponentCheck<TComponent>",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            },
+            {
+              "name": "cssToApply",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ],
+          "inheritance": {
+            "file": "ComponentBuilder"
+          }
+        },
+        {
+          "name": "buildCss",
+          "args": [
+            {
+              "name": "component",
+              "type": "TComponent",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "string",
+          "typeParameters": [],
+          "line": 11,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ],
+          "jsdoctags": [
+            {
+              "name": "component",
+              "type": "TComponent",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ],
+          "inheritance": {
+            "file": "ComponentBuilder"
+          }
+        }
+      ],
+      "indexSignatures": [],
+      "extends": [
+        "ComponentBuilder"
+      ],
+      "inputsClass": [],
+      "outputsClass": [],
+      "hostBindings": [],
+      "hostListeners": []
+    },
+    {
+      "name": "ComponentBuilder",
+      "id": "class-ComponentBuilder-1045787b234f1018283ab3150f0929373927935e3ab1e99dc3e1fd223b43712374e7f7bdb5866c865ba1e7d8803a5cd8f803d4657cce1750e29165a9c90e356f",
+      "file": "src/app/theme/component-builder.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "class",
+      "sourceCode": "import { ComponentInterface } from \"@theme/component.interface\";\r\n\r\nexport abstract class ComponentBuilder<TComponent extends ComponentInterface> {\r\n  private actions: ComponentBuilderAction<TComponent>[] = [];\r\n  private readonly startingCss: string = '';\r\n\r\n  constructor(startingCss: string = '') {\r\n    this.startingCss = startingCss;\r\n  }\r\n\r\n  public buildCss(component: TComponent): string {\r\n    let result = this.startingCss;\r\n    for (const action of this.actions) {\r\n      if (action.is(component))\r\n        result += \" \" + action.cssToApply;\r\n    }\r\n\r\n    if (component.class)\r\n      result += \" \" + component.class;\r\n\r\n    return result;\r\n  }\r\n\r\n  protected add(is: ComponentCheck<TComponent>, cssToApply: string): void {\r\n    this.actions.push({\r\n      is,\r\n      cssToApply\r\n    });\r\n  }\r\n}\r\n\r\nexport type ComponentCheck<TComponent> = (component: TComponent) => boolean;\r\n\r\nexport type ComponentBuilderAction<TComponent> = {\r\n  is: ComponentCheck<TComponent>;\r\n  cssToApply: string;\r\n}\r\n",
+      "constructorObj": {
+        "name": "constructor",
+        "description": "",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "args": [
+          {
+            "name": "startingCss",
+            "type": "string",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "defaultValue": "''"
+          }
+        ],
+        "line": 5,
+        "jsdoctags": [
+          {
+            "name": "startingCss",
+            "type": "string",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "defaultValue": "''",
+            "tagName": {
+              "text": "param"
+            }
+          }
+        ]
+      },
+      "properties": [
+        {
+          "name": "actions",
+          "defaultValue": "[]",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "ComponentBuilderAction<TComponent>[]",
+          "optional": false,
+          "description": "",
+          "line": 4,
+          "modifierKind": [
+            123
+          ]
+        },
+        {
+          "name": "startingCss",
+          "defaultValue": "''",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "string",
+          "optional": false,
+          "description": "",
+          "line": 5,
+          "modifierKind": [
+            123,
+            148
+          ]
+        }
+      ],
+      "methods": [
+        {
+          "name": "add",
+          "args": [
+            {
+              "name": "is",
+              "type": "ComponentCheck<TComponent>",
+              "deprecated": false,
+              "deprecationMessage": ""
+            },
+            {
+              "name": "cssToApply",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "void",
+          "typeParameters": [],
+          "line": 24,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            124
+          ],
+          "jsdoctags": [
+            {
+              "name": "is",
+              "type": "ComponentCheck<TComponent>",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            },
+            {
+              "name": "cssToApply",
+              "type": "string",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        },
+        {
+          "name": "buildCss",
+          "args": [
+            {
+              "name": "component",
+              "type": "TComponent",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "string",
+          "typeParameters": [],
+          "line": 11,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ],
+          "jsdoctags": [
+            {
+              "name": "component",
+              "type": "TComponent",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        }
+      ],
+      "indexSignatures": [],
+      "extends": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "hostBindings": [],
+      "hostListeners": []
+    },
+    {
+      "name": "DaisyTheme",
+      "id": "class-DaisyTheme-a9b8ed97b16fcbd4eb510483f76f35a55521b9c26eedf46ca2f81c1b08f0b02126a9641360c057807b1dd6a113eb1be36e39d0c4c0fa4c8c860b3a09e43964cf",
+      "file": "src/app/theme/daisy.theme.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "class",
+      "sourceCode": "import { ThemeBuilders } from \"@theme/themeBuilders\";\r\nimport { CardComponentBuilder } from \"@theme/card/card.component-builder\";\r\nimport { CardBodyComponentBuilder } from \"@theme/card/card-body/card-body.component-interface\";\r\n\r\nexport class DaisyTheme implements ThemeBuilders {\r\n  card = {\r\n    base: new CardComponentBuilder('card')\r\n      .isNormal('card-normal')\r\n      .isCompact('card-compact')\r\n      .hasBorder('card-bordered'),\r\n    body: new CardBodyComponentBuilder('card-body')\r\n  }\r\n}\r\n",
+      "properties": [
+        {
+          "name": "card",
+          "defaultValue": "{\r\n    base: new CardComponentBuilder('card')\r\n      .isNormal('card-normal')\r\n      .isCompact('card-compact')\r\n      .hasBorder('card-bordered'),\r\n    body: new CardBodyComponentBuilder('card-body')\r\n  }",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "object",
+          "optional": false,
+          "description": "",
+          "line": 6
+        }
+      ],
+      "methods": [],
+      "indexSignatures": [],
+      "extends": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "hostBindings": [],
+      "hostListeners": [],
+      "implements": [
+        "ThemeBuilders"
+      ]
+    },
+    {
+      "name": "DefaultTheme",
+      "id": "class-DefaultTheme-4f0b2da527cb03ba3904e2a98d6966de1f1430d6ad75f7a96a2fb52e4895130b49092940959c340743d662d0da6faf5890629c2d145fb8ef7542429796377692",
+      "file": "src/app/theme/themeBuilders.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "class",
+      "sourceCode": "import { CardComponentBuilder } from \"@theme/card/card.component-builder\";\r\nimport { ComponentBuilder } from \"@theme/component-builder\";\r\nimport { CardComponentInterface } from \"@theme/card/card.component-interface\";\r\nimport {\r\n  CardBodyComponentBuilder,\r\n  CardBodyComponentInterface\r\n} from \"@theme/card/card-body/card-body.component-interface\";\r\n\r\nexport interface ThemeBuilders {\r\n  card: {\r\n    base: ComponentBuilder<CardComponentInterface>;\r\n    body: ComponentBuilder<CardBodyComponentInterface>;\r\n  }\r\n}\r\n\r\nexport class DefaultTheme implements ThemeBuilders {\r\n  card = {\r\n    base: new CardComponentBuilder('card')\r\n      .hasBorder('card-border')\r\n      .hasNoBorder('card-no-border')\r\n      .isNormal('card-normal')\r\n      .isCompact('card-compact'),\r\n    body: new CardBodyComponentBuilder('card-body')\r\n  }\r\n}\r\n",
+      "properties": [
+        {
+          "name": "card",
+          "defaultValue": "{\r\n    base: new CardComponentBuilder('card')\r\n      .hasBorder('card-border')\r\n      .hasNoBorder('card-no-border')\r\n      .isNormal('card-normal')\r\n      .isCompact('card-compact'),\r\n    body: new CardBodyComponentBuilder('card-body')\r\n  }",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "object",
+          "optional": false,
+          "description": "",
+          "line": 17
+        }
+      ],
+      "methods": [],
+      "indexSignatures": [],
+      "extends": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "hostBindings": [],
+      "hostListeners": [],
+      "implements": [
+        "ThemeBuilders"
+      ]
+    },
+    {
+      "name": "HomeRequest",
+      "id": "class-HomeRequest-6c563e8aff867d7ccb2d30cc2c4d2de6c8ef6f397fec042d14152f07ac16cb932cd4b01727f249496419515c59030907f678d9ed0ed63d604fa01c6fb2df301b",
+      "file": "src/app/shared/requests/home.request.ts",
+      "deprecated": false,
+      "deprecationMessage": "",
+      "type": "class",
+      "sourceCode": "import { ApiRequest } from \"../api-request\";\r\nimport { HttpClient } from \"@angular/common/http\";\r\nimport { Observable } from \"rxjs\";\r\n\r\nexport class HomeRequest implements ApiRequest<HomeResponse> {\r\n  url: string = '/api/home';\r\n\r\n  send(httpClient: HttpClient): Observable<HomeResponse> {\r\n    return httpClient.get<HomeResponse>(this.url);\r\n  }\r\n}\r\n\r\nexport type HomeResponse = Readonly<{\r\n  // If true then the config is okay if not then config detail is populated\r\n  configOk: boolean;\r\n\r\n  // Only populated if config is not okay\r\n  configDetail?: ReadonlyArray<HomeConfigResponse>;\r\n\r\n  // Are there any admins setup on the platform\r\n  admins: boolean;\r\n\r\n  // The details of the user\r\n  user?: HomeUserResponse;\r\n\r\n  // The details of an active campaign\r\n  activeCampaign?: HomeCampaignResponse;\r\n}>;\r\n\r\nexport type HomeConfigResponse = Readonly<{\r\n  key: string;\r\n  healthy: boolean;\r\n  reason: string;\r\n}>;\r\n\r\nexport type HomeUserResponse = Readonly<{\r\n  name: string;\r\n  isAdmin: boolean;\r\n}>\r\n\r\nexport type HomeCampaignResponse = Readonly<{\r\n  name: string;\r\n}>;\r\n",
+      "properties": [
+        {
+          "name": "url",
+          "defaultValue": "'/api/home'",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "string",
+          "optional": false,
+          "description": "",
+          "line": 6
+        }
+      ],
+      "methods": [
+        {
+          "name": "send",
+          "args": [
+            {
+              "name": "httpClient",
+              "type": "HttpClient",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "Observable<HomeResponse>",
+          "typeParameters": [],
+          "line": 8,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "jsdoctags": [
+            {
+              "name": "httpClient",
+              "type": "HttpClient",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        }
+      ],
+      "indexSignatures": [],
+      "extends": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "hostBindings": [],
+      "hostListeners": [],
+      "implements": [
+        "ApiRequest"
+      ]
+    }
+  ],
+  "directives": [],
+  "components": [
+    {
+      "name": "AppComponent",
+      "id": "component-AppComponent-549e500df725fb5b5ed0758ea2d5ca574a298c5079c7c61f6d496f117408c8d996093b423d0f1bb5c937c0c05d4dc79d88acf2c569deebdb65e3d9983fa46e06",
+      "file": "src/app/app.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "app-root",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./app.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [
+        {
+          "name": "title",
+          "defaultValue": "'app'",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "string",
+          "optional": false,
+          "description": "",
+          "line": 8
+        }
+      ],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": false,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'app-root',\r\n  templateUrl: './app.component.html'\r\n})\r\nexport class AppComponent {\r\n  title = 'app';\r\n}\r\n",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<page-home></page-home>\r\n"
+    },
+    {
+      "name": "ButtonComponent",
+      "id": "component-ButtonComponent-a53fd738b978780d39fb5fcc9ae4cfe0088e57a1f6ce674862d57dab9192140bd1c05548a9910db0469a431142886e658ff2e761f15781b2ad430e58d64724d0",
+      "file": "src/stories/button.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "storybook-button",
+      "styleUrls": [
+        "./button.css"
+      ],
+      "styles": [],
+      "template": "<button   type=\"button\"\n   (click)=\"onClick.emit($event)\"\n   [ngClass]=\"classes\"\n   [ngStyle]=\"{ 'background-color': backgroundColor }\"\n >\n   {{ label }}\n </button>",
+      "templateUrl": [],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [
+        {
+          "name": "backgroundColor",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "rawdescription": "\n\nWhat background color to use\n",
+          "description": "<p>What background color to use</p>\n",
+          "line": 28,
+          "type": "string",
+          "decorators": []
+        },
+        {
+          "name": "label",
+          "defaultValue": "'Button'",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "jsdoctags": [
+            {
+              "pos": 786,
+              "end": 799,
+              "flags": 16842752,
+              "modifierFlagsCache": 0,
+              "transformFlags": 0,
+              "kind": 334,
+              "tagName": {
+                "pos": 787,
+                "end": 795,
+                "flags": 16842752,
+                "modifierFlagsCache": 0,
+                "transformFlags": 0,
+                "kind": 80,
+                "escapedText": "required"
+              },
+              "comment": ""
+            }
+          ],
+          "rawdescription": "\n\nButton contents\n\n",
+          "description": "<p>Button contents</p>\n",
+          "line": 42,
+          "type": "string",
+          "decorators": []
+        },
+        {
+          "name": "primary",
+          "defaultValue": "false",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "rawdescription": "\n\nIs this the principal call to action on the page?\n",
+          "description": "<p>Is this the principal call to action on the page?</p>\n",
+          "line": 22,
+          "type": "boolean",
+          "decorators": []
+        },
+        {
+          "name": "size",
+          "defaultValue": "'medium'",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "rawdescription": "\n\nHow large should the button be?\n",
+          "description": "<p>How large should the button be?</p>\n",
+          "line": 34,
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "decorators": []
+        }
+      ],
+      "outputsClass": [
+        {
+          "name": "onClick",
+          "defaultValue": "new EventEmitter<Event>()",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "rawdescription": "\n\nOptional click handler\n",
+          "description": "<p>Optional click handler</p>\n",
+          "line": 48,
+          "type": "EventEmitter"
+        }
+      ],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": false,
+      "imports": [
+        {
+          "name": "CommonModule",
+          "type": "module"
+        }
+      ],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { CommonModule } from '@angular/common';\nimport { Component, Input, Output, EventEmitter } from '@angular/core';\n\n@Component({\n  selector: 'storybook-button',\n  imports: [CommonModule],\n  template: ` <button\n    type=\"button\"\n    (click)=\"onClick.emit($event)\"\n    [ngClass]=\"classes\"\n    [ngStyle]=\"{ 'background-color': backgroundColor }\"\n  >\n    {{ label }}\n  </button>`,\n  styleUrls: ['./button.css'],\n})\nexport default class ButtonComponent {\n  /**\n   * Is this the principal call to action on the page?\n   */\n  @Input()\n  primary = false;\n\n  /**\n   * What background color to use\n   */\n  @Input()\n  backgroundColor?: string;\n\n  /**\n   * How large should the button be?\n   */\n  @Input()\n  size: 'small' | 'medium' | 'large' = 'medium';\n\n  /**\n   * Button contents\n   *\n   * @required\n   */\n  @Input()\n  label = 'Button';\n\n  /**\n   * Optional click handler\n   */\n  @Output()\n  onClick = new EventEmitter<Event>();\n\n  public get classes(): string[] {\n    const mode = this.primary ? 'storybook-button--primary' : 'storybook-button--secondary';\n\n    return ['storybook-button', `storybook-button--${this.size}`, mode];\n  }\n}\n",
+      "assetsDirs": [],
+      "styleUrlsData": [
+        {
+          "data": ".storybook-button {\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;\n  font-weight: 700;\n  border: 0;\n  border-radius: 3em;\n  cursor: pointer;\n  display: inline-block;\n  line-height: 1;\n}\n.storybook-button--primary {\n  color: white;\n  background-color: #1ea7fd;\n}\n.storybook-button--secondary {\n  color: #333;\n  background-color: transparent;\n  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;\n}\n.storybook-button--small {\n  font-size: 12px;\n  padding: 10px 16px;\n}\n.storybook-button--medium {\n  font-size: 14px;\n  padding: 11px 20px;\n}\n.storybook-button--large {\n  font-size: 16px;\n  padding: 12px 24px;\n}\n",
+          "styleUrl": "./button.css"
+        }
+      ],
+      "stylesData": "",
+      "extends": [],
+      "accessors": {
+        "classes": {
+          "name": "classes",
+          "getSignature": {
+            "name": "classes",
+            "type": "[]",
+            "returnType": "string[]",
+            "line": 50
+          }
+        }
+      }
+    },
+    {
+      "name": "CampaignHomeComponent",
+      "id": "component-CampaignHomeComponent-a05058b619c7ccecb644596fcdbb66bd83bcccb819996fae645151ebe2a27a30f396ea19b472998451dc62b4dd44c6de393dd06f4543be526169ebbb2e03e5c2",
+      "file": "src/app/pages/home/home-view/campaign-home/campaign-home.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-campaign-home",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./campaign-home.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'page-home-campaign-home',\r\n  standalone: true,\r\n  imports: [],\r\n  templateUrl: './campaign-home.component.html',\r\n  styleUrl: './campaign-home.component.scss'\r\n})\r\nexport class CampaignHomeComponent {\r\n\r\n}\r\n",
+      "styleUrl": "./campaign-home.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<p>campaign-home works!</p>\r\n"
+    },
+    {
+      "name": "CardBodyComponent",
+      "id": "component-CardBodyComponent-a52115751f560325fec4d4676d7c1fa4efd52547af71df86755aaae5f9c1f2c64982edceda01dd4a19b54346e618d79097bc0661b395476a33ef366721840e42",
+      "file": "src/app/theme/card/card-body/card-body.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "theme-card-body",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./card-body.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [
+        {
+          "name": "class",
+          "defaultValue": "''",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 10,
+          "type": "string",
+          "decorators": []
+        }
+      ],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [
+        {
+          "name": "getClass",
+          "args": [],
+          "optional": false,
+          "returnType": "string",
+          "typeParameters": [],
+          "line": 15,
+          "deprecated": false,
+          "deprecationMessage": ""
+        }
+      ],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": false,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component, Input } from '@angular/core';\nimport { CardBodyComponentInterface } from \"@theme/card/card-body/card-body.component-interface\";\nimport { ThemeService } from \"@theme/theme.service\";\n\n@Component({\n  selector: 'theme-card-body',\n  templateUrl: './card-body.component.html',\n})\nexport class CardBodyComponent implements CardBodyComponentInterface {\n  @Input() class: string = '';\n\n  constructor(private readonly theme: ThemeService) {\n  }\n\n  getClass(): string {\n    return this.theme.getTheme().card.body.buildCss(this);\n  }\n}\n",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "constructorObj": {
+        "name": "constructor",
+        "description": "",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "args": [
+          {
+            "name": "theme",
+            "type": "ThemeService",
+            "deprecated": false,
+            "deprecationMessage": ""
+          }
+        ],
+        "line": 10,
+        "jsdoctags": [
+          {
+            "name": "theme",
+            "type": "ThemeService",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "tagName": {
+              "text": "param"
+            }
+          }
+        ]
+      },
+      "extends": [],
+      "implements": [
+        "CardBodyComponentInterface"
+      ],
+      "templateData": "<div class=\"{{ getClass() }}\">\n  <ng-content></ng-content>\n</div>\n"
+    },
+    {
+      "name": "CardComponent",
+      "id": "component-CardComponent-bc83c978a89de35f5a48e9d977526641853a4f1bcd6c7d209b33afed0831ad411bd83702d8a0352b798b8cbd92f341cdab5af3c5a7ddcdd16c8694c99148beab",
+      "file": "src/app/theme/card/card.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "theme-card",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./card.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [
+        {
+          "name": "border",
+          "defaultValue": "false",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 11,
+          "type": "boolean",
+          "decorators": []
+        },
+        {
+          "name": "class",
+          "defaultValue": "''",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 13,
+          "type": "string",
+          "decorators": []
+        },
+        {
+          "name": "mode",
+          "defaultValue": "'normal'",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 12,
+          "type": "CardComponentMode",
+          "decorators": []
+        }
+      ],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [
+        {
+          "name": "getClass",
+          "args": [],
+          "optional": false,
+          "returnType": "string",
+          "typeParameters": [],
+          "line": 18,
+          "deprecated": false,
+          "deprecationMessage": ""
+        }
+      ],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": false,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component, Input } from '@angular/core';\nimport { CardComponentInterface, CardComponentMode } from \"@theme/card/card.component-interface\";\nimport { ThemeService } from \"@theme/theme.service\";\n\n@Component({\n  selector: 'theme-card',\n  templateUrl: './card.component.html',\n})\nexport class CardComponent implements CardComponentInterface {\n\n  @Input() border: boolean = false;\n  @Input() mode: CardComponentMode = 'normal';\n  @Input() class: string = '';\n\n  constructor(private readonly themeService: ThemeService) {\n  }\n\n  getClass(): string {\n    return this.themeService.getTheme().card.base.buildCss(this);\n  }\n}\n",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "constructorObj": {
+        "name": "constructor",
+        "description": "",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "args": [
+          {
+            "name": "themeService",
+            "type": "ThemeService",
+            "deprecated": false,
+            "deprecationMessage": ""
+          }
+        ],
+        "line": 13,
+        "jsdoctags": [
+          {
+            "name": "themeService",
+            "type": "ThemeService",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "tagName": {
+              "text": "param"
+            }
+          }
+        ]
+      },
+      "extends": [],
+      "implements": [
+        "CardComponentInterface"
+      ],
+      "templateData": "<div class=\"{{ getClass() }}\">\n  <ng-content></ng-content>\n</div>\n"
+    },
+    {
+      "name": "HeaderComponent",
+      "id": "component-HeaderComponent-3d494fd89671305c6be07de00e019efdf08f2e36c2169e5fb75a5acdb2841da927e3ef3cbd21cc18f478373a784b1fb90e8b63b9df4b3498a75b652bd9c37b38",
+      "file": "src/stories/header.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "storybook-header",
+      "styleUrls": [
+        "./header.css"
+      ],
+      "styles": [],
+      "template": "<header>    <div class=\"storybook-header\">\n      <div>\n        <svg width=\"32\" height=\"32\" viewBox=\"0 0 32 32\" xmlns=\"http://www.w3.org/2000/svg\">\n          <g fill=\"none\" fillRule=\"evenodd\">\n            <path\n              d=\"M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z\"\n              fill=\"#FFF\"\n            />\n            <path\n              d=\"M5.3 10.6l10.4 6v11.1l-10.4-6v-11zm11.4-6.2l9.7 5.5-9.7 5.6V4.4z\"\n              fill=\"#555AB9\"\n            />\n            <path\n              d=\"M27.2 10.6v11.2l-10.5 6V16.5l10.5-6zM15.7 4.4v11L6 10l9.7-5.5z\"\n              fill=\"#91BAF8\"\n            />\n          </g>\n        </svg>\n        <h1>Acme</h1>\n      </div>\n      <div>\n        <div *ngIf=\"user\">\n          <span class=\"welcome\">\n            Welcome, <b>{{ user.name }}</b\n            >!\n          </span>\n          <storybook-button\n            *ngIf=\"user\"\n            size=\"small\"\n            (onClick)=\"onLogout.emit($event)\"\n            label=\"Log out\"\n          ></storybook-button>\n        </div>\n        <div *ngIf=\"!user\">\n          <storybook-button\n            *ngIf=\"!user\"\n            size=\"small\"\n            class=\"margin-left\"\n            (onClick)=\"onLogin.emit($event)\"\n            label=\"Log in\"\n          ></storybook-button>\n          <storybook-button\n            *ngIf=\"!user\"\n            primary\n            size=\"small\"\n            primary=\"true\"\n            class=\"margin-left\"\n            (onClick)=\"onCreateAccount.emit($event)\"\n            label=\"Sign up\"\n          ></storybook-button>\n        </div>\n      </div>\n    </div>\n  </header>",
+      "templateUrl": [],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [
+        {
+          "name": "user",
+          "defaultValue": "null",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 65,
+          "type": "User | null",
+          "decorators": []
+        }
+      ],
+      "outputsClass": [
+        {
+          "name": "onCreateAccount",
+          "defaultValue": "new EventEmitter<Event>()",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 74,
+          "type": "EventEmitter"
+        },
+        {
+          "name": "onLogin",
+          "defaultValue": "new EventEmitter<Event>()",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 68,
+          "type": "EventEmitter"
+        },
+        {
+          "name": "onLogout",
+          "defaultValue": "new EventEmitter<Event>()",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 71,
+          "type": "EventEmitter"
+        }
+      ],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": false,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component, Input, Output, EventEmitter } from '@angular/core';\nimport type { User } from './User';\n\n@Component({\n  selector: 'storybook-header',\n  template: `<header>\n    <div class=\"storybook-header\">\n      <div>\n        <svg width=\"32\" height=\"32\" viewBox=\"0 0 32 32\" xmlns=\"http://www.w3.org/2000/svg\">\n          <g fill=\"none\" fillRule=\"evenodd\">\n            <path\n              d=\"M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z\"\n              fill=\"#FFF\"\n            />\n            <path\n              d=\"M5.3 10.6l10.4 6v11.1l-10.4-6v-11zm11.4-6.2l9.7 5.5-9.7 5.6V4.4z\"\n              fill=\"#555AB9\"\n            />\n            <path\n              d=\"M27.2 10.6v11.2l-10.5 6V16.5l10.5-6zM15.7 4.4v11L6 10l9.7-5.5z\"\n              fill=\"#91BAF8\"\n            />\n          </g>\n        </svg>\n        <h1>Acme</h1>\n      </div>\n      <div>\n        <div *ngIf=\"user\">\n          <span class=\"welcome\">\n            Welcome, <b>{{ user.name }}</b\n            >!\n          </span>\n          <storybook-button\n            *ngIf=\"user\"\n            size=\"small\"\n            (onClick)=\"onLogout.emit($event)\"\n            label=\"Log out\"\n          ></storybook-button>\n        </div>\n        <div *ngIf=\"!user\">\n          <storybook-button\n            *ngIf=\"!user\"\n            size=\"small\"\n            class=\"margin-left\"\n            (onClick)=\"onLogin.emit($event)\"\n            label=\"Log in\"\n          ></storybook-button>\n          <storybook-button\n            *ngIf=\"!user\"\n            primary\n            size=\"small\"\n            primary=\"true\"\n            class=\"margin-left\"\n            (onClick)=\"onCreateAccount.emit($event)\"\n            label=\"Sign up\"\n          ></storybook-button>\n        </div>\n      </div>\n    </div>\n  </header>`,\n  styleUrls: ['./header.css'],\n})\nexport default class HeaderComponent {\n  @Input()\n  user: User | null = null;\n\n  @Output()\n  onLogin = new EventEmitter<Event>();\n\n  @Output()\n  onLogout = new EventEmitter<Event>();\n\n  @Output()\n  onCreateAccount = new EventEmitter<Event>();\n}\n",
+      "assetsDirs": [],
+      "styleUrlsData": [
+        {
+          "data": ".storybook-header {\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n  padding: 15px 20px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n\n.storybook-header svg {\n  display: inline-block;\n  vertical-align: top;\n}\n\n.storybook-header h1 {\n  font-weight: 700;\n  font-size: 20px;\n  line-height: 1;\n  margin: 6px 0 6px 10px;\n  display: inline-block;\n  vertical-align: top;\n}\n\n.storybook-header button + button {\n  margin-left: 10px;\n}\n\n.storybook-header .welcome {\n  color: #333;\n  font-size: 14px;\n  margin-right: 10px;\n}\n",
+          "styleUrl": "./header.css"
+        }
+      ],
+      "stylesData": "",
+      "extends": []
+    },
+    {
+      "name": "HomePageComponent",
+      "id": "component-HomePageComponent-da8a2b644989b9566f68099094fae8bb557f0972ebf1626991593c9761c9251ed0f5288620b236d3ad8145b91b4e5c582951afe847142c64329194d5bea04802",
+      "file": "src/app/pages/home/home-page.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./home-page.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [
+        {
+          "name": "home$",
+          "defaultValue": "new HomeRequest().send(this.http)",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "",
+          "optional": false,
+          "description": "",
+          "line": 17
+        }
+      ],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [
+        {
+          "name": "HomeViewComponent",
+          "type": "component"
+        },
+        {
+          "name": "CommonModule",
+          "type": "module"
+        },
+        {
+          "name": "ThemeModule",
+          "type": "module"
+        }
+      ],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\nimport { HomeViewComponent } from \"./home-view/home-view.component\";\r\nimport { HttpClient } from \"@angular/common/http\";\r\nimport { HomeRequest } from \"@request/home.request\";\r\nimport { CommonModule } from \"@angular/common\";\r\nimport { ThemeModule } from \"@theme/theme.module\";\r\n\r\n@Component({\r\n  standalone: true,\r\n  imports: [ HomeViewComponent, CommonModule, ThemeModule ],\r\n  selector: 'page-home',\r\n  templateUrl: './home-page.component.html',\r\n  styleUrl: './home-page.component.scss'\r\n})\r\nexport class HomePageComponent {\r\n\r\n  home$ = new HomeRequest().send(this.http);\r\n\r\n  constructor(private readonly http: HttpClient) {\r\n  }\r\n\r\n}\r\n",
+      "styleUrl": "./home-page.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "constructorObj": {
+        "name": "constructor",
+        "description": "",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "args": [
+          {
+            "name": "http",
+            "type": "HttpClient",
+            "deprecated": false,
+            "deprecationMessage": ""
+          }
+        ],
+        "line": 17,
+        "jsdoctags": [
+          {
+            "name": "http",
+            "type": "HttpClient",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "tagName": {
+              "text": "param"
+            }
+          }
+        ]
+      },
+      "extends": [],
+      "templateData": "<div class=\"grid h-screen place-items-center\">\r\n  <theme-card class=\"bg-white\">\r\n    <theme-card-body>\r\n      <ng-container *ngIf=\"home$ | async as home; else loading\">\r\n        <page-home-view [input]=\"home\"/>\r\n      </ng-container>\r\n      <ng-template #loading>\r\n        Loading...\r\n      </ng-template>\r\n    </theme-card-body>\r\n  </theme-card>\r\n</div>\r\n"
+    },
+    {
+      "name": "HomeViewComponent",
+      "id": "component-HomeViewComponent-4957ca92c461b3e2ac32206c8010c8d3f8d977dd3548aaebad95445b1b6ff108a2ba13dfc34356fdef49f36b12921ff9264b1f2a97d7f3f3accc48aef1afc343",
+      "file": "src/app/pages/home/home-view/home-view.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-view",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./home-view.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [
+        {
+          "name": "input",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "line": 32,
+          "type": "HomeResponse | undefined",
+          "decorators": []
+        }
+      ],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [
+        {
+          "name": "hasInput",
+          "args": [],
+          "optional": false,
+          "returnType": "boolean",
+          "typeParameters": [],
+          "line": 90,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            123
+          ]
+        },
+        {
+          "name": "notAdminAndNoCampaign",
+          "args": [],
+          "optional": false,
+          "returnType": "boolean",
+          "typeParameters": [],
+          "line": 64,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ]
+        },
+        {
+          "name": "showCampaignHome",
+          "args": [],
+          "optional": false,
+          "returnType": "boolean",
+          "typeParameters": [],
+          "line": 81,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ]
+        },
+        {
+          "name": "showNoAdmins",
+          "args": [],
+          "optional": false,
+          "returnType": "boolean",
+          "typeParameters": [],
+          "line": 49,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ]
+        },
+        {
+          "name": "showNoConfig",
+          "args": [],
+          "optional": false,
+          "returnType": "boolean",
+          "typeParameters": [],
+          "line": 34,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ]
+        },
+        {
+          "name": "showNotHealthy",
+          "args": [],
+          "optional": false,
+          "returnType": "boolean",
+          "typeParameters": [],
+          "line": 38,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ]
+        },
+        {
+          "name": "showSelectServer",
+          "args": [],
+          "optional": false,
+          "returnType": "boolean",
+          "typeParameters": [],
+          "line": 55,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ]
+        },
+        {
+          "name": "showSetupCampaign",
+          "args": [],
+          "optional": false,
+          "returnType": "boolean",
+          "typeParameters": [],
+          "line": 72,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            125
+          ]
+        }
+      ],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [
+        {
+          "name": "CommonModule",
+          "type": "module"
+        },
+        {
+          "name": "NoConfigComponent",
+          "type": "component"
+        },
+        {
+          "name": "NotHealthyComponent",
+          "type": "component"
+        },
+        {
+          "name": "NoAdminsComponent",
+          "type": "component"
+        },
+        {
+          "name": "SelectServerComponent",
+          "type": "component"
+        },
+        {
+          "name": "NotAdminNoCampaignComponent",
+          "type": "component"
+        },
+        {
+          "name": "SetupCampaignComponent",
+          "type": "component"
+        },
+        {
+          "name": "CampaignHomeComponent",
+          "type": "component"
+        }
+      ],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component, Input } from '@angular/core';\r\nimport { HomeResponse } from \"@request/home.request\";\r\nimport { NoConfigComponent } from \"./no-config/no-config.component\";\r\nimport { CommonModule } from \"@angular/common\";\r\nimport { NotHealthyComponent } from \"@app/pages/home/home-view/not-healthy/not-healthy.component\";\r\nimport { NoAdminsComponent } from \"@app/pages/home/home-view/no-admins/no-admins.component\";\r\nimport { SelectServerComponent } from \"@app/pages/home/home-view/select-server/select-server.component\";\r\nimport {\r\n  NotAdminNoCampaignComponent\r\n} from \"@app/pages/home/home-view/not-admin-no-campaign/not-admin-no-campaign.component\";\r\nimport { SetupCampaignComponent } from \"@app/pages/home/home-view/setup-campaign/setup-campaign.component\";\r\nimport { CampaignHomeComponent } from \"@app/pages/home/home-view/campaign-home/campaign-home.component\";\r\n\r\n@Component({\r\n  selector: 'page-home-view',\r\n  standalone: true,\r\n  imports: [\r\n    CommonModule,\r\n\r\n    NoConfigComponent,\r\n    NotHealthyComponent,\r\n    NoAdminsComponent,\r\n    SelectServerComponent,\r\n    NotAdminNoCampaignComponent,\r\n    SetupCampaignComponent,\r\n    CampaignHomeComponent,\r\n  ],\r\n  templateUrl: './home-view.component.html',\r\n  styleUrl: './home-view.component.scss'\r\n})\r\nexport class HomeViewComponent {\r\n  @Input() input: HomeResponse | undefined;\r\n\r\n  public showNoConfig(): boolean {\r\n    return !this.input?.configOk ?? true;\r\n  }\r\n\r\n  public showNotHealthy(): boolean {\r\n    if (this.input === undefined)\r\n      return false;\r\n\r\n    if (this.input.configDetail === undefined)\r\n      return false;\r\n\r\n    return this.input.configOk === false &&\r\n      this.input.configDetail.length > 0;\r\n  }\r\n\r\n  public showNoAdmins(): boolean {\r\n    return this.hasInput() &&\r\n      this.input!.configOk === true &&\r\n      this.input!.admins === false;\r\n  }\r\n\r\n  public showSelectServer(): boolean {\r\n    return this.hasInput() &&\r\n      this.input!.configOk === true &&\r\n      this.input!.admins === true &&\r\n      this.input!.user !== undefined &&\r\n      this.input!.user.isAdmin === true &&\r\n      this.input!.activeCampaign === undefined;\r\n  }\r\n\r\n  public notAdminAndNoCampaign(): boolean {\r\n    return this.hasInput() &&\r\n      this.input!.configOk === true &&\r\n      this.input!.admins === true &&\r\n      this.input!.user !== undefined &&\r\n      this.input!.user.isAdmin === false;\r\n  }\r\n\r\n  public showSetupCampaign(): boolean {\r\n    return this.hasInput() &&\r\n      this.input!.configOk === true &&\r\n      this.input!.admins === true &&\r\n      this.input!.user !== undefined &&\r\n      this.input!.user.isAdmin === true &&\r\n      this.input!.activeCampaign === undefined;\r\n  }\r\n\r\n  public showCampaignHome(): boolean {\r\n    return this.hasInput() &&\r\n      this.input!.configOk === true &&\r\n      this.input!.admins === true &&\r\n      this.input!.user !== undefined &&\r\n      this.input!.user.isAdmin === true &&\r\n      this.input!.activeCampaign !== undefined;\r\n  }\r\n\r\n  private hasInput(): boolean {\r\n    return this.input !== undefined;\r\n  }\r\n}\r\n",
+      "styleUrl": "./home-view.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<page-home-no-config *ngIf=\"showNoConfig()\"/>\r\n<page-home-not-healthy *ngIf=\"showNotHealthy()\"/>\r\n<page-home-no-admins *ngIf=\"showNoAdmins()\"/>\r\n<page-home-select-server *ngIf=\"showSelectServer()\"/>\r\n<page-home-not-admin-no-campaign *ngIf=\"notAdminAndNoCampaign()\"/>\r\n<page-home-setup-campaign *ngIf=\"showSetupCampaign()\"/>\r\n<page-home-campaign-home *ngIf=\"showCampaignHome()\"/>\r\n"
+    },
+    {
+      "name": "NoAdminsComponent",
+      "id": "component-NoAdminsComponent-093ffa13f9023d15d6fc94ef48da041a6a10bad018af723430f7ecfc7bd2082882a254b43b0863bbdc39cd615630b368f175acb31648cfe7ddbaa16e2c5e3bd5",
+      "file": "src/app/pages/home/home-view/no-admins/no-admins.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-no-admins",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./no-admins.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'page-home-no-admins',\r\n  standalone: true,\r\n  imports: [],\r\n  templateUrl: './no-admins.component.html',\r\n  styleUrl: './no-admins.component.scss'\r\n})\r\nexport class NoAdminsComponent {\r\n\r\n}\r\n",
+      "styleUrl": "./no-admins.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<p>no-admins works!</p>\r\n"
+    },
+    {
+      "name": "NoConfigComponent",
+      "id": "component-NoConfigComponent-a13ee9f61d7e969e9100d15bfda46ba21b5c09523f022bdf6c832f4c0ca75cc0412ad579c9f2852cf623301a27c4f5538290e7aa55c0450c638eefff5b6c6e5a",
+      "file": "src/app/pages/home/home-view/no-config/no-config.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-no-config",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./no-config.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'page-home-no-config',\r\n  standalone: true,\r\n  imports: [],\r\n  templateUrl: './no-config.component.html',\r\n  styleUrl: './no-config.component.scss'\r\n})\r\nexport class NoConfigComponent {\r\n\r\n}\r\n",
+      "styleUrl": "./no-config.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<p>no-config works!</p>\r\n"
+    },
+    {
+      "name": "NotAdminNoCampaignComponent",
+      "id": "component-NotAdminNoCampaignComponent-691e1931aa0bd8f5883123243d818d0cbc6d3b8e738d1bb3c4121278e8baf5347b0250f6eb01f6e4789ae984bccdb85592e977a8b7b0dd9adab7133d063a186e",
+      "file": "src/app/pages/home/home-view/not-admin-no-campaign/not-admin-no-campaign.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-not-admin-no-campaign",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./not-admin-no-campaign.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'page-home-not-admin-no-campaign',\r\n  standalone: true,\r\n  imports: [],\r\n  templateUrl: './not-admin-no-campaign.component.html',\r\n  styleUrl: './not-admin-no-campaign.component.scss'\r\n})\r\nexport class NotAdminNoCampaignComponent {\r\n\r\n}\r\n",
+      "styleUrl": "./not-admin-no-campaign.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<p>not-admin-no-campaign works!</p>\r\n"
+    },
+    {
+      "name": "NotAdminSetupInCompleteComponent",
+      "id": "component-NotAdminSetupInCompleteComponent-b9aa8ed8784906c4766235bd0d96ea010fd4f52dd6f4bd50625e87f62c07b83bc151de87ac997932be80bcfeb1825ce0caa062aaa9894733abcd86c0a49eee1a",
+      "file": "src/app/pages/home/home-view/not-admin-setup-in-complete/not-admin-setup-in-complete.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-not-admin-setup-in-complete",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./not-admin-setup-in-complete.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'page-home-not-admin-setup-in-complete',\r\n  standalone: true,\r\n  imports: [],\r\n  templateUrl: './not-admin-setup-in-complete.component.html',\r\n  styleUrl: './not-admin-setup-in-complete.component.scss'\r\n})\r\nexport class NotAdminSetupInCompleteComponent {\r\n\r\n}\r\n",
+      "styleUrl": "./not-admin-setup-in-complete.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<p>not-admin-setup-in-complete works!</p>\r\n"
+    },
+    {
+      "name": "NotHealthyComponent",
+      "id": "component-NotHealthyComponent-33f6412ec82feac05a77f51695790a6a132f806f9f6870da14ab20d9d40fdbf28d36c011d98af2d50c743799c653683e3970a8d6a67b6779a1c7473f0c977f46",
+      "file": "src/app/pages/home/home-view/not-healthy/not-healthy.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-not-healthy",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./not-healthy.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'page-home-not-healthy',\r\n  standalone: true,\r\n  imports: [],\r\n  templateUrl: './not-healthy.component.html',\r\n  styleUrl: './not-healthy.component.scss'\r\n})\r\nexport class NotHealthyComponent {\r\n\r\n}\r\n",
+      "styleUrl": "./not-healthy.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<p>not-healthy works!</p>\r\n"
+    },
+    {
+      "name": "PageComponent",
+      "id": "component-PageComponent-badb6d8cee577661da79ba82ad8f599604afd40fa34e36c7b88d71d77a4fbc7184228cba2f0d73e255d0b7bc51c4c7a8e7b0128b3624aeb0255abab9030fa59a",
+      "file": "src/stories/page.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "storybook-page",
+      "styleUrls": [
+        "./page.css"
+      ],
+      "styles": [],
+      "template": "<article>    <storybook-header\n      [user]=\"user\"\n      (onLogout)=\"doLogout()\"\n      (onLogin)=\"doLogin()\"\n      (onCreateAccount)=\"doCreateAccount()\"\n    ></storybook-header>\n    <section class=\"storybook-page\">\n      <h2>Pages in Storybook</h2>\n      <p>\n        We recommend building UIs with a\n        <a href=\"https://componentdriven.org\" target=\"_blank\" rel=\"noopener noreferrer\">\n          <strong>component-driven</strong>\n        </a>\n        process starting with atomic components and ending with pages.\n      </p>\n      <p>\n        Render pages with mock data. This makes it easy to build and review page states without\n        needing to navigate to them in your app. Here are some handy patterns for managing page data\n        in Storybook:\n      </p>\n      <ul>\n        <li>\n          Use a higher-level connected component. Storybook helps you compose such data from the\n          \"args\" of child component stories\n        </li>\n        <li>\n          Assemble data in the page component from your services. You can mock these services out\n          using Storybook.\n        </li>\n      </ul>\n      <p>\n        Get a guided tutorial on component-driven development at\n        <a href=\"https://storybook.js.org/tutorials/\" target=\"_blank\" rel=\"noopener noreferrer\">\n          Storybook tutorials\n        </a>\n        . Read more in the\n        <a href=\"https://storybook.js.org/docs\" target=\"_blank\" rel=\"noopener noreferrer\"> docs </a>\n        .\n      </p>\n      <div class=\"tip-wrapper\">\n        <span class=\"tip\">Tip</span> Adjust the width of the canvas with the\n        <svg width=\"10\" height=\"10\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\">\n          <g fill=\"none\" fillRule=\"evenodd\">\n            <path\n              d=\"M1.5 5.2h4.8c.3 0 .5.2.5.4v5.1c-.1.2-.3.3-.4.3H1.4a.5.5 0 01-.5-.4V5.7c0-.3.2-.5.5-.5zm0-2.1h6.9c.3 0 .5.2.5.4v7a.5.5 0 01-1 0V4H1.5a.5.5 0 010-1zm0-2.1h9c.3 0 .5.2.5.4v9.1a.5.5 0 01-1 0V2H1.5a.5.5 0 010-1zm4.3 5.2H2V10h3.8V6.2z\"\n              id=\"a\"\n              fill=\"#999\"\n            />\n          </g>\n        </svg>\n        Viewports addon in the toolbar\n      </div>\n    </section>\n  </article>",
+      "templateUrl": [],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [
+        {
+          "name": "user",
+          "defaultValue": "null",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "User | null",
+          "optional": false,
+          "description": "",
+          "line": 64
+        }
+      ],
+      "methodsClass": [
+        {
+          "name": "doCreateAccount",
+          "args": [],
+          "optional": false,
+          "returnType": "void",
+          "typeParameters": [],
+          "line": 74,
+          "deprecated": false,
+          "deprecationMessage": ""
+        },
+        {
+          "name": "doLogin",
+          "args": [],
+          "optional": false,
+          "returnType": "void",
+          "typeParameters": [],
+          "line": 70,
+          "deprecated": false,
+          "deprecationMessage": ""
+        },
+        {
+          "name": "doLogout",
+          "args": [],
+          "optional": false,
+          "returnType": "void",
+          "typeParameters": [],
+          "line": 66,
+          "deprecated": false,
+          "deprecationMessage": ""
+        }
+      ],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": false,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\nimport type { User } from './User';\n\n@Component({\n  selector: 'storybook-page',\n  template: `<article>\n    <storybook-header\n      [user]=\"user\"\n      (onLogout)=\"doLogout()\"\n      (onLogin)=\"doLogin()\"\n      (onCreateAccount)=\"doCreateAccount()\"\n    ></storybook-header>\n    <section class=\"storybook-page\">\n      <h2>Pages in Storybook</h2>\n      <p>\n        We recommend building UIs with a\n        <a href=\"https://componentdriven.org\" target=\"_blank\" rel=\"noopener noreferrer\">\n          <strong>component-driven</strong>\n        </a>\n        process starting with atomic components and ending with pages.\n      </p>\n      <p>\n        Render pages with mock data. This makes it easy to build and review page states without\n        needing to navigate to them in your app. Here are some handy patterns for managing page data\n        in Storybook:\n      </p>\n      <ul>\n        <li>\n          Use a higher-level connected component. Storybook helps you compose such data from the\n          \"args\" of child component stories\n        </li>\n        <li>\n          Assemble data in the page component from your services. You can mock these services out\n          using Storybook.\n        </li>\n      </ul>\n      <p>\n        Get a guided tutorial on component-driven development at\n        <a href=\"https://storybook.js.org/tutorials/\" target=\"_blank\" rel=\"noopener noreferrer\">\n          Storybook tutorials\n        </a>\n        . Read more in the\n        <a href=\"https://storybook.js.org/docs\" target=\"_blank\" rel=\"noopener noreferrer\"> docs </a>\n        .\n      </p>\n      <div class=\"tip-wrapper\">\n        <span class=\"tip\">Tip</span> Adjust the width of the canvas with the\n        <svg width=\"10\" height=\"10\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\">\n          <g fill=\"none\" fillRule=\"evenodd\">\n            <path\n              d=\"M1.5 5.2h4.8c.3 0 .5.2.5.4v5.1c-.1.2-.3.3-.4.3H1.4a.5.5 0 01-.5-.4V5.7c0-.3.2-.5.5-.5zm0-2.1h6.9c.3 0 .5.2.5.4v7a.5.5 0 01-1 0V4H1.5a.5.5 0 010-1zm0-2.1h9c.3 0 .5.2.5.4v9.1a.5.5 0 01-1 0V2H1.5a.5.5 0 010-1zm4.3 5.2H2V10h3.8V6.2z\"\n              id=\"a\"\n              fill=\"#999\"\n            />\n          </g>\n        </svg>\n        Viewports addon in the toolbar\n      </div>\n    </section>\n  </article>`,\n  styleUrls: ['./page.css'],\n})\nexport default class PageComponent {\n  user: User | null = null;\n\n  doLogout() {\n    this.user = null;\n  }\n\n  doLogin() {\n    this.user = { name: 'Jane Doe' };\n  }\n\n  doCreateAccount() {\n    this.user = { name: 'Jane Doe' };\n  }\n}\n",
+      "assetsDirs": [],
+      "styleUrlsData": [
+        {
+          "data": ".storybook-page {\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;\n  font-size: 14px;\n  line-height: 24px;\n  padding: 48px 20px;\n  margin: 0 auto;\n  max-width: 600px;\n  color: #333;\n}\n\n.storybook-page h2 {\n  font-weight: 700;\n  font-size: 32px;\n  line-height: 1;\n  margin: 0 0 4px;\n  display: inline-block;\n  vertical-align: top;\n}\n\n.storybook-page p {\n  margin: 1em 0;\n}\n\n.storybook-page a {\n  text-decoration: none;\n  color: #1ea7fd;\n}\n\n.storybook-page ul {\n  padding-left: 30px;\n  margin: 1em 0;\n}\n\n.storybook-page li {\n  margin-bottom: 8px;\n}\n\n.storybook-page .tip {\n  display: inline-block;\n  border-radius: 1em;\n  font-size: 11px;\n  line-height: 12px;\n  font-weight: 700;\n  background: #e7fdd8;\n  color: #66bf3c;\n  padding: 4px 12px;\n  margin-right: 10px;\n  vertical-align: top;\n}\n\n.storybook-page .tip-wrapper {\n  font-size: 13px;\n  line-height: 20px;\n  margin-top: 40px;\n  margin-bottom: 40px;\n}\n\n.storybook-page .tip-wrapper svg {\n  display: inline-block;\n  height: 12px;\n  width: 12px;\n  margin-right: 4px;\n  vertical-align: top;\n  margin-top: 3px;\n}\n\n.storybook-page .tip-wrapper svg path {\n  fill: #1ea7fd;\n}\n",
+          "styleUrl": "./page.css"
+        }
+      ],
+      "stylesData": "",
+      "extends": []
+    },
+    {
+      "name": "SelectServerComponent",
+      "id": "component-SelectServerComponent-d10d3319efcd15e1f3b60fb00512f16acb4e9787beaef4e030c55bfe4878aa85f971ba462a639653eb0b7cf56d024f89ac4e9735deff0ee16a87e6ece72319b6",
+      "file": "src/app/pages/home/home-view/select-server/select-server.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-select-server",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./select-server.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'page-home-select-server',\r\n  standalone: true,\r\n  imports: [],\r\n  templateUrl: './select-server.component.html',\r\n  styleUrl: './select-server.component.scss'\r\n})\r\nexport class SelectServerComponent {\r\n\r\n}\r\n",
+      "styleUrl": "./select-server.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<p>select-server works!</p>\r\n"
+    },
+    {
+      "name": "SetupCampaignComponent",
+      "id": "component-SetupCampaignComponent-aa9110be27dc3ca65b0cbb79f01e15715e57022489232966d1a4f13021915d568db81e83252588fe239797b8a7cd8eb12b50224908a7393d23e8ee971d507e67",
+      "file": "src/app/pages/home/home-view/setup-campaign/setup-campaign.component.ts",
+      "encapsulation": [],
+      "entryComponents": [],
+      "inputs": [],
+      "outputs": [],
+      "providers": [],
+      "selector": "page-home-setup-campaign",
+      "styleUrls": [],
+      "styles": [],
+      "templateUrl": [
+        "./setup-campaign.component.html"
+      ],
+      "viewProviders": [],
+      "hostDirectives": [],
+      "inputsClass": [],
+      "outputsClass": [],
+      "propertiesClass": [],
+      "methodsClass": [],
+      "deprecated": false,
+      "deprecationMessage": "",
+      "hostBindings": [],
+      "hostListeners": [],
+      "standalone": true,
+      "imports": [],
+      "description": "",
+      "rawdescription": "\n",
+      "type": "component",
+      "sourceCode": "import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'page-home-setup-campaign',\r\n  standalone: true,\r\n  imports: [],\r\n  templateUrl: './setup-campaign.component.html',\r\n  styleUrl: './setup-campaign.component.scss'\r\n})\r\nexport class SetupCampaignComponent {\r\n\r\n}\r\n",
+      "styleUrl": "./setup-campaign.component.scss",
+      "assetsDirs": [],
+      "styleUrlsData": "",
+      "stylesData": "",
+      "extends": [],
+      "templateData": "<p>setup-campaign works!</p>\r\n"
+    }
+  ],
+  "modules": [
+    {
+      "name": "AppModule",
+      "id": "module-AppModule-9ee72baa152f4067241375cba877ec57f2bfd8ea70c7b64724375aa0577f64392eedf51727213e2fd88925fda544d706df3651857320129a8b126f4bc925520c",
+      "description": "",
+      "deprecationMessage": "",
+      "deprecated": false,
+      "file": "src/app/app.module.ts",
+      "methods": [],
+      "sourceCode": "import { BrowserModule } from '@angular/platform-browser';\r\nimport { NgModule } from '@angular/core';\r\nimport { FormsModule } from '@angular/forms';\r\nimport { HttpClientModule } from '@angular/common/http';\r\nimport { ThemeModule } from '@theme/theme.module';\r\nimport { AppComponent } from './app.component';\r\nimport { StoreModule } from '@ngrx/store';\r\nimport { HomePageComponent } from \"./pages/home/home-page.component\";\r\nimport { DaisyTheme } from \"@theme/daisy.theme\";\r\n\r\n@NgModule({\r\n  declarations: [\r\n    AppComponent\r\n  ],\r\n  imports: [\r\n    BrowserModule,\r\n    HttpClientModule,\r\n    FormsModule,\r\n\r\n    // DiscordSecretSanta\r\n    // Pages\r\n    HomePageComponent,\r\n\r\n    ThemeModule.forRoot(new DaisyTheme()),\r\n    StoreModule.forRoot({}, {})\r\n  ],\r\n  providers: [],\r\n  bootstrap: [AppComponent]\r\n})\r\nexport class AppModule {\r\n}\r\n",
+      "children": [
+        {
+          "type": "providers",
+          "elements": []
+        },
+        {
+          "type": "declarations",
+          "elements": [
+            {
+              "name": "AppComponent"
+            }
+          ]
+        },
+        {
+          "type": "imports",
+          "elements": [
+            {
+              "name": "HomePageComponent"
+            },
+            {
+              "name": "ThemeModule"
+            }
+          ]
+        },
+        {
+          "type": "exports",
+          "elements": []
+        },
+        {
+          "type": "bootstrap",
+          "elements": [
+            {
+              "name": "AppComponent"
+            }
+          ]
+        },
+        {
+          "type": "classes",
+          "elements": []
+        }
+      ]
+    },
+    {
+      "name": "ThemeModule",
+      "id": "module-ThemeModule-e733079276f805028058b8f67e292a7bdce55ef99995c7bb52c6e19e27500aba30a5275b1b8b2c652b8b83cb33c4c7146c9ab35741eb882fe694707234346b9c",
+      "description": "",
+      "deprecationMessage": "",
+      "deprecated": false,
+      "file": "src/app/theme/theme.module.ts",
+      "methods": [
+        {
+          "name": "forRoot",
+          "args": [
+            {
+              "name": "theme",
+              "type": "ThemeBuilders",
+              "deprecated": false,
+              "deprecationMessage": ""
+            }
+          ],
+          "optional": false,
+          "returnType": "ModuleWithProviders<ThemeModule>",
+          "typeParameters": [],
+          "line": 22,
+          "deprecated": false,
+          "deprecationMessage": "",
+          "modifierKind": [
+            126
+          ],
+          "jsdoctags": [
+            {
+              "name": "theme",
+              "type": "ThemeBuilders",
+              "deprecated": false,
+              "deprecationMessage": "",
+              "tagName": {
+                "text": "param"
+              }
+            }
+          ]
+        }
+      ],
+      "sourceCode": "import { ModuleWithProviders, NgModule } from '@angular/core';\nimport { CommonModule } from '@angular/common';\nimport { ThemeBuilders } from \"@theme/themeBuilders\";\nimport { ThemeService } from \"@theme/theme.service\";\nimport { CardComponent } from \"@theme/card/card.component\";\nimport { CardBodyComponent } from \"@theme/card/card-body/card-body.component\";\n\n@NgModule({\n  declarations: [\n    CardComponent,\n    CardBodyComponent\n  ],\n  imports: [\n    CommonModule\n  ],\n  exports: [\n    CardComponent,\n    CardBodyComponent\n  ]\n})\nexport class ThemeModule {\n  static forRoot(theme: ThemeBuilders): ModuleWithProviders<ThemeModule> {\n    return {\n      ngModule: ThemeModule,\n      providers: [\n        ThemeService,\n        {\n          provide: 'theme',\n          useValue: theme\n        }\n      ]\n    }\n  }\n}\n",
+      "children": [
+        {
+          "type": "providers",
+          "elements": []
+        },
+        {
+          "type": "declarations",
+          "elements": [
+            {
+              "name": "CardBodyComponent"
+            },
+            {
+              "name": "CardComponent"
+            }
+          ]
+        },
+        {
+          "type": "imports",
+          "elements": []
+        },
+        {
+          "type": "exports",
+          "elements": [
+            {
+              "name": "CardBodyComponent"
+            },
+            {
+              "name": "CardComponent"
+            }
+          ]
+        },
+        {
+          "type": "bootstrap",
+          "elements": []
+        },
+        {
+          "type": "classes",
+          "elements": []
+        }
+      ]
+    }
+  ],
+  "miscellaneous": {
+    "variables": [
+      {
+        "name": "environment",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/environments/environment.prod.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "object",
+        "defaultValue": "{\r\n  production: true\r\n}"
+      },
+      {
+        "name": "environment",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/environments/environment.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "object",
+        "defaultValue": "{\r\n  production: false\r\n}"
+      },
+      {
+        "name": "Large",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Button.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Story",
+        "defaultValue": "{\n  args: {\n    size: 'large',\n    label: 'Button',\n  },\n}"
+      },
+      {
+        "name": "LoggedIn",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Header.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Story",
+        "defaultValue": "{\n  args: {\n    user: {\n      name: 'Jane Doe',\n    },\n  },\n}"
+      },
+      {
+        "name": "LoggedIn",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Page.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Story",
+        "defaultValue": "{\n  render: (args: Page) => ({\n    props: args,\n  }),\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement);\n    const loginButton = canvas.getByRole('button', { name: /Log in/i });\n    await expect(loginButton).toBeInTheDocument();\n    await userEvent.click(loginButton);\n    await expect(loginButton).not.toBeInTheDocument();\n\n    const logoutButton = canvas.getByRole('button', { name: /Log out/i });\n    await expect(logoutButton).toBeInTheDocument();\n  },\n}"
+      },
+      {
+        "name": "LoggedOut",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Header.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Story",
+        "defaultValue": "{}"
+      },
+      {
+        "name": "LoggedOut",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Page.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Story",
+        "defaultValue": "{\n  render: (args: Page) => ({\n    props: args,\n  }),\n}"
+      },
+      {
+        "name": "meta",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Button.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Meta<Button>",
+        "defaultValue": "{\n  title: 'Example/Button',\n  component: Button,\n  tags: ['autodocs'],\n  render: (args: Button) => ({\n    props: {\n      backgroundColor: null,\n      ...args,\n    },\n  }),\n  argTypes: {\n    backgroundColor: {\n      control: 'color',\n    },\n  },\n}"
+      },
+      {
+        "name": "meta",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Header.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Meta<Header>",
+        "defaultValue": "{\n  title: 'Example/Header',\n  component: Header,\n  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs\n  tags: ['autodocs'],\n  render: (args) => ({ props: args }),\n  decorators: [\n    moduleMetadata({\n      declarations: [Button],\n      imports: [CommonModule],\n    }),\n  ],\n  parameters: {\n    // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout\n    layout: 'fullscreen',\n  },\n}"
+      },
+      {
+        "name": "meta",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Page.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Meta<Page>",
+        "defaultValue": "{\n  title: 'Example/Page',\n  component: Page,\n  parameters: {\n    // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout\n    layout: 'fullscreen',\n  },\n  decorators: [\n    moduleMetadata({\n      declarations: [Button, Header],\n      imports: [CommonModule],\n    }),\n  ],\n}"
+      },
+      {
+        "name": "preview",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": ".storybook/preview.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Preview",
+        "defaultValue": "{\n  parameters: {\n    actions: { argTypesRegex: \"^on[A-Z].*\" },\n    controls: {\n      matchers: {\n        color: /(background|color)$/i,\n        date: /Date$/i,\n      },\n    },\n  },\n}"
+      },
+      {
+        "name": "Primary",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Button.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Story",
+        "defaultValue": "{\n  args: {\n    primary: true,\n    label: 'Button',\n  },\n}"
+      },
+      {
+        "name": "providers",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/main.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "[]",
+        "defaultValue": "[\r\n  {provide: 'BASE_URL', useFactory: getBaseUrl, deps: []}\r\n]"
+      },
+      {
+        "name": "Secondary",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Button.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Story",
+        "defaultValue": "{\n  args: {\n    label: 'Button',\n  },\n}"
+      },
+      {
+        "name": "Small",
+        "ctype": "miscellaneous",
+        "subtype": "variable",
+        "file": "src/stories/Button.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "type": "Story",
+        "defaultValue": "{\n  args: {\n    size: 'small',\n    label: 'Button',\n  },\n}"
+      }
+    ],
+    "functions": [
+      {
+        "name": "getBaseUrl",
+        "file": "src/main.ts",
+        "ctype": "miscellaneous",
+        "subtype": "function",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "args": []
+      }
+    ],
+    "typealiases": [
+      {
+        "name": "CardComponentMode",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "\"compact\" | \"normal\"",
+        "file": "src/app/theme/card/card.component-interface.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 192
+      },
+      {
+        "name": "ComponentBuilderAction",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "literal type",
+        "file": "src/app/theme/component-builder.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 187
+      },
+      {
+        "name": "ComponentCheck",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "function",
+        "file": "src/app/theme/component-builder.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 184
+      },
+      {
+        "name": "HomeCampaignResponse",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "Readonly<literal type>",
+        "file": "src/app/shared/requests/home.request.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 183
+      },
+      {
+        "name": "HomeConfigResponse",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "Readonly<literal type>",
+        "file": "src/app/shared/requests/home.request.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 183
+      },
+      {
+        "name": "HomeResponse",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "Readonly<literal type>",
+        "file": "src/app/shared/requests/home.request.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 183
+      },
+      {
+        "name": "HomeUserResponse",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "Readonly<literal type>",
+        "file": "src/app/shared/requests/home.request.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 183
+      },
+      {
+        "name": "Story",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "StoryObj<Button>",
+        "file": "src/stories/Button.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 183
+      },
+      {
+        "name": "Story",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "StoryObj<Header>",
+        "file": "src/stories/Header.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 183
+      },
+      {
+        "name": "Story",
+        "ctype": "miscellaneous",
+        "subtype": "typealias",
+        "rawtype": "StoryObj<Page>",
+        "file": "src/stories/Page.stories.ts",
+        "deprecated": false,
+        "deprecationMessage": "",
+        "description": "",
+        "kind": 183
+      }
+    ],
+    "enumerations": [],
+    "groupedVariables": {
+      "src/environments/environment.prod.ts": [
+        {
+          "name": "environment",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/environments/environment.prod.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "object",
+          "defaultValue": "{\r\n  production: true\r\n}"
+        }
+      ],
+      "src/environments/environment.ts": [
+        {
+          "name": "environment",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/environments/environment.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "object",
+          "defaultValue": "{\r\n  production: false\r\n}"
+        }
+      ],
+      "src/stories/Button.stories.ts": [
+        {
+          "name": "Large",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Button.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Story",
+          "defaultValue": "{\n  args: {\n    size: 'large',\n    label: 'Button',\n  },\n}"
+        },
+        {
+          "name": "meta",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Button.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Meta<Button>",
+          "defaultValue": "{\n  title: 'Example/Button',\n  component: Button,\n  tags: ['autodocs'],\n  render: (args: Button) => ({\n    props: {\n      backgroundColor: null,\n      ...args,\n    },\n  }),\n  argTypes: {\n    backgroundColor: {\n      control: 'color',\n    },\n  },\n}"
+        },
+        {
+          "name": "Primary",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Button.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Story",
+          "defaultValue": "{\n  args: {\n    primary: true,\n    label: 'Button',\n  },\n}"
+        },
+        {
+          "name": "Secondary",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Button.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Story",
+          "defaultValue": "{\n  args: {\n    label: 'Button',\n  },\n}"
+        },
+        {
+          "name": "Small",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Button.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Story",
+          "defaultValue": "{\n  args: {\n    size: 'small',\n    label: 'Button',\n  },\n}"
+        }
+      ],
+      "src/stories/Header.stories.ts": [
+        {
+          "name": "LoggedIn",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Header.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Story",
+          "defaultValue": "{\n  args: {\n    user: {\n      name: 'Jane Doe',\n    },\n  },\n}"
+        },
+        {
+          "name": "LoggedOut",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Header.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Story",
+          "defaultValue": "{}"
+        },
+        {
+          "name": "meta",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Header.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Meta<Header>",
+          "defaultValue": "{\n  title: 'Example/Header',\n  component: Header,\n  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs\n  tags: ['autodocs'],\n  render: (args) => ({ props: args }),\n  decorators: [\n    moduleMetadata({\n      declarations: [Button],\n      imports: [CommonModule],\n    }),\n  ],\n  parameters: {\n    // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout\n    layout: 'fullscreen',\n  },\n}"
+        }
+      ],
+      "src/stories/Page.stories.ts": [
+        {
+          "name": "LoggedIn",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Page.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Story",
+          "defaultValue": "{\n  render: (args: Page) => ({\n    props: args,\n  }),\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement);\n    const loginButton = canvas.getByRole('button', { name: /Log in/i });\n    await expect(loginButton).toBeInTheDocument();\n    await userEvent.click(loginButton);\n    await expect(loginButton).not.toBeInTheDocument();\n\n    const logoutButton = canvas.getByRole('button', { name: /Log out/i });\n    await expect(logoutButton).toBeInTheDocument();\n  },\n}"
+        },
+        {
+          "name": "LoggedOut",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Page.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Story",
+          "defaultValue": "{\n  render: (args: Page) => ({\n    props: args,\n  }),\n}"
+        },
+        {
+          "name": "meta",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/stories/Page.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Meta<Page>",
+          "defaultValue": "{\n  title: 'Example/Page',\n  component: Page,\n  parameters: {\n    // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout\n    layout: 'fullscreen',\n  },\n  decorators: [\n    moduleMetadata({\n      declarations: [Button, Header],\n      imports: [CommonModule],\n    }),\n  ],\n}"
+        }
+      ],
+      ".storybook/preview.ts": [
+        {
+          "name": "preview",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": ".storybook/preview.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "Preview",
+          "defaultValue": "{\n  parameters: {\n    actions: { argTypesRegex: \"^on[A-Z].*\" },\n    controls: {\n      matchers: {\n        color: /(background|color)$/i,\n        date: /Date$/i,\n      },\n    },\n  },\n}"
+        }
+      ],
+      "src/main.ts": [
+        {
+          "name": "providers",
+          "ctype": "miscellaneous",
+          "subtype": "variable",
+          "file": "src/main.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "type": "[]",
+          "defaultValue": "[\r\n  {provide: 'BASE_URL', useFactory: getBaseUrl, deps: []}\r\n]"
+        }
+      ]
+    },
+    "groupedFunctions": {
+      "src/main.ts": [
+        {
+          "name": "getBaseUrl",
+          "file": "src/main.ts",
+          "ctype": "miscellaneous",
+          "subtype": "function",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "args": []
+        }
+      ]
+    },
+    "groupedEnumerations": {},
+    "groupedTypeAliases": {
+      "src/app/theme/card/card.component-interface.ts": [
+        {
+          "name": "CardComponentMode",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "\"compact\" | \"normal\"",
+          "file": "src/app/theme/card/card.component-interface.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 192
+        }
+      ],
+      "src/app/theme/component-builder.ts": [
+        {
+          "name": "ComponentBuilderAction",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "literal type",
+          "file": "src/app/theme/component-builder.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 187
+        },
+        {
+          "name": "ComponentCheck",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "function",
+          "file": "src/app/theme/component-builder.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 184
+        }
+      ],
+      "src/app/shared/requests/home.request.ts": [
+        {
+          "name": "HomeCampaignResponse",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "Readonly<literal type>",
+          "file": "src/app/shared/requests/home.request.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 183
+        },
+        {
+          "name": "HomeConfigResponse",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "Readonly<literal type>",
+          "file": "src/app/shared/requests/home.request.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 183
+        },
+        {
+          "name": "HomeResponse",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "Readonly<literal type>",
+          "file": "src/app/shared/requests/home.request.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 183
+        },
+        {
+          "name": "HomeUserResponse",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "Readonly<literal type>",
+          "file": "src/app/shared/requests/home.request.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 183
+        }
+      ],
+      "src/stories/Button.stories.ts": [
+        {
+          "name": "Story",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "StoryObj<Button>",
+          "file": "src/stories/Button.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 183
+        }
+      ],
+      "src/stories/Header.stories.ts": [
+        {
+          "name": "Story",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "StoryObj<Header>",
+          "file": "src/stories/Header.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 183
+        }
+      ],
+      "src/stories/Page.stories.ts": [
+        {
+          "name": "Story",
+          "ctype": "miscellaneous",
+          "subtype": "typealias",
+          "rawtype": "StoryObj<Page>",
+          "file": "src/stories/Page.stories.ts",
+          "deprecated": false,
+          "deprecationMessage": "",
+          "description": "",
+          "kind": 183
+        }
+      ]
+    }
+  },
+  "routes": [],
+  "coverage": {
+    "count": 1,
+    "status": "low",
+    "files": [
+      {
+        "filePath": ".storybook/preview.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "preview",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/app.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "AppComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/2",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-page.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "HomePageComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/3",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/campaign-home/campaign-home.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "CampaignHomeComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/home-view.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "HomeViewComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/10",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/no-admins/no-admins.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "NoAdminsComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/no-config/no-config.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "NoConfigComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/not-admin-no-campaign/not-admin-no-campaign.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "NotAdminNoCampaignComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/not-admin-setup-in-complete/not-admin-setup-in-complete.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "NotAdminSetupInCompleteComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/not-healthy/not-healthy.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "NotHealthyComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/select-server/select-server.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "SelectServerComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/pages/home/home-view/setup-campaign/setup-campaign.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "SetupCampaignComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/shared/api-request.ts",
+        "type": "interface",
+        "linktype": "interface",
+        "name": "ApiRequest",
+        "coveragePercent": 0,
+        "coverageCount": "0/3",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/shared/requests/home.request.ts",
+        "type": "class",
+        "linktype": "classe",
+        "name": "HomeRequest",
+        "coveragePercent": 0,
+        "coverageCount": "0/3",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/card/card-body/card-body.component-interface.ts",
+        "type": "class",
+        "linktype": "classe",
+        "name": "CardBodyComponentBuilder",
+        "coveragePercent": 0,
+        "coverageCount": "0/5",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/card/card-body/card-body.component-interface.ts",
+        "type": "interface",
+        "linktype": "interface",
+        "name": "CardBodyComponentInterface",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/card/card-body/card-body.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "CardBodyComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/4",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/card/card.component-builder.ts",
+        "type": "class",
+        "linktype": "classe",
+        "name": "CardComponentBuilder",
+        "coveragePercent": 0,
+        "coverageCount": "0/9",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/card/card.component-interface.ts",
+        "type": "interface",
+        "linktype": "interface",
+        "name": "CardComponentInterface",
+        "coveragePercent": 0,
+        "coverageCount": "0/3",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/card/card.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "CardComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/6",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/component-builder.ts",
+        "type": "class",
+        "linktype": "classe",
+        "name": "ComponentBuilder",
+        "coveragePercent": 0,
+        "coverageCount": "0/6",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/component.interface.ts",
+        "type": "interface",
+        "linktype": "interface",
+        "name": "ComponentInterface",
+        "coveragePercent": 0,
+        "coverageCount": "0/2",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/daisy.theme.ts",
+        "type": "class",
+        "linktype": "classe",
+        "name": "DaisyTheme",
+        "coveragePercent": 0,
+        "coverageCount": "0/2",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/theme.service.ts",
+        "type": "injectable",
+        "linktype": "injectable",
+        "name": "ThemeService",
+        "coveragePercent": 0,
+        "coverageCount": "0/3",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/themeBuilders.ts",
+        "type": "class",
+        "linktype": "classe",
+        "name": "DefaultTheme",
+        "coveragePercent": 0,
+        "coverageCount": "0/2",
+        "status": "low"
+      },
+      {
+        "filePath": "src/app/theme/themeBuilders.ts",
+        "type": "interface",
+        "linktype": "interface",
+        "name": "ThemeBuilders",
+        "coveragePercent": 0,
+        "coverageCount": "0/2",
+        "status": "low"
+      },
+      {
+        "filePath": "src/environments/environment.prod.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "environment",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/environments/environment.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "environment",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/main.ts",
+        "type": "function",
+        "linktype": "miscellaneous",
+        "linksubtype": "function",
+        "name": "getBaseUrl",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/main.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "providers",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Button.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "Large",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Button.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "meta",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Button.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "Primary",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Button.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "Secondary",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Button.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "Small",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Header.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "LoggedIn",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Header.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "LoggedOut",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Header.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "meta",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Page.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "LoggedIn",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Page.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "LoggedOut",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/Page.stories.ts",
+        "type": "variable",
+        "linktype": "miscellaneous",
+        "linksubtype": "variable",
+        "name": "meta",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/User.ts",
+        "type": "interface",
+        "linktype": "interface",
+        "name": "User",
+        "coveragePercent": 0,
+        "coverageCount": "0/1",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/button.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "ButtonComponent",
+        "coveragePercent": 83,
+        "coverageCount": "5/6",
+        "status": "very-good"
+      },
+      {
+        "filePath": "src/stories/header.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "HeaderComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/5",
+        "status": "low"
+      },
+      {
+        "filePath": "src/stories/page.component.ts",
+        "type": "component",
+        "linktype": "component",
+        "name": "PageComponent",
+        "coveragePercent": 0,
+        "coverageCount": "0/5",
+        "status": "low"
+      }
+    ]
+  }
+}

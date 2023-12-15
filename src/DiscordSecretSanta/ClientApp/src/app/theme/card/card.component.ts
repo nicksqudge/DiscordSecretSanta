@@ -13,9 +13,13 @@ export class CardComponent implements CardComponentInterface {
   @Input() class: string = '';
 
   constructor(private readonly themeService: ThemeService) {
+    const defaults = themeService.getTheme().card.base.defaults;
+    this.border = defaults.border;
+    this.mode = defaults.mode;
+    this.class = defaults.class;
   }
 
   getClass(): string {
-    return this.themeService.getTheme().card.base.buildCss(this);
+    return this.themeService.getTheme().card.base.theme.buildCss(this);
   }
 }

@@ -8,18 +8,34 @@ import {
 
 export interface ThemeBuilders {
   card: {
-    base: ComponentBuilder<CardComponentInterface>;
-    body: ComponentBuilder<CardBodyComponentInterface>;
+    base: {
+      theme: ComponentBuilder<CardComponentInterface>,
+      defaults: CardComponentInterface
+    }
+    body: {
+      theme: ComponentBuilder<CardBodyComponentInterface>,
+      defaults: CardBodyComponentInterface
+    }
   }
 }
 
 export class DefaultTheme implements ThemeBuilders {
   card = {
-    base: new CardComponentBuilder('card')
-      .hasBorder('card-border')
-      .hasNoBorder('card-no-border')
-      .isNormal('card-normal')
-      .isCompact('card-compact'),
-    body: new CardBodyComponentBuilder('card-body')
+    base: {
+      theme: new CardComponentBuilder('card')
+        .hasBorder('card-border')
+        .hasNoBorder('card-no-border')
+        .isNormal('card-normal')
+        .isCompact('card-compact'),
+      defaults: <CardComponentInterface>{
+        border: false,
+        class: '',
+        mode: 'normal'
+      },
+    },
+    body: {
+      theme: new CardBodyComponentBuilder('card-body'),
+      defaults: <CardBodyComponentInterface>{}
+    }
   }
 }

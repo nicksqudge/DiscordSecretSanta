@@ -10,9 +10,11 @@ export class CardBodyComponent implements CardBodyComponentInterface {
   @Input() class: string = '';
 
   constructor(private readonly theme: ThemeService) {
+    const defaults = theme.getTheme().card.body.defaults;
+    this.class = defaults.class;
   }
 
   getClass(): string {
-    return this.theme.getTheme().card.body.buildCss(this);
+    return this.theme.getTheme().card.body.theme.buildCss(this);
   }
 }

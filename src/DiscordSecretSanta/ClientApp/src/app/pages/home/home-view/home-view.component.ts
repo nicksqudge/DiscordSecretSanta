@@ -1,30 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { HomeResponse } from "@request/home.request";
-import { NoConfigComponent } from "./no-config/no-config.component";
-import { CommonModule } from "@angular/common";
-import { NotHealthyComponent } from "@app/pages/home/home-view/not-healthy/not-healthy.component";
-import { NoAdminsComponent } from "@app/pages/home/home-view/no-admins/no-admins.component";
-import { SelectServerComponent } from "@app/pages/home/home-view/select-server/select-server.component";
-import {
-  NotAdminNoCampaignComponent
-} from "@app/pages/home/home-view/not-admin-no-campaign/not-admin-no-campaign.component";
-import { SetupCampaignComponent } from "@app/pages/home/home-view/setup-campaign/setup-campaign.component";
-import { CampaignHomeComponent } from "@app/pages/home/home-view/campaign-home/campaign-home.component";
 
 @Component({
   selector: 'page-home-view',
-  standalone: true,
-  imports: [
-    CommonModule,
-
-    NoConfigComponent,
-    NotHealthyComponent,
-    NoAdminsComponent,
-    SelectServerComponent,
-    NotAdminNoCampaignComponent,
-    SetupCampaignComponent,
-    CampaignHomeComponent,
-  ],
   templateUrl: './home-view.component.html',
   styleUrl: './home-view.component.scss'
 })

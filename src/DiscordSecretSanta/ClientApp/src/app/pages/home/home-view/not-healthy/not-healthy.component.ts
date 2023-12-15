@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'page-home-not-healthy',
-  standalone: true,
-  imports: [],
   templateUrl: './not-healthy.component.html',
   styleUrl: './not-healthy.component.scss'
 })

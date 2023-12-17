@@ -8,7 +8,7 @@ describe('SelectServerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ SelectServerComponent ]
+      declarations: [ SelectServerComponent ]
     })
       .compileComponents();
 

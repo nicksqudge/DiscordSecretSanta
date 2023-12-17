@@ -8,7 +8,7 @@ describe('NotAdminNoCampaignComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ NotAdminNoCampaignComponent ]
+      declarations: [ NotAdminNoCampaignComponent ]
     })
       .compileComponents();
 

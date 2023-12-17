@@ -11,11 +11,13 @@ export class LoadingComponent implements LoadingInterface {
 
   @Input() size: Size = 'medium';
   @Input() class: string = '';
+  @Input() message: string = '';
 
   constructor(private readonly theme: ThemeService) {
     const defaults = theme.getTheme().loading.defaults;
     this.size = defaults.size;
     this.class = defaults.class;
+    this.message = defaults.message;
   }
 
   getClass(): string {

@@ -3,6 +3,7 @@ import { Size } from "../common-types";
 
 export interface LoadingInterface extends ComponentInterface {
   size: Size;
+  message?: string;
 }
 
 

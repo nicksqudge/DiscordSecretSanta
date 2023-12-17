@@ -8,7 +8,7 @@ describe('NotHealthyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ NotHealthyComponent ]
+      declarations: [ NotHealthyComponent ]
     })
       .compileComponents();
 

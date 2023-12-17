@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoadingComponent } from './loading.component';
+import { ThemeModule } from "@theme/theme.module";
+import { DefaultTheme } from "@theme/theme.builder";
 
 describe('LoadingComponent', () => {
   let component: LoadingComponent;
@@ -8,7 +10,8 @@ describe('LoadingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ LoadingComponent ]
+      imports: [ ThemeModule.forRoot(new DefaultTheme()) ],
+      declarations: [ LoadingComponent ]
     })
       .compileComponents();
 

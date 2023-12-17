@@ -8,7 +8,7 @@ describe('NotAdminSetupInCompleteComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ NotAdminSetupInCompleteComponent ]
+      declarations: [ NotAdminSetupInCompleteComponent ]
     })
       .compileComponents();
 

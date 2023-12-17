@@ -5,7 +5,6 @@ import { HomeRequest } from "@request/home.request";
 @Component({
   selector: 'page-home',
   templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.scss'
 })
 export class HomePageComponent {
 

@@ -33,7 +33,6 @@ export class DaisyTheme implements ThemeBuilder {
       .onSize('large', 'loading-lg'),
     defaults: {
       size: 'medium',
-      class: ''
     }
   };
 }

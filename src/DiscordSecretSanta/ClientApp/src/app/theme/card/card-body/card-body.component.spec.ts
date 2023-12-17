@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CardBodyComponent } from './card-body.component';
+import { ThemeModule } from "@theme/theme.module";
+import { DefaultTheme } from "@theme/theme.builder";
 
 describe('CardBodyComponent', () => {
   let component: CardBodyComponent;
@@ -8,7 +10,8 @@ describe('CardBodyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ CardBodyComponent ]
+      imports: [ ThemeModule.forRoot(new DefaultTheme()) ],
+      declarations: [ CardBodyComponent ]
     })
       .compileComponents();
 

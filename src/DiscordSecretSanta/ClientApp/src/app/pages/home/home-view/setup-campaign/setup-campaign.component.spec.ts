@@ -8,7 +8,7 @@ describe('SetupCampaignComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ SetupCampaignComponent ]
+      declarations: [ SetupCampaignComponent ]
     })
       .compileComponents();
 

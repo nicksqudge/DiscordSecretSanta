@@ -8,7 +8,7 @@ describe('NoAdminsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ NoAdminsComponent ]
+      declarations: [ NoAdminsComponent ]
     })
       .compileComponents();
 

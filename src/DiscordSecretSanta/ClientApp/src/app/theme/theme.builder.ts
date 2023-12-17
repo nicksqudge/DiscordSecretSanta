@@ -43,7 +43,6 @@ export class DefaultTheme implements ThemeBuilder {
       .onSize('extra-large', 'loading-xl'),
     defaults: {
       size: 'medium',
-      class: ''
     }
   };
 }

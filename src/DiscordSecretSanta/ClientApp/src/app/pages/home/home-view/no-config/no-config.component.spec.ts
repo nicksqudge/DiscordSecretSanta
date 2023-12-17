@@ -8,7 +8,7 @@ describe('NoConfigComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ NoConfigComponent ]
+      declarations: [ NoConfigComponent ]
     })
       .compileComponents();
 

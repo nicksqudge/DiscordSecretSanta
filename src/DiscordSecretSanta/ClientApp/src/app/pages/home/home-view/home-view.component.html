@@ -1,7 +1,14 @@
-<page-home-no-config *ngIf="showNoConfig()"/>
-<page-home-not-healthy *ngIf="showNotHealthy()"/>
-<page-home-no-admins *ngIf="showNoAdmins()"/>
-<page-home-select-server *ngIf="showSelectServer()"/>
-<page-home-not-admin-no-campaign *ngIf="notAdminAndNoCampaign()"/>
-<page-home-setup-campaign *ngIf="showSetupCampaign()"/>
-<page-home-campaign-home *ngIf="showCampaignHome()"/>
+<div class="grid h-screen place-items-center">
+  <theme-card [class]="'w-96'">
+    <theme-card-body>
+      <theme-loading *ngIf="input === null || input === undefined"/>
+      <page-home-no-config/>
+      <page-home-not-healthy/>
+      <page-home-no-admins/>
+      <page-home-select-server/>
+      <page-home-not-admin-no-campaign/>
+      <page-home-setup-campaign/>
+      <page-home-campaign-home/>
+    </theme-card-body>
+  </theme-card>
+</div>

@@ -5,8 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ThemeModule } from '@theme/theme.module';
 import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
-import { HomePageComponent } from "./pages/home/home-page.component";
 import { DaisyTheme } from "@theme/daisy.theme";
+import { HomePageModule } from "@app/pages/home/home-page.module";
 
 @NgModule({
   declarations: [
@@ -19,7 +19,7 @@ import { DaisyTheme } from "@theme/daisy.theme";
 
     // DiscordSecretSanta
     // Pages
-    HomePageComponent,
+    HomePageModule,
 
     ThemeModule.forRoot(new DaisyTheme()),
     StoreModule.forRoot({}, {})

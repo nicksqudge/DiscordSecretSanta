@@ -21,7 +21,7 @@ export abstract class ComponentBuilder<TComponent extends ComponentInterface> {
     return result;
   }
 
-  protected add(is: ComponentCheck<TComponent>, cssToApply: string): void {
+  public add(is: ComponentCheck<TComponent>, cssToApply: string): void {
     this.actions.push({
       is,
       cssToApply

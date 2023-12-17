@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { CardBodyComponentInterface } from "@theme/card/card-body/card-body.component-interface";
+import { CardBodyInterface } from "@theme/card/card-body/card-body.interface";
 import { ThemeService } from "@theme/theme.service";
 
 @Component({
   selector: 'theme-card-body',
   templateUrl: './card-body.component.html',
 })
-export class CardBodyComponent implements CardBodyComponentInterface {
+export class CardBodyComponent implements CardBodyInterface {
   @Input() class: string = '';
 
   constructor(private readonly theme: ThemeService) {

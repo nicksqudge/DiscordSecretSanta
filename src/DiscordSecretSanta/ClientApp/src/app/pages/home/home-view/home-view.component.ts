@@ -4,7 +4,6 @@ import { HomeResponse } from "@request/home.request";
 @Component({
   selector: 'page-home-view',
   templateUrl: './home-view.component.html',
-  styleUrl: './home-view.component.scss'
 })
 export class HomeViewComponent {
   @Input() input: HomeResponse | undefined;

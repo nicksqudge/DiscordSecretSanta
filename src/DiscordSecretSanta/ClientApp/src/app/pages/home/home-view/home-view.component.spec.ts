@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeViewComponent } from './home-view.component';
+import { By } from "@angular/platform-browser";
+import { LoadingComponent } from "../../../theme/loading/loading.component";
 
 describe('HomeViewComponent', () => {
   let component: HomeViewComponent;
@@ -21,5 +23,10 @@ describe('HomeViewComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should ')
+  it('should show the loading spinner if the input is null', () => {
+    component.input = null;
+    fixture.detectChanges();
+
+    fixture.debugElement.query(By.directive(LoadingComponent));
+  });
 });

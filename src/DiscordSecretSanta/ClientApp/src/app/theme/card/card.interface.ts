@@ -1,6 +1,6 @@
 ﻿import { ComponentInterface } from "@theme/component.interface";
 
-export interface CardComponentInterface extends ComponentInterface {
+export interface CardInterface extends ComponentInterface {
   border: boolean;
   mode: CardComponentMode;
 }

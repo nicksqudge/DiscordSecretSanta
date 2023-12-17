@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@angular/core';
-import { DefaultTheme, ThemeBuilders } from "@theme/themeBuilders";
+import { DefaultTheme, ThemeBuilder } from "@theme/theme.builder";
 
 @Injectable()
 export class ThemeService {
 
-  constructor(@Inject('theme') private readonly theme?: ThemeBuilders) {
+  constructor(@Inject('theme') private readonly theme?: ThemeBuilder) {
   }
 
-  getTheme(): ThemeBuilders {
+  getTheme(): ThemeBuilder {
     if (this.theme)
       return this.theme;
 

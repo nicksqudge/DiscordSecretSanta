@@ -5,12 +5,14 @@ import { ThemeService } from "@theme/theme.service";
 import { CardComponent } from "@theme/card/card.component";
 import { CardBodyComponent } from "@theme/card/card-body/card-body.component";
 import { LoadingComponent } from "@theme/loading/loading.component";
+import { ProgressComponent } from "@theme/progress/progress.component";
 
 @NgModule({
   declarations: [
     CardComponent,
     CardBodyComponent,
-    LoadingComponent
+    LoadingComponent,
+    ProgressComponent
   ],
   imports: [
     CommonModule
@@ -18,7 +20,8 @@ import { LoadingComponent } from "@theme/loading/loading.component";
   exports: [
     CardComponent,
     CardBodyComponent,
-    LoadingComponent
+    LoadingComponent,
+    ProgressComponent
   ]
 })
 export class ThemeModule {

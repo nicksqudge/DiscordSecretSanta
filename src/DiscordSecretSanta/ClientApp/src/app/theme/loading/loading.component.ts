@@ -10,8 +10,8 @@ import { ThemeService } from "@theme/theme.service";
 export class LoadingComponent implements LoadingInterface {
 
   @Input() size: Size = 'medium';
-  @Input() class: string = '';
-  @Input() message: string = '';
+  @Input() class: string | undefined = '';
+  @Input() message: string | undefined = '';
 
   constructor(private readonly theme: ThemeService) {
     const defaults = theme.getTheme().loading.defaults;

@@ -10,7 +10,7 @@ export class CardComponent implements CardInterface {
 
   @Input() border: boolean = false;
   @Input() mode: CardComponentMode = 'normal';
-  @Input() class: string = '';
+  @Input() class: string | undefined = '';
 
   constructor(private readonly themeService: ThemeService) {
     const defaults = themeService.getTheme().card.base.defaults;

@@ -5,23 +5,26 @@ import { CardBodyBuilder } from "@theme/card/card-body/card-body.builder";
 import { ComponentTheme } from "@theme/component.interface";
 import { LoadingInterface } from "@theme/loading/loading.interface";
 import { LoadingBuilder } from "@theme/loading/loading.builder";
+import { ProgressInterface } from "@theme/progress/progress.interface";
+import { ProgressBuilder } from "@theme/progress/progress.builder";
 
 export interface ThemeBuilder {
   card: {
     base: ComponentTheme<CardInterface>,
     body: ComponentTheme<CardBodyInterface>
   };
-  loading: ComponentTheme<LoadingInterface>
+  loading: ComponentTheme<LoadingInterface>,
+  progress: ComponentTheme<ProgressInterface>
 }
 
 export class DefaultTheme implements ThemeBuilder {
   card = {
     base: {
       theme: new CardBuilder('card')
-        .hasBorder('card-border')
-        .hasNoBorder('card-no-border')
-        .isNormal('card-normal')
-        .isCompact('card-compact'),
+        .hasBorder('card--border')
+        .hasNoBorder('card--no-border')
+        .isNormal('card--normal')
+        .isCompact('card--compact'),
       defaults: <CardInterface>{
         border: false,
         class: '',
@@ -29,20 +32,36 @@ export class DefaultTheme implements ThemeBuilder {
       },
     },
     body: {
-      theme: new CardBodyBuilder('card-body'),
+      theme: new CardBodyBuilder('card__body'),
       defaults: <CardBodyInterface>{}
     },
   };
 
   loading = <ComponentTheme<LoadingInterface>>{
-    theme: new LoadingBuilder()
-      .onSize('extra-small', 'loading-xs')
-      .onSize('small', 'loading-sm')
-      .onSize('medium', 'loading-md')
-      .onSize('large', 'loading-lg')
-      .onSize('extra-large', 'loading-xl'),
+    theme: new LoadingBuilder('loading')
+      .onSize('extra-small', 'loading--xs')
+      .onSize('small', 'loading--sm')
+      .onSize('medium', 'loading--md')
+      .onSize('large', 'loading--lg')
+      .onSize('extra-large', 'loading--xl'),
     defaults: {
       size: 'medium',
+    }
+  };
+
+  progress = <ComponentTheme<ProgressInterface>>{
+    theme: new ProgressBuilder('progress')
+      .onColor('primary', 'progress--primary')
+      .onColor('secondary', 'progress--secondary')
+      .onColor('accent', 'progress--accent')
+      .onColor('info', 'progress--info')
+      .onColor('error', 'progress--error')
+      .onColor('success', 'progress--success')
+      .onColor('warning', 'progress--warning'),
+    defaults: {
+      color: 'primary',
+      value: 0,
+      max: 100
     }
   };
 }

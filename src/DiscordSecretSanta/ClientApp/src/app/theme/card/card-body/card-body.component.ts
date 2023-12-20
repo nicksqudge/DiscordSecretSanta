@@ -7,7 +7,7 @@ import { ThemeService } from "@theme/theme.service";
   templateUrl: './card-body.component.html',
 })
 export class CardBodyComponent implements CardBodyInterface {
-  @Input() class: string = '';
+  @Input() class: string | undefined = '';
 
   constructor(private readonly theme: ThemeService) {
     const defaults = theme.getTheme().card.body.defaults;

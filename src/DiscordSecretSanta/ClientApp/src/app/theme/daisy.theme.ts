@@ -6,6 +6,8 @@ import { CardBodyBuilder } from "@theme/card/card-body/card-body.builder";
 import { ComponentTheme } from "@theme/component.interface";
 import { LoadingInterface } from "@theme/loading/loading.interface";
 import { LoadingBuilder } from "@theme/loading/loading.builder";
+import { ProgressInterface } from "@theme/progress/progress.interface";
+import { ProgressBuilder } from "@theme/progress/progress.builder";
 
 export class DaisyTheme implements ThemeBuilder {
   card = {
@@ -33,6 +35,22 @@ export class DaisyTheme implements ThemeBuilder {
       .onSize('large', 'loading-lg'),
     defaults: {
       size: 'medium',
+    }
+  };
+
+  progress = <ComponentTheme<ProgressInterface>>{
+    theme: new ProgressBuilder('progress')
+      .onColor('primary', 'progress-primary')
+      .onColor('secondary', 'progress-secondary')
+      .onColor('accent', 'progress-acent')
+      .onColor('info', 'progress-info')
+      .onColor('error', 'progress-error')
+      .onColor('success', 'progress-success')
+      .onColor('warning', 'progress-warning'),
+    defaults: {
+      color: 'primary',
+      value: 0,
+      max: 100
     }
   };
 }

@@ -6,7 +6,36 @@ import { HomeResponse } from "@request/home.request";
   templateUrl: './home-view.component.html',
 })
 export class HomeViewComponent {
-  @Input() input: HomeResponse | undefined | null;
+  public progressValue: number = 0;
+
+  private _input: HomeResponse | undefined | null;
+
+  @Input()
+  public get input() {
+    return this._input;
+  }
+
+  public set input(value: HomeResponse | undefined | null) {
+    this._input = value;
+
+    if (value == null) {
+      this.progressValue = 1;
+      return;
+    }
+
+    if (value.configOk == false) {
+      if ((value.configDetail?.length ?? 0) > 0)
+        this.progressValue = 2;
+      else
+        this.progressValue = 1;
+      return;
+    }
+
+    if (value.admins == false) {
+      this.progressValue = 3;
+      return;
+    }
+  }
 
   // public showNoConfig(): boolean {
   //   return !this.input?.configOk ?? true;

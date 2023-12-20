@@ -64,8 +64,44 @@ describe('HomeViewComponent', () => {
       configOk: false,
       admins: false
     };
+    fixture.detectChanges();
 
+    expect(component.progressValue)
+      .toBe(1);
     expect(fixture.debugElement.query(By.directive(NoConfigComponent)))
+      .toBeTruthy();
+  });
+
+  it('should show any health errors if there are any', () => {
+    component.input = {
+      configOk: false,
+      admins: false,
+      configDetail: [
+        {
+          key: 'database',
+          healthy: false,
+          reason: 'Cannot connect'
+        }
+      ]
+    }
+    fixture.detectChanges();
+
+    expect(component.progressValue)
+      .toBe(2);
+    expect(fixture.debugElement.query(By.directive(NotHealthyComponent)))
+      .toBeTruthy();
+  });
+
+  it('should show that the user needs to login if no admins have been setup', () => {
+    component.input = {
+      configOk: true,
+      admins: false
+    };
+    fixture.detectChanges();
+
+    expect(component.progressValue)
+      .toBe(3);
+    expect(fixture.debugElement.query(By.directive(NoAdminsComponent)))
       .toBeTruthy();
   });
 

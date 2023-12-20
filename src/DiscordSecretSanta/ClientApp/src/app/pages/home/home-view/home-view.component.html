@@ -1,14 +1,19 @@
 <div class="grid h-screen place-items-center">
   <theme-card [class]="'w-96'">
     <theme-card-body>
-      <theme-loading *ngIf="input === null || input === undefined"/>
-      <page-home-no-config/>
-      <page-home-not-healthy/>
-      <page-home-no-admins/>
-      <page-home-select-server/>
-      <page-home-not-admin-no-campaign/>
-      <page-home-setup-campaign/>
-      <page-home-campaign-home/>
+      <ng-container *ngIf="input !== undefined; else loading">
+        <h1>Setup</h1>
+        <theme-progress [value]="progressValue" max="7"/>
+        <ng-container [ngSwitch]="progressValue">
+          <page-home-no-config *ngSwitchCase="1"/>
+          <page-home-not-healthy *ngSwitchCase="2"/>
+          <page-home-no-admins *ngSwitchCase="3"/>
+        </ng-container>
+      </ng-container>
     </theme-card-body>
   </theme-card>
 </div>
+
+<ng-template #loading>
+  <theme-loading/>
+</ng-template>

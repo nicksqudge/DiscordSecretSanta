@@ -2,98 +2,55 @@ import { Component, Input } from '@angular/core';
 import { HomeResponse } from "@request/home.request";
 
 @Component({
-  selector: 'page-home-view',
-  templateUrl: './home-view.component.html',
+	selector: 'page-home-view',
+	templateUrl: './home-view.component.html',
 })
 export class HomeViewComponent {
-  public progressValue: number = 0;
+	private static NoConfig: number = 1;
+	private static NotHealthy: number = 2;
+	private static NotSignedIn: number = 3;
+	private static NotAdminAndNoCampaign: number = 4;
+	private static SetupCampaign: number = 5;
+	private static CampaignHome: number = 6;
 
-  private _input: HomeResponse | undefined | null;
+	public progressValue: number = 0;
 
-  @Input()
-  public get input() {
-    return this._input;
-  }
+	private _input: HomeResponse | undefined | null;
 
-  public set input(value: HomeResponse | undefined | null) {
-    this._input = value;
+	@Input()
+	public get input() {
+		return this._input;
+	}
 
-    if (value == null) {
-      this.progressValue = 1;
-      return;
-    }
+	public set input(value: HomeResponse | undefined | null) {
+		this._input = value;
+		this.progressValue = this.getProgressValue(value);
+	}
 
-    if (value.configOk == false) {
-      if ((value.configDetail?.length ?? 0) > 0)
-        this.progressValue = 2;
-      else
-        this.progressValue = 1;
-      return;
-    }
+	private getProgressValue(value: HomeResponse | undefined | null): number {
+		// The config is missing
+		if (value == null) {
+			return HomeViewComponent.NoConfig;
+		}
 
-    if (value.admins == false) {
-      this.progressValue = 3;
-      return;
-    }
-  }
+		// The config is not okay
+		if (value.configOk === false) {
+			if ((value.configDetail?.length ?? 0) > 0)
+				return HomeViewComponent.NotHealthy;
+			else
+				return HomeViewComponent.NoConfig;
+		}
 
-  // public showNoConfig(): boolean {
-  //   return !this.input?.configOk ?? true;
-  // }
-  //
-  // public showNotHealthy(): boolean {
-  //   if (this.input === undefined)
-  //     return false;
-  //
-  //   if (this.input.configDetail === undefined)
-  //     return false;
-  //
-  //   return this.input.configOk === false &&
-  //     this.input.configDetail.length > 0;
-  // }
-  //
-  // public showNoAdmins(): boolean {
-  //   return this.hasInput() &&
-  //     this.input!.configOk === true &&
-  //     this.input!.admins === false;
-  // }
-  //
-  // public showSelectServer(): boolean {
-  //   return this.hasInput() &&
-  //     this.input!.configOk === true &&
-  //     this.input!.admins === true &&
-  //     this.input!.user !== undefined &&
-  //     this.input!.user.isAdmin === true &&
-  //     this.input!.activeCampaign === undefined;
-  // }
-  //
-  // public notAdminAndNoCampaign(): boolean {
-  //   return this.hasInput() &&
-  //     this.input!.configOk === true &&
-  //     this.input!.admins === true &&
-  //     this.input!.user !== undefined &&
-  //     this.input!.user.isAdmin === false;
-  // }
-  //
-  // public showSetupCampaign(): boolean {
-  //   return this.hasInput() &&
-  //     this.input!.configOk === true &&
-  //     this.input!.admins === true &&
-  //     this.input!.user !== undefined &&
-  //     this.input!.user.isAdmin === true &&
-  //     this.input!.activeCampaign === undefined;
-  // }
-  //
-  // public showCampaignHome(): boolean {
-  //   return this.hasInput() &&
-  //     this.input!.configOk === true &&
-  //     this.input!.admins === true &&
-  //     this.input!.user !== undefined &&
-  //     this.input!.user.isAdmin === true &&
-  //     this.input!.activeCampaign !== undefined;
-  // }
-  //
-  // private hasInput(): boolean {
-  //   return this.input !== undefined;
-  // }
+		if (value.user == null) {
+			return HomeViewComponent.NotSignedIn;
+		} else {
+			if (value.activeCampaign == null) {
+				return value.user.isAdmin ?
+					HomeViewComponent.SetupCampaign :
+					HomeViewComponent.NotAdminAndNoCampaign;
+			} else {
+				return HomeViewComponent.CampaignHome;
+			}
+		}
+	}
 }

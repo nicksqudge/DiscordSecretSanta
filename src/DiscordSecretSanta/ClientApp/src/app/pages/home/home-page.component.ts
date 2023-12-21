@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { HomeRequest } from "@request/home.request";
+import { HomeRequest, HomeResponse } from "@request/home.request";
 
 @Component({
   selector: 'page-home',
@@ -9,6 +9,12 @@ import { HomeRequest } from "@request/home.request";
 export class HomePageComponent {
 
   home$ = new HomeRequest().send(this.http);
+
+  temp: HomeResponse = {
+    configOk: true,
+    user: undefined,
+    activeCampaign: undefined
+  };
 
   constructor(private readonly http: HttpClient) {
   }

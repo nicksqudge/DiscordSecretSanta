@@ -3,11 +3,16 @@
     <theme-card-body>
       <ng-container *ngIf="input !== undefined; else loading">
         <h1>Setup</h1>
-        <theme-progress [value]="progressValue" max="7"/>
+        <theme-progress *ngIf="progressValue !== 6"
+                        [max]="6"
+                        [value]="progressValue"/>
         <ng-container [ngSwitch]="progressValue">
           <page-home-no-config *ngSwitchCase="1"/>
           <page-home-not-healthy *ngSwitchCase="2"/>
-          <page-home-no-admins *ngSwitchCase="3"/>
+          <page-home-not-signed-in *ngSwitchCase="3"/>
+          <page-home-not-admin-no-campaign *ngSwitchCase="4"/>
+          <page-home-setup-campaign *ngSwitchCase="5"/>
+          <page-home-campaign-home *ngSwitchCase="6"/>
         </ng-container>
       </ng-container>
     </theme-card-body>

@@ -17,9 +17,6 @@ export type HomeResponse = Readonly<{
   // Only populated if config is not okay
   configDetail?: ReadonlyArray<HomeConfigResponse>;
 
-  // Are there any admins setup on the platform
-  admins: boolean;
-
   // The details of the user
   user?: HomeUserResponse;
 

@@ -5,7 +5,7 @@ import { LoadingComponent } from "@theme/loading/loading.component";
 import { CampaignHomeComponent } from "@app/pages/home/home-view/campaign-home/campaign-home.component";
 import { NoConfigComponent } from "@app/pages/home/home-view/no-config/no-config.component";
 import {
-	NotAdminNoCampaignComponent
+  NotAdminNoCampaignComponent
 } from "@app/pages/home/home-view/not-admin-no-campaign/not-admin-no-campaign.component";
 import { NotHealthyComponent } from "@app/pages/home/home-view/not-healthy/not-healthy.component";
 import { SetupCampaignComponent } from "@app/pages/home/home-view/setup-campaign/setup-campaign.component";
@@ -30,7 +30,8 @@ describe('HomeViewComponent', () => {
 				NotAdminNoCampaignComponent,
 				NotHealthyComponent,
 				SetupCampaignComponent,
-				HomeViewComponent
+        HomeViewComponent,
+        NotSignedInComponent
 			]
 		})
 			.compileComponents();

@@ -33,7 +33,7 @@ public static class ResponseMessageAssertionExtensions
         return assertions.HaveStatusCode(HttpStatusCode.OK);
     }
 
-    public static async Task<AndConstraint<ResponseMessageAssertions>> MatchesResponse<T>(
+    public static async Task<AndConstraint<ResponseMessageAssertions>> ContentMatches<T>(
         this ResponseMessageAssertions assertions, Func<T, bool> predicate)
     {
         var content = await assertions.Subject.Content.ReadAsStringAsync();
@@ -46,7 +46,7 @@ public static class ResponseMessageAssertionExtensions
         return new AndConstraint<ResponseMessageAssertions>(assertions);
     }
 
-    public static async Task<AndConstraint<ResponseMessageAssertions>> MatchesResponse<T>(
+    public static async Task<AndConstraint<ResponseMessageAssertions>> ContentMatches<T>(
         this ResponseMessageAssertions assertions, T expectation)
     {
         var content = await assertions.Subject.Content.ReadAsStringAsync();

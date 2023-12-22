@@ -25,7 +25,7 @@ public class HealthCheckControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.MatchesResponse<HealthResult>(r => r.Status == "Healthy");
+            .And.ContentMatches<HealthResult>(r => r.Status == "Healthy");
     }
 
     [Test]
@@ -44,8 +44,8 @@ public class HealthCheckControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .HaveStatusCode(HttpStatusCode.ServiceUnavailable)
-            .And.MatchesResponse<HealthResult>(r => r.Status == "Unhealthy" &&
-                                                    r.Entries.Any(x => x.Key == "database"));
+            .And.ContentMatches<HealthResult>(r => r.Status == "Unhealthy" &&
+                                                   r.Entries.Any(x => x.Key == "database"));
     }
 
     [Test]
@@ -64,9 +64,9 @@ public class HealthCheckControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .HaveStatusCode(HttpStatusCode.ServiceUnavailable)
-            .And.MatchesResponse<HealthResult>(r => r.Status == "Unhealthy" &&
-                                                    r.Entries.Any(x =>
-                                                        x.Key == "discord" && x.Value.Description == "Partial Outage"));
+            .And.ContentMatches<HealthResult>(r => r.Status == "Unhealthy" &&
+                                                   r.Entries.Any(x =>
+                                                       x.Key == "discord" && x.Value.Description == "Partial Outage"));
     }
 
     private class NoDatabaseConnectionHealthCheck : IDatabaseHealthChecks

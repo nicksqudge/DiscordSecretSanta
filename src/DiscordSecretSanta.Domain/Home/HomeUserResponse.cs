@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DiscordSecretSanta.Controllers.Home;
+namespace DiscordSecretSanta.Domain.Home;
 
 public sealed record HomeUserResponse
 {

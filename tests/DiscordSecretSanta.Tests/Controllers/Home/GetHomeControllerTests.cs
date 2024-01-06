@@ -1,5 +1,5 @@
 ﻿using DiscordSecretSanta.Controllers.Home;
-using DiscordSecretSanta.Domain.Home;
+using DiscordSecretSanta.Domain.Setup;
 
 namespace DiscordSecretSanta.Tests.Controllers.Home;
 
@@ -17,7 +17,7 @@ public class GetHomeControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.ContentMatches(new HomeResponse
+            .And.ContentMatches(new SetupResponse
             {
                 User = null,
                 ActiveCampaign = null,
@@ -38,12 +38,12 @@ public class GetHomeControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.ContentMatches(new HomeResponse
+            .And.ContentMatches(new SetupResponse
             {
                 User = null,
                 ActiveCampaign = null,
                 ConfigOkay = false,
-                ConfigDetails = new List<HomeConfigResponse>
+                ConfigDetails = new List<SetupConfigResponse>
                 {
                     new()
                     {
@@ -67,7 +67,7 @@ public class GetHomeControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.ContentMatches(new HomeResponse
+            .And.ContentMatches(new SetupResponse
             {
                 User = null,
                 ActiveCampaign = null,
@@ -88,9 +88,9 @@ public class GetHomeControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.ContentMatches(new HomeResponse
+            .And.ContentMatches(new SetupResponse
             {
-                User = new HomeUserResponse
+                User = new SetupUserResponse
                 {
                     Name = "Test",
                     IsAdmin = false
@@ -113,9 +113,9 @@ public class GetHomeControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.ContentMatches(new HomeResponse
+            .And.ContentMatches(new SetupResponse
             {
-                User = new HomeUserResponse
+                User = new SetupUserResponse
                 {
                     Name = "Test",
                     IsAdmin = true
@@ -138,14 +138,14 @@ public class GetHomeControllerTests : ApiTestFixture
         // ASSERT
         await response.Should()
             .BeOk()
-            .And.ContentMatches(new HomeResponse
+            .And.ContentMatches(new SetupResponse
             {
-                User = new HomeUserResponse
+                User = new SetupUserResponse
                 {
                     Name = "Test",
                     IsAdmin = true
                 },
-                ActiveCampaign = new HomeCampaignResponse
+                ActiveCampaign = new SetupCampaignResponse
                 {
                     Name = "Test"
                 },

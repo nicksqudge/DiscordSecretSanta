@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DiscordSecretSanta.Domain.Home;
+namespace DiscordSecretSanta.Domain.Setup;
 
-public sealed record HomeUserResponse
+public sealed record SetupUserResponse
 {
     [JsonPropertyName("name")]
     public string Name { get; init; } = string.Empty;

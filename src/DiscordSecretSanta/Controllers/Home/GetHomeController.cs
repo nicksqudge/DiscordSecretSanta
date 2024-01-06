@@ -1,4 +1,4 @@
-﻿using DiscordSecretSanta.Domain.Home;
+﻿using DiscordSecretSanta.Domain.Setup;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +12,8 @@ public class GetHomeController : Controller
     public const string Route = "/api/home";
 
     [HttpGet]
-    public async Task<ActionResult<HomeResponse>> Get()
+    public async Task<ActionResult<SetupResponse>> Get()
     {
-        return Ok(new HomeResponse());
+        return Ok(new SetupResponse());
     }
 }

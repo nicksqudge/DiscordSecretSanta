@@ -1,6 +1,6 @@
-﻿namespace DiscordSecretSanta.Domain.Setup;
+﻿namespace DiscordSecretSanta.Domain.Config;
 
-public class SetupConfigErrors
+public class ConfigErrors
 {
     public const string ConfigKey = "config";
     public const string InvalidConfig = "invalid_config";

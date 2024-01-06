@@ -1,4 +1,5 @@
-﻿using DiscordSecretSanta.Domain.Setup;
+﻿using DiscordSecretSanta.Domain.Config;
+using DiscordSecretSanta.Domain.Setup;
 using NSubstitute;
 
 namespace DiscordSecretSanta.Domain.Tests.Setup;
@@ -13,15 +14,19 @@ public class SetupQueryHandlerTests
     {
         _configProvider = Substitute.For<IConfigProvider>();
 
-        _target = new SetupQueryHandler(_configProvider);
+        _target = new SetupQueryHandler(
+            _configProvider,
+            new ConfigValidator()
+        );
     }
 
     [Test]
     public async Task NoConfig()
     {
         // ARRANGE
-        _configProvider.TryGetConfig(Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(Task.CompletedTask);
+        _configProvider
+            .TryGetConfig(Arg.Any<CancellationToken>())
+            .ReturnsForAnyArgs<AppConfig?>(callInfo => null);
         var query = new SetupQuery();
 
         // ACT
@@ -44,7 +49,7 @@ public class SetupQueryHandlerTests
     {
         // ARRANGE
         _configProvider.TryGetConfig(Arg.Any<CancellationToken>())
-            .ReturnsForAnyArgs(new Config());
+            .ReturnsForAnyArgs(new AppConfig());
         var query = new SetupQuery();
 
         // ACT
@@ -61,8 +66,8 @@ public class SetupQueryHandlerTests
                 {
                     new()
                     {
-                        Key = SetupConfigErrors.ConfigKey,
-                        Reason = SetupConfigErrors.InvalidConfig,
+                        Key = ConfigErrors.ConfigKey,
+                        Reason = ConfigErrors.InvalidConfig,
                         IsHealthy = false
                     }
                 },

@@ -1,7 +1,4 @@
 using DiscordSecretSanta.Commands;
-using DiscordSecretSanta.Translations.English;
-using FakeItEasy;
-using Shouldly;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
@@ -39,6 +36,7 @@ public class StatusCommandTests
         {
             get
             {
+                yield return new TestCaseData(Status.NotConfigured, new EnglishMessages().StatusIsNotConfigured());
                 yield return new TestCaseData(Status.Ready, new EnglishMessages().StatusIsReady());
                 yield return new TestCaseData(Status.Drawn, new EnglishMessages().StatusIsDrawn());
                 yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsOpen(0));

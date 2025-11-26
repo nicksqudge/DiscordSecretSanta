@@ -26,6 +26,9 @@ public class StatusCommand
             case Status.Open:
                 var memberCount = await _dataStore.GetNumberOfMembers(cancellationToken);
                 return _messages.StatusIsOpen(memberCount);
+            
+            case Status.NotConfigured:
+                return _messages.StatusIsNotConfigured();
          
             default:
                 return $"I don't know my status... {status} is not supported :(";

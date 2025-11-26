@@ -16,4 +16,16 @@ public class EnglishMessages : Messages
     }
 
     public string StatusIsDrawn() => "All names have been drawn and so I am no longer accepting new people to join.";
+
+    public string StatusIsNotConfigured()
+        => "A secret santa has not been configured by an admin yet. They just need to say \"setup\" and I will start the setup process with them";
+
+    public string OpenNotConfigured()
+        => "Sorry I cannot be opened, I have not been configured. Please make sure the following is configured: ";
+
+    public string MustHaveMaxPrice()
+        => "You must have a max price defined. An admin must call \"max-price\" with the max price for it to be set.";
+
+    public string NowOpen()
+        => "Your Secret Santa is now open for people to join";
 }

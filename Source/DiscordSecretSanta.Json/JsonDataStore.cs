@@ -27,6 +27,18 @@ public class JsonDataStore : DataStore
         return Task.FromResult(_data.Status);
     }
 
+    public Task<SecretSantaConfig> GetConfig(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_data.Config);
+    }
+
+    public Task SetStatus(Status status, CancellationToken cancellationToken)
+    {
+        _data.Status = status;
+        WriteFile();
+        return Task.CompletedTask;
+    }
+
     public Task<int> GetNumberOfMembers(CancellationToken cancellationToken)
     {
         return Task.FromResult(_data.Members.Length);

@@ -19,26 +19,31 @@ public class CommandHandler
     public async Task InstallCommandsAsync()
     {
         // Hook the MessageReceived event into our command handler
-        _client.MessageReceived += HandleCommandAsync;
+        _client.MessageReceived += HandleInput;
         
         await _commands.AddModulesAsync(typeof(CommandHandler).Assembly,  _services);
     }
-    
-    private async Task HandleCommandAsync(SocketMessage messageParam)
+
+    private async Task HandleInput(SocketMessage msg)
     {
         // Don't process the command if it was a system message
-        var message = messageParam as SocketUserMessage;
+        var message = msg as SocketUserMessage;
         if (message == null) return;
 
         // Create a number to track where the prefix ends and the command begins
         int argPos = 0;
 
-        // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-        if (!(message.HasCharPrefix('!', ref argPos) || 
-              message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
-            message.Author.IsBot)
+        if (message.Author.IsBot)
             return;
 
+        if (message.HasCharPrefix('!', ref argPos) && message.HasMentionPrefix(_client.CurrentUser, ref argPos))
+        {
+            await HandleCommandAsync(message, argPos);
+        }
+    }
+    
+    private async Task HandleCommandAsync(SocketUserMessage message, int argPos)
+    {
         // Create a WebSocket-based command context based on the message
         var context = new SocketCommandContext(_client, message);
 

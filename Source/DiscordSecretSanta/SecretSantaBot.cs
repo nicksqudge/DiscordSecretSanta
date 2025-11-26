@@ -1,5 +1,4 @@
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,7 +6,7 @@ namespace DiscordSecretSanta;
 
 public static class SecretSantaBot
 {
-    public static async Task RunAsync(IServiceProvider services)
+    public static async Task Run(IServiceProvider services)
     {
         var config = services.GetRequiredService<Configuration>();
         var client = services.GetRequiredService<DiscordSocketClient>();

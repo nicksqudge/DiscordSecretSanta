@@ -1,12 +1,18 @@
 using DiscordSecretSanta;
+using DiscordSecretSanta.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDiscordSecretSanta(builder.Configuration);
+builder.Services
+    .AddDiscordSecretSanta(builder.Configuration)
+    .AddJsonDataStore();
+
 builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build(); 
 
-var web = app.RunAsync();
-var discordSecretSanta = SecretSantaBot.RunAsync(app.Services);
+await SecretSantaBot.Run(app.Services);
 
-await Task.WhenAll(web, discordSecretSanta);
+// var web = app.RunAsync();
+// var discordSecretSanta = SecretSantaBot.Run(app.Services);
+//
+// await Task.WhenAll(web, discordSecretSanta);

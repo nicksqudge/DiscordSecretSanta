@@ -5,5 +5,5 @@ namespace DiscordSecretSanta;
 public class Configuration
 {
     [ConfigurationKeyName("DiscordSecretSanta_Token")]
-    public string Token { get; set; }
+    public string Token { get; set; } = string.Empty;
 }

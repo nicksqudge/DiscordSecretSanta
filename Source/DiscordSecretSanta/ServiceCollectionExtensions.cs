@@ -1,13 +1,25 @@
 using Discord.Commands;
 using Discord.WebSocket;
+using DiscordSecretSanta.Commands;
+using DiscordSecretSanta.Translations.English;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordSecretSanta;
 
+public class SecretSantaServices
+{
+    public IServiceCollection Services { get; private set; }
+
+    public SecretSantaServices(IServiceCollection services)
+    {
+        Services = services;
+    }
+}
+
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDiscordSecretSanta(this IServiceCollection services, IConfiguration configuration)
+    public static SecretSantaServices AddDiscordSecretSanta(this IServiceCollection services, IConfiguration configuration)
     {
         var config = new Configuration();
         configuration.Bind(config);
@@ -18,6 +30,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(new CommandService());
         services.AddSingleton<CommandHandler>();
         
-        return services;
+        services.AddTransient<Messages, EnglishMessages>();
+        services.AddTransient<StatusCommand>();
+        
+        return new SecretSantaServices(services);
     }
 }

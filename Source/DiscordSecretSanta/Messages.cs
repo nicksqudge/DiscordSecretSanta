@@ -9,4 +9,6 @@ public interface Messages
     string OpenNotConfigured();
     string MustHaveMaxPrice();
     string NowOpen();
+    string AlreadyOpen();
+    string AlreadyDrawn();
 }

@@ -28,4 +28,10 @@ public class EnglishMessages : Messages
 
     public string NowOpen()
         => "Your Secret Santa is now open for people to join";
+
+    public string AlreadyOpen()
+     => "I am already open for people to join";
+
+    public string AlreadyDrawn()
+        => "The secret santa names have already been drawn, I cannot be opened";
 }

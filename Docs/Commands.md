@@ -3,7 +3,6 @@
 | Command         | Description                                                    | Permission                 | Version |
 |-----------------|----------------------------------------------------------------|----------------------------|---------|
 | join            | Request to join an on going secret santa                       | People not in secret santa | N/A     |
-| setup           | Setup a new secret santa if one is not running                 | Admin                      | N/A     |
 | admin @username | Toggles a user as an admin                                     | Admin                      | N/A     |
 | sent            | Mark that you have sent your secret santa their gift           | People in secret santa     | N/A     |
 | recieved        | Mark that you have recieved your secret santa gift             | People in secret santa     | N/A     |

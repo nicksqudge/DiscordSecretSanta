@@ -2,10 +2,10 @@ namespace DiscordSecretSanta.Commands;
 
 public class OpenCommand
 {
-    private readonly DataStore _dataStore;
+    private readonly IDataStore _dataStore;
     private readonly Messages _messages;
 
-    public OpenCommand(DataStore dataStore, Messages messages)
+    public OpenCommand(IDataStore dataStore, Messages messages)
     {
         _dataStore = dataStore;
         _messages = messages;

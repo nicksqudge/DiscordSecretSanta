@@ -1,6 +1,6 @@
 namespace DiscordSecretSanta;
 
-public interface DataStore
+public interface IDataStore
 {
     Task<Status> GetStatus(CancellationToken cancellationToken);
 

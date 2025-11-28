@@ -1,5 +1,5 @@
 using DiscordSecretSanta;
-using DiscordSecretSanta.Json;
+using DiscordSecretSanta.DataStore.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services

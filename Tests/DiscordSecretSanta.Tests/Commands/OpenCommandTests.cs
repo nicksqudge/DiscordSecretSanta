@@ -1,19 +1,18 @@
 using DiscordSecretSanta.Commands;
 using DiscordSecretSanta.Tests.TestHelpers;
-using Microsoft.VisualBasic;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
 public class OpenCommandTests
 {
-    private DataStore _dataStore;
+    private IDataStore _dataStore;
     private Messages _messages = new EnglishMessages();
     private OpenCommand _command;
 
     [SetUp]
     public void Setup()
     {
-        _dataStore = A.Fake<DataStore>();
+        _dataStore = A.Fake<IDataStore>();
         A.CallTo(() => _dataStore.GetNumberOfMembers(A<CancellationToken>.Ignored)).Returns(0);
         _command = new OpenCommand(_dataStore, _messages);
     }

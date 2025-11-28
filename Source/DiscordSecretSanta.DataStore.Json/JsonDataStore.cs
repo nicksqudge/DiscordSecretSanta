@@ -3,9 +3,9 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DiscordSecretSanta.Json;
+namespace DiscordSecretSanta.DataStore.Json;
 
-public class JsonDataStore : DataStore
+public class JsonDataStore : IDataStore
 {
     private const string FileName = "DiscordSecretSanta.json";
 

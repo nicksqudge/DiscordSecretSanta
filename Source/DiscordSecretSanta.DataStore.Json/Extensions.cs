@@ -1,12 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DiscordSecretSanta.Json;
+namespace DiscordSecretSanta.DataStore.Json;
 
 public static class Extensions
 {
     public static SecretSantaServices AddJsonDataStore(this SecretSantaServices services)
     {
-        services.Services.AddTransient<DataStore, JsonDataStore>();
+        services.Services.AddTransient<IDataStore, JsonDataStore>();
         return services;
     }
 }

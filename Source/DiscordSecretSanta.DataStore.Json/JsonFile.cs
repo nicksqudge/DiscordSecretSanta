@@ -1,4 +1,4 @@
-namespace DiscordSecretSanta.Json;
+namespace DiscordSecretSanta.DataStore.Json;
 
 public class JsonFile
 {

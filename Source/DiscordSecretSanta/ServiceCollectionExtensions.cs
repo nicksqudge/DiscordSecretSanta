@@ -19,10 +19,12 @@ public class SecretSantaServices
 
 public static class ServiceCollectionExtensions
 {
-    public static SecretSantaServices AddDiscordSecretSanta(this IServiceCollection services, IConfiguration configuration)
+    public static SecretSantaServices AddDiscordSecretSanta(this IServiceCollection services, string token)
     {
-        var config = new Configuration();
-        configuration.Bind(config);
+        var config = new Configuration()
+        {
+            Token = token
+        };
         services.AddSingleton(config);
 
         services.AddSingleton(new DiscordSocketConfig());

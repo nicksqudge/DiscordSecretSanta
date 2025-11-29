@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using DiscordSecretSanta.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,8 +35,18 @@ public class CommandsModule : ModuleBase
 
     [Command("add")]
     [Summary("(Admin Only) Adds an admin to be able to manage secret santa")]
-    public async Task AddAdminAsync(IUser user)
+    public async Task AddAdminAsync(SocketGuildUser target)
     {
-        await ReplyAsync(user.GlobalName);
+        if (Context.User is not SocketGuildUser requester)
+        {
+            Logger.Debug("Not a guild user");
+            return;
+        }
+        
+        var requestingUser = InputUser.From(requester);
+        var targetUser = InputUser.From(target);
+        var command = _services.GetRequiredService<ToggleAdminCommand>();
+        var reply = await command.Handle(targetUser, requestingUser, CancellationToken.None);
+        await ReplyAsync(reply.ToString());
     }
 }

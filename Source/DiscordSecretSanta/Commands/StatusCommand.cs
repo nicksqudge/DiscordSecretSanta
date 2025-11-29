@@ -3,9 +3,9 @@ namespace DiscordSecretSanta.Commands;
 public class StatusCommand
 {
     private readonly IDataStore _dataStore;
-    private readonly Messages _messages;
+    private readonly IMessages _messages;
 
-    public StatusCommand(IDataStore dataStore, Messages messages)
+    public StatusCommand(IDataStore dataStore, IMessages messages)
     {
         _dataStore = dataStore;
         _messages = messages;

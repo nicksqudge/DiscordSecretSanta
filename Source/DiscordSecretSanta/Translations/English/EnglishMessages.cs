@@ -1,6 +1,6 @@
 namespace DiscordSecretSanta.Translations.English;
 
-public class EnglishMessages : Messages
+public class EnglishMessages : IMessages
 {
     public string StatusIsReady() => "I am not open for people to sign up yet. Just waiting on an admin to say \"ready\"";
 
@@ -34,4 +34,16 @@ public class EnglishMessages : Messages
 
     public string AlreadyDrawn()
         => "The secret santa names have already been drawn, I cannot be opened";
+
+    public string IsGuidAdmin(string name)
+        => $"{name} are already an admin of this discord server and will always be an admin for secret santa";
+
+    public string IsNoLongerAnAdmin(string name)
+        => $"{name} no longer an admin for secret santa";
+
+    public string IsNowAnAdmin(string name)
+     => $"{name} is now an admin for secret santa";
+
+    public string YouDoNotHavePermissionToMakeAdmin()
+        => "Sorry you do not have permission to make that user a secret santa admin";
 }

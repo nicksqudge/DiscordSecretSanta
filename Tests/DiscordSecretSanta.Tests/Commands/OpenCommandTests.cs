@@ -3,81 +3,83 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class OpenCommandTests
+public class OpenCommandTests : AbstractCommandTest<OpenCommand>
 {
-    private IDataStore _dataStore;
-    private Messages _messages = new EnglishMessages();
-    private OpenCommand _command;
-
     [SetUp]
     public void Setup()
     {
-        _dataStore = A.Fake<IDataStore>();
-        A.CallTo(() => _dataStore.GetNumberOfMembers(A<CancellationToken>.Ignored)).Returns(0);
-        _command = new OpenCommand(_dataStore, _messages);
+        A.CallTo(() => DataStore.GetNumberOfMembers(A<CancellationToken>.Ignored)).Returns(0);
     }
-    
+
+    protected override OpenCommand InitCommand()
+        => new OpenCommand(DataStore, Messages);
+
     [Test]
     public async Task NotConfigured()
     {
         // ARRANGE
-        A.CallTo(() => _dataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.NotConfigured);
-        A.CallTo(() => _dataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(new SecretSantaConfig()
+        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.NotConfigured);
+        A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(new SecretSantaConfig()
         {
             MaxPrice = string.Empty
         });
         
         // ACT
-        var result = await _command.Handle(CancellationToken.None);
+        var result = await Command.Handle(CancellationToken.None);
 
         // ASSERT
-        result.ShouldBe([_messages.OpenNotConfigured(), _messages.MustHaveMaxPrice()]);
+        result.ToString().ShouldBe(ViaStringBuilder(Messages.OpenNotConfigured(), Messages.MustHaveMaxPrice()));
         
-        A.CallTo(() => _dataStore.SetStatus(A<Status>._, A<CancellationToken>.Ignored)).MustNotHaveHappened();
+        A.CallTo(() => DataStore.SetStatus(A<Status>._, A<CancellationToken>.Ignored)).MustNotHaveHappened();
     }
 
     [Test]
     public async Task NotConfiguredButActuallyIs()
     {
         // ARRANGE
-        A.CallTo(() => _dataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.NotConfigured);
-        A.CallTo(() => _dataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
+        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.NotConfigured);
+        A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
-        await _command.Handle(CancellationToken.None);
+        await Command.Handle(CancellationToken.None);
 
         // ASSERT
-        A.CallTo(() => _dataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustHaveHappened();
+        A.CallTo(() => DataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustHaveHappened();
     }
 
     [Test]
     public async Task IsConfigured()
     {
         // ARRANGE
-        A.CallTo(() => _dataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.Ready);
-        A.CallTo(() => _dataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
+        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.Ready);
+        A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
-        var result = await _command.Handle(CancellationToken.None);
+        var result = await Command.Handle(CancellationToken.None);
         
         // ASSERT
-        result.ShouldBe([_messages.NowOpen()]);
-        A.CallTo(() => _dataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustHaveHappened();
+        result.ToString().ShouldBe(ViaStringBuilder(Messages.NowOpen()));
+        A.CallTo(() => DataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustHaveHappened();
     }
 
     [TestCaseSource(typeof(TestData), nameof(TestData.TestCases))]
     public async Task CannotBeOpenedBecauseOfWrongStatus(Status status, string expectedMessage)
     {
         // ARRANGE
-        A.CallTo(() => _dataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(status);
-        A.CallTo(() => _dataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
+        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(status);
+        A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
-        var result = await _command.Handle(CancellationToken.None);
+        var result = await Command.Handle(CancellationToken.None);
         
         // ASSERT
-        result.ShouldBe([expectedMessage]);
-        A.CallTo(() => _dataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustNotHaveHappened();
+        result.ToString().ShouldBe(ViaStringBuilder(expectedMessage));
+        A.CallTo(() => DataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustNotHaveHappened();
+    }
+
+    private string ViaStringBuilder(params string[] input)
+    {
+        return input.ToStringBuilder().ToString();
     }
     
     private class TestData

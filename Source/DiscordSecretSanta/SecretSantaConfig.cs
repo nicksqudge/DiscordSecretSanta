@@ -9,7 +9,7 @@ public class SecretSantaConfig
 
 public class SecretSantaConfigValidator : AbstractValidator<SecretSantaConfig>
 {
-    public SecretSantaConfigValidator(Messages messages)
+    public SecretSantaConfigValidator(IMessages messages)
     {
         RuleFor(x => x.MaxPrice).NotEmpty().WithMessage(messages.MustHaveMaxPrice());
     }

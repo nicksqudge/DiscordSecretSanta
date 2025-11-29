@@ -1,3 +1,4 @@
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using DiscordSecretSanta.Commands;
@@ -27,13 +28,19 @@ public static class ServiceCollectionExtensions
         };
         services.AddSingleton(config);
 
-        services.AddSingleton(new DiscordSocketConfig());
-        services.AddSingleton<DiscordSocketClient>();
+        var discordConfig = new DiscordSocketConfig()
+        {
+            AlwaysDownloadUsers = true,
+            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.MessageContent
+        };
+        services.AddSingleton(new DiscordSocketClient(discordConfig));
         services.AddSingleton(new CommandService());
         services.AddSingleton<CommandHandler>();
         
-        services.AddTransient<Messages, EnglishMessages>();
+        services.AddTransient<IMessages, EnglishMessages>();
         services.AddTransient<StatusCommand>();
+        services.AddTransient<OpenCommand>();
+        services.AddTransient<ToggleAdminCommand>();
         
         return new SecretSantaServices(services);
     }

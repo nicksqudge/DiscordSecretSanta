@@ -1,6 +1,6 @@
 namespace DiscordSecretSanta;
 
-public interface Messages
+public interface IMessages
 {
     string StatusIsReady();
     string StatusIsOpen(int memberCount);
@@ -11,4 +11,8 @@ public interface Messages
     string NowOpen();
     string AlreadyOpen();
     string AlreadyDrawn();
+    string IsGuidAdmin(string name);
+    string IsNoLongerAnAdmin(string name);
+    string IsNowAnAdmin(string name);
+    string YouDoNotHavePermissionToMakeAdmin();
 }

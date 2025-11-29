@@ -1,30 +1,28 @@
 using DiscordSecretSanta.Commands;
+using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class StatusCommandTests
+public class StatusCommandTests : AbstractCommandTest<StatusCommand>
 {
-    private IDataStore _dataStore;
-    private Messages _messages = new EnglishMessages();
-    private StatusCommand _command;
-
     [SetUp]
     public void Setup()
     {
-        _dataStore = A.Fake<IDataStore>();
-        A.CallTo(() => _dataStore.GetNumberOfMembers(A<CancellationToken>.Ignored)).Returns(0);
-        _command = new StatusCommand(_dataStore, _messages);
+        A.CallTo(() => DataStore.GetNumberOfMembers(A<CancellationToken>.Ignored)).Returns(0);
     }
-    
+
+    protected override StatusCommand InitCommand()
+     => new  (DataStore, Messages);
+
     [TestCaseSource(typeof(TestData), nameof(TestData.TestCases))]
     public async Task NotOpenOrDrawn(Status status, string expectedResult)
     {
         // ARRANGE
-        A.CallTo(() => _dataStore.GetStatus(A<CancellationToken>.Ignored))
+        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored))
             .Returns(status);
 
         // ACT
-        var result = await _command.Handle(CancellationToken.None);
+        var result = await Command.Handle(CancellationToken.None);
 
         // ASSERT
         result.ShouldBe(expectedResult);

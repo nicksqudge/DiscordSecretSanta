@@ -6,7 +6,14 @@ public class Logger
 {
     public static Task Log(LogMessage msg)
     {
-        Console.WriteLine("SECRETSANTA: " + msg.ToString());
+        Console.WriteLine(msg.ToString());
         return Task.CompletedTask;
+    }
+
+    public static void Debug(string message)
+    {
+        #if DEBUG
+            Console.WriteLine("DEBUG: " + message);
+        #endif
     }
 }

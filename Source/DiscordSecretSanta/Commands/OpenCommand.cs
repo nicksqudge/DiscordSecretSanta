@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace DiscordSecretSanta.Commands;
 
 public class OpenCommand
@@ -11,8 +13,9 @@ public class OpenCommand
         _messages = messages;
     }
 
-    public async Task<string[]> Handle(CancellationToken token)
+    public async Task<StringBuilder> Handle(CancellationToken token)
     {
+        var result = new StringBuilder();
         var status = await _dataStore.GetStatus(token);
         var config = await _dataStore.GetConfig(token);
 
@@ -24,22 +27,21 @@ public class OpenCommand
 
                 if (!validationResult.IsValid)
                 {
-                    var result = new List<string>();
-                    result.Add(_messages.OpenNotConfigured());
-                    result.AddRange(validationResult.Errors.Select(x => x.ErrorMessage));
-                    return result.ToArray();
+                    result.AppendLine(_messages.OpenNotConfigured());
+                    result.AppendLines(validationResult.Errors.Select(x => x.ErrorMessage));
+                    return result;
                 }
 
                 break;
             
             case Status.Drawn:
-                return [_messages.AlreadyDrawn()];
+                return result.AppendLine(_messages.AlreadyDrawn());
             
             case Status.Open:
-                return [_messages.AlreadyOpen()];
+                return result.AppendLine(_messages.AlreadyOpen());
         }
         
         await _dataStore.SetStatus(Status.Open, token);
-        return [_messages.NowOpen()];
+        return result.AppendLine(_messages.NowOpen());
     }
 }

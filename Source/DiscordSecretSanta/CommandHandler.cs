@@ -26,24 +26,35 @@ public class CommandHandler
 
     private async Task HandleInput(SocketMessage msg)
     {
+        Logger.Debug($"Got message: {msg.Content}");
         // Don't process the command if it was a system message
-        var message = msg as SocketUserMessage;
-        if (message == null) return;
+        if (msg is not SocketUserMessage message)
+        {
+            Logger.Debug("Message was system message");
+            return;
+        }
 
         // Create a number to track where the prefix ends and the command begins
         int argPos = 0;
 
         if (message.Author.IsBot)
-            return;
-
-        if (message.HasCharPrefix('!', ref argPos) && message.HasMentionPrefix(_client.CurrentUser, ref argPos))
         {
-            await HandleCommandAsync(message, argPos);
+            Logger.Debug("Author is bot");
+            return;
         }
+
+        if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos))
+        {
+            Logger.Debug("Does not mention bot");
+            return;
+        }
+
+        await HandleCommandAsync(message, argPos);
     }
     
     private async Task HandleCommandAsync(SocketUserMessage message, int argPos)
     {
+        Logger.Debug($"Handling command: {message.Content}");
         // Create a WebSocket-based command context based on the message
         var context = new SocketCommandContext(_client, message);
 

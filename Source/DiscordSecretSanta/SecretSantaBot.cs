@@ -14,9 +14,12 @@ public static class SecretSantaBot
 
         var commandHandler = services.GetRequiredService<CommandHandler>();
         await commandHandler.InstallCommandsAsync();
+        Logger.Debug("Setup finished");
         
         await client.LoginAsync(TokenType.Bot, config.Token);
+        Logger.Debug("Logged in");
         await client.StartAsync();
+        Logger.Debug("Started");
         
         await Task.Delay(-1);
     }

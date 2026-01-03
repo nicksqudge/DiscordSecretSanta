@@ -9,8 +9,7 @@ public class JsonFile
 
     public class Member
     {
-        public string DiscordId { get; set; }
-        public string WishlistUrl { get; set; }
+        public string DiscordId { get; set; } = string.Empty;
+        public string WishlistUrl { get; set; } = string.Empty;
     }
-    
 }

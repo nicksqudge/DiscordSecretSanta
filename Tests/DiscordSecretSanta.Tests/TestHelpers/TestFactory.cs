@@ -2,10 +2,10 @@ namespace DiscordSecretSanta.Tests.TestHelpers;
 
 public class TestFactory
 {
-    public static InputUser InputUser(bool isAdmin = false)
+    public static InputUser InputUser(bool isServerAdmin = false)
     {
         var id = LongRandom();
-        return new InputUser(new DiscordUserId(id), $"Test {id}", isAdmin);
+        return new InputUser(new DiscordUserId(id), $"Test {id}", isServerAdmin);
     }
 
     private static ulong LongRandom()

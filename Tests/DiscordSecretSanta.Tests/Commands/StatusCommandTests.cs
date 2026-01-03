@@ -25,7 +25,30 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
         var result = await Command.Handle(CancellationToken.None);
 
         // ASSERT
-        result.ShouldBe(expectedResult);
+        result.ToString().ShouldContain(expectedResult);
+    }
+
+    [TestCaseSource(typeof(TestData), nameof(TestData.AllStatuses))]
+    public async Task ShowMaxPrice(Status status)
+    {
+        // ARRANGE
+        var maxPrice = "£10";
+        A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored))
+            .Returns(new SecretSantaConfig()
+            {
+                MaxPrice = maxPrice
+            });
+        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored))
+            .Returns(status);
+
+        // ACT
+        var result = await Command.Handle(CancellationToken.None);
+
+        // ASSERT
+        if (status != Status.NotConfigured)
+            result.ToString().ShouldContain(Messages.StatusMaxPrice(maxPrice));
+        else
+            result.ToString().ShouldNotContain(Messages.StatusMaxPrice(maxPrice));
     }
     
     private class TestData
@@ -38,6 +61,14 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
                 yield return new TestCaseData(Status.Ready, new EnglishMessages().StatusIsReady());
                 yield return new TestCaseData(Status.Drawn, new EnglishMessages().StatusIsDrawn());
                 yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsOpen(0));
+            }
+        }
+
+        public static IEnumerable<TestCaseData> AllStatuses
+        {
+            get
+            {
+                return Enum.GetValues<Status>().Select(x => new TestCaseData(x));
             }
         }
     }

@@ -20,6 +20,9 @@ public class EnglishMessages : IMessages
     public string StatusIsNotConfigured()
         => "A secret santa has not been configured by an admin yet. They just need to say \"setup\" and I will start the setup process with them";
 
+    public string StatusMaxPrice(string maxPrice)
+        => "Max Gift Price is " + maxPrice;
+
     public string OpenNotConfigured()
         => "Sorry I cannot be opened, I have not been configured. Please make sure the following is configured: ";
 
@@ -46,4 +49,13 @@ public class EnglishMessages : IMessages
 
     public string YouDoNotHavePermissionToMakeAdmin()
         => "Sorry you do not have permission to make that user a secret santa admin";
+
+    public string YouAreNotAnAdmin()
+        => "Sorry you are not an admin";
+
+    public string MaxPriceMustHaveAValue()
+        => "Max price cannot be empty";
+
+    public string MaxPriceSaved()
+        => "Max price has been saved";
 }

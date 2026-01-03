@@ -21,7 +21,7 @@ public class CommandsModule : ModuleBase
     {
         var command = _services.GetRequiredService<StatusCommand>();
         var reply = await command.Handle(CancellationToken.None);
-        await ReplyAsync(reply);
+        await ReplyAsync(reply.ToString());
     }
 
     [Command("open")]
@@ -47,6 +47,22 @@ public class CommandsModule : ModuleBase
         var targetUser = InputUser.From(target);
         var command = _services.GetRequiredService<ToggleAdminCommand>();
         var reply = await command.Handle(targetUser, requestingUser, CancellationToken.None);
+        await ReplyAsync(reply.ToString());
+    }
+
+    [Command("max-price")]
+    [Summary("(Admin Only) Sets the max price for gifts")]
+    public async Task SetMaxPriceAsync(string maxPrice)
+    {
+        if (Context.User is not SocketGuildUser requester)
+        {
+            Logger.Debug("Not a guild user");
+            return;
+        }
+        
+        var requestingUser = InputUser.From(requester);
+        var command = _services.GetRequiredService<SetMaxPriceCommand>();
+        var reply = await command.Handle(requestingUser, maxPrice, CancellationToken.None);
         await ReplyAsync(reply.ToString());
     }
 }

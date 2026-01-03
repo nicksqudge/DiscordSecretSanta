@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace DiscordSecretSanta.Commands;
 
 public class StatusCommand
@@ -11,27 +13,41 @@ public class StatusCommand
         _messages = messages;
     }
 
-    public async Task<string> Handle(CancellationToken cancellationToken)
+    public async Task<StringBuilder> Handle(CancellationToken cancellationToken)
     {
         var status = await _dataStore.GetStatus(cancellationToken);
+        var result = new StringBuilder();
 
         switch (status)
         {
             case Status.Ready:
-                return _messages.StatusIsReady();
+                result.AppendLine(_messages.StatusIsReady());
+                break;
             
             case Status.Drawn:
-                return _messages.StatusIsDrawn();
+                result.AppendLine(_messages.StatusIsDrawn());
+                break;
             
             case Status.Open:
                 var memberCount = await _dataStore.GetNumberOfMembers(cancellationToken);
-                return _messages.StatusIsOpen(memberCount);
+                result.AppendLine(_messages.StatusIsOpen(memberCount));
+                break;
             
             case Status.NotConfigured:
-                return _messages.StatusIsNotConfigured();
+                result.AppendLine(_messages.StatusIsNotConfigured());
+                break;
          
             default:
-                return $"I don't know my status... {status} is not supported :(";
+                result.AppendLine($"I don't know my status... {status} is not supported :(");
+                break;
         }
+
+        if (status != Status.NotConfigured)
+        {
+            var config = await _dataStore.GetConfig(cancellationToken);
+            result.AppendLine(_messages.StatusMaxPrice(config.MaxPrice));
+        }
+
+        return result;
     }
 }

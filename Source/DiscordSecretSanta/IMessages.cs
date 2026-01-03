@@ -6,6 +6,7 @@ public interface IMessages
     string StatusIsOpen(int memberCount);
     string StatusIsDrawn();
     string StatusIsNotConfigured();
+    string StatusMaxPrice(string maxPrice);
     string OpenNotConfigured();
     string MustHaveMaxPrice();
     string NowOpen();
@@ -15,4 +16,7 @@ public interface IMessages
     string IsNoLongerAnAdmin(string name);
     string IsNowAnAdmin(string name);
     string YouDoNotHavePermissionToMakeAdmin();
+    string YouAreNotAnAdmin();
+    string MaxPriceMustHaveAValue();
+    string MaxPriceSaved();
 }

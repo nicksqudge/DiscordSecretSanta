@@ -10,7 +10,7 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
     {
         // ARRANGE
         var requestingUser = TestFactory.InputUser();
-        var targetUser = TestFactory.InputUser(isAdmin: true);
+        var targetUser = TestFactory.InputUser(isServerAdmin: true);
         ArrangeUserIsAdmin(requestingUser, true);
         ArrangeUserIsAdmin(targetUser, false);
 
@@ -81,11 +81,11 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         A.CallTo(() => DataStore.ToggleAdmin(A<DiscordUserId>._, A<bool>._, A<CancellationToken>._)).Returns(Task.CompletedTask);
     }
 
-    private void ArrangeUserIsAdmin(InputUser user, bool result)
-    {
-        A.CallTo(() => DataStore.IsAdmin(A<DiscordUserId>.That.Matches(x => x == user.Id), A<CancellationToken>._)).Returns(result);
-    }
-
     protected override ToggleAdminCommand InitCommand()
         => new(DataStore, Messages);
+    
+    private void ArrangeUserIsAdmin(InputUser user, bool isAdmin)
+    {
+        A.CallTo(() => DataStore.IsAdminInConfig(A<DiscordUserId>.That.Matches(x => x == user.Id), A<CancellationToken>._)).Returns(isAdmin);
+    }
 }

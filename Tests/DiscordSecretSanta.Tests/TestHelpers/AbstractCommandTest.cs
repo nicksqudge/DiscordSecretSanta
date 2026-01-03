@@ -7,7 +7,7 @@ public abstract class AbstractCommandTest<T>
     protected T Command;
 
     [SetUp]
-    public void Setup()
+    public void SetupAbstract()
     {
         DataStore = A.Fake<IDataStore>();
         Command = InitCommand();

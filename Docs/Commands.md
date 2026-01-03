@@ -10,5 +10,5 @@
 | draw          | Draws the names for secret santa and closes new people to join | Admin                      | N/A     |
 | status        | Displays the status of the secret santa                        | Anyone                     | v1      |
 | close         | Closes the secret santa without drawing                        | Admin                      | N/A     |
-| max-price     | Sets the max price for the campaign (only before draw)         | Admin                      | N/A     |
+| max-price     | Sets the max price for the campaign (only before draw)         | Admin                      | v1      |
 | help          | Provides a link to the github and the version number           | Anyone                     | N/A     |

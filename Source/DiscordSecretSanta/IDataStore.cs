@@ -2,7 +2,7 @@ namespace DiscordSecretSanta;
 
 public interface IDataStore
 {
-    Task<bool> IsAdmin(DiscordUserId userId, CancellationToken cancellationToken);
+    Task<bool> IsAdminInConfig(DiscordUserId userId, CancellationToken cancellationToken);
     
     Task<Status> GetStatus(CancellationToken cancellationToken);
 
@@ -13,4 +13,6 @@ public interface IDataStore
     Task<int> GetNumberOfMembers(CancellationToken cancellationToken);
     
     Task ToggleAdmin(DiscordUserId userId, bool isAdmin, CancellationToken cancellationToken);
+    
+    Task SetMaxPrice(string newMaxPrice, CancellationToken cancellationToken);
 }

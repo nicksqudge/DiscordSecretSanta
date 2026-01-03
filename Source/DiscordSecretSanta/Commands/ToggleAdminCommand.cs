@@ -24,13 +24,13 @@ public class ToggleAdminCommand
             return result.AppendLine(_messages.YouDoNotHavePermissionToMakeAdmin());
         }
 
-        if (targetUser.IsAdmin)
+        if (targetUser.IsServerAdmin)
         {
             Logger.Debug($"{targetUser.Name} is already an admin");
             return result.AppendLine(_messages.IsGuidAdmin(targetUser.Name));
         }
 
-        var isAdmin = await _dataStore.IsAdmin(targetUser.Id, token);
+        var isAdmin = await _dataStore.IsAdminInConfig(targetUser.Id, token);
         await _dataStore.ToggleAdmin(targetUser.Id, !isAdmin, token);
         
         if (isAdmin)
@@ -41,9 +41,9 @@ public class ToggleAdminCommand
 
     private async Task<bool> IsAdmin(InputUser user, CancellationToken token)
     {
-        if (user.IsAdmin)
+        if (user.IsServerAdmin)
             return true;
 
-        return await _dataStore.IsAdmin(user.Id, token);
+        return await _dataStore.IsAdminInConfig(user.Id, token);
     }
 }

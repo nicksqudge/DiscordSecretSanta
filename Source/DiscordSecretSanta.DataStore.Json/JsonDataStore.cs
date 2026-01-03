@@ -23,7 +23,7 @@ public class JsonDataStore : IDataStore
             ReadFile();
     }
 
-    public Task<bool> IsAdmin(DiscordUserId userId, CancellationToken cancellationToken)
+    public Task<bool> IsAdminInConfig(DiscordUserId userId, CancellationToken cancellationToken)
         => Task.FromResult(_data.Admins.Contains(userId.Value));
 
     public Task<Status> GetStatus(CancellationToken cancellationToken) => Task.FromResult(_data.Status);
@@ -57,6 +57,13 @@ public class JsonDataStore : IDataStore
         return Task.CompletedTask;
     }
 
+    public Task SetMaxPrice(string newMaxPrice, CancellationToken cancellationToken)
+    {
+        _data.Config.MaxPrice = newMaxPrice;
+        WriteFile();
+        return Task.CompletedTask;
+    }
+
     private void WriteFile()
     {
         var fileData = JsonSerializer.Serialize(_data);
@@ -66,6 +73,6 @@ public class JsonDataStore : IDataStore
     private void ReadFile()
     {
         var fileData = File.ReadAllText(_filePath);
-        _data = JsonSerializer.Deserialize<JsonFile>(fileData);
+        _data = JsonSerializer.Deserialize<JsonFile>(fileData) ??  new JsonFile();
     }
 }

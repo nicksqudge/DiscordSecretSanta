@@ -9,4 +9,11 @@ public static class Extensions
         services.Services.AddTransient<IDataStore, JsonDataStore>();
         return services;
     }
+
+    public static SecretSantaServices AddWishlistValidator<T>(this SecretSantaServices services)
+        where T : class, IWishlistUrlValidator
+    {
+        services.Services.AddTransient<IWishlistUrlValidator, T>();
+        return services;
+    }
 }

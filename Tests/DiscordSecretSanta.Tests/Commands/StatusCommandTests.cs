@@ -28,7 +28,7 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
         result.ToString().ShouldContain(expectedResult);
     }
 
-    [TestCaseSource(typeof(TestData), nameof(TestData.AllStatuses))]
+    [TestCaseSource(typeof(StatusTestCaseData), nameof(StatusTestCaseData.AllStatuses))]
     public async Task ShowMaxPrice(Status status)
     {
         // ARRANGE
@@ -61,14 +61,6 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
                 yield return new TestCaseData(Status.Ready, new EnglishMessages().StatusIsReady());
                 yield return new TestCaseData(Status.Drawn, new EnglishMessages().StatusIsDrawn());
                 yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsOpen(0));
-            }
-        }
-
-        public static IEnumerable<TestCaseData> AllStatuses
-        {
-            get
-            {
-                return Enum.GetValues<Status>().Select(x => new TestCaseData(x));
             }
         }
     }

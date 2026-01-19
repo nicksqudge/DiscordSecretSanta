@@ -19,4 +19,8 @@ public interface IMessages
     string YouAreNotAnAdmin();
     string MaxPriceMustHaveAValue();
     string MaxPriceSaved();
+    string NotOpenForJoining();
+    string YouHaveAlreadyJoined();
+    string YouHaveSuccessfullyJoined();
+    string NotAValidWishlistUrl();
 }

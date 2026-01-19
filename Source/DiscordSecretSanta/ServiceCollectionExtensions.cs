@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using DiscordSecretSanta.Commands;
 using DiscordSecretSanta.Permissions;
 using DiscordSecretSanta.Translations.English;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordSecretSanta;
@@ -43,6 +42,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<OpenCommand>();
         services.AddTransient<ToggleAdminCommand>();
         services.AddTransient<SetMaxPriceCommand>();
+        services.AddTransient<JoinCommand>();
         
         // Permissions
         services.AddTransient<ICanSetMaxPrice, CanSetMaxPrice>();

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -62,6 +63,29 @@ public class JsonDataStore : IDataStore
         _data.Config.MaxPrice = newMaxPrice;
         WriteFile();
         return Task.CompletedTask;
+    }
+
+    public Task AddMember(DiscordUserId discordUserId, Uri wishlistUrl, CancellationToken cancellationToken)
+    {
+        var members = _data.Members.ToList();
+        members.Add(new JsonFile.Member()
+        {
+            DiscordId = discordUserId.Value,
+            WishlistUrl = wishlistUrl.ToString(),
+        });
+        _data.Members = members.ToArray();
+        WriteFile();
+        return Task.CompletedTask;
+    }
+
+    public Task<SecretSantaMember?> GetMember(DiscordUserId discordUserId, CancellationToken cancellationToken)
+    {
+        var member = _data.Members.FirstOrDefault(m => m.DiscordId == discordUserId.Value);
+        if (member is null)
+            return Task.FromResult<SecretSantaMember?>(null);
+
+        var result = new SecretSantaMember(new DiscordUserId(member.DiscordId), new Uri(member.WishlistUrl));
+        return Task.FromResult<SecretSantaMember?>(result);
     }
 
     private void WriteFile()

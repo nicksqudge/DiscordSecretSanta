@@ -12,13 +12,13 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
     }
 
     protected override OpenCommand InitCommand()
-        => new OpenCommand(DataStore, Messages);
+        => new (DataStore, Messages);
 
     [Test]
     public async Task NotConfigured()
     {
         // ARRANGE
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.NotConfigured);
+        ArrangeGetStatusReturns(Status.NotConfigured);
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(new SecretSantaConfig()
         {
             MaxPrice = string.Empty
@@ -37,7 +37,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
     public async Task NotConfiguredButActuallyIs()
     {
         // ARRANGE
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.NotConfigured);
+        ArrangeGetStatusReturns(Status.NotConfigured);
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
@@ -51,7 +51,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
     public async Task IsConfigured()
     {
         // ARRANGE
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(Status.Ready);
+        ArrangeGetStatusReturns(Status.Ready);
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
@@ -66,7 +66,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
     public async Task CannotBeOpenedBecauseOfWrongStatus(Status status, string expectedMessage)
     {
         // ARRANGE
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(status);
+        ArrangeGetStatusReturns(status);
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT

@@ -14,4 +14,9 @@ public abstract class AbstractCommandTest<T>
     }
 
     protected abstract T InitCommand();
+
+    protected void ArrangeGetStatusReturns(Status status)
+    {
+        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(status);
+    }
 }

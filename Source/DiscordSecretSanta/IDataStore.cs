@@ -15,4 +15,6 @@ public interface IDataStore
     Task ToggleAdmin(DiscordUserId userId, bool isAdmin, CancellationToken cancellationToken);
     
     Task SetMaxPrice(string newMaxPrice, CancellationToken cancellationToken);
+    Task AddMember(DiscordUserId discordUserId, Uri wishlistUrl, CancellationToken cancellationToken);
+    Task<SecretSantaMember?> GetMember(DiscordUserId discordUserId, CancellationToken cancellationToken);
 }

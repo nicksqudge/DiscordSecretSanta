@@ -13,4 +13,7 @@ public class TestFactory
         var rand = new Random();
         return (ulong)rand.Next(0, int.MaxValue);
     }
+
+    public static DiscordUserId DiscordUserId()
+        => new(LongRandom());
 }

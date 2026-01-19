@@ -1,3 +1,4 @@
+using System.Text;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -37,22 +38,43 @@ public class CommandsModule : ModuleBase
     [Summary("(Admin Only) Adds an admin to be able to manage secret santa")]
     public async Task AddAdminAsync(SocketGuildUser target)
     {
-        if (Context.User is not SocketGuildUser requester)
+        await IfUserIsValid(async (requester) =>
         {
-            Logger.Debug("Not a guild user");
-            return;
-        }
-        
-        var requestingUser = InputUser.From(requester);
-        var targetUser = InputUser.From(target);
-        var command = _services.GetRequiredService<ToggleAdminCommand>();
-        var reply = await command.Handle(targetUser, requestingUser, CancellationToken.None);
-        await ReplyAsync(reply.ToString());
+            var requestingUser = InputUser.From(requester);
+            var targetUser = InputUser.From(target);
+            var command = _services.GetRequiredService<ToggleAdminCommand>();
+            var reply = await command.Handle(targetUser, requestingUser, CancellationToken.None);
+            await ReplyAsync(reply.ToString());
+        });
     }
 
     [Command("max-price")]
     [Summary("(Admin Only) Sets the max price for gifts")]
     public async Task SetMaxPriceAsync(string maxPrice)
+    {
+        await IfUserIsValid(async (requester) =>
+        {
+            var requestingUser = InputUser.From(requester);
+            var command = _services.GetRequiredService<SetMaxPriceCommand>();
+            var reply = await command.Handle(requestingUser, maxPrice, CancellationToken.None);
+            await ReplyAsync(reply.ToString());
+        });
+    }
+    
+    [Command("join")]
+    [Summary("When open, allows people to sign up to the secret santa with a wishlist url")]
+    public async Task JoinAsync(string wishlistUrl)
+    {
+        await IfUserIsValid(async (requester) =>
+        {
+            var requestingUser = InputUser.From(requester);
+            var command = _services.GetRequiredService<JoinCommand>();
+            var reply = await command.Handle(requestingUser.Id, wishlistUrl, CancellationToken.None);
+            await ReplyAsync(reply.ToString());
+        });
+    }
+
+    private async Task IfUserIsValid(Func<SocketGuildUser, Task> action)
     {
         if (Context.User is not SocketGuildUser requester)
         {
@@ -60,9 +82,6 @@ public class CommandsModule : ModuleBase
             return;
         }
         
-        var requestingUser = InputUser.From(requester);
-        var command = _services.GetRequiredService<SetMaxPriceCommand>();
-        var reply = await command.Handle(requestingUser, maxPrice, CancellationToken.None);
-        await ReplyAsync(reply.ToString());
+        await action(requester);
     }
 }

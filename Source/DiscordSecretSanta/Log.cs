@@ -16,4 +16,9 @@ public class Logger
             Console.WriteLine("DEBUG: " + message);
         #endif
     }
+
+    public static void Warning(string warning)
+    {
+        Console.WriteLine("WARNING: " + warning);
+    }
 }

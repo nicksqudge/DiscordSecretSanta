@@ -58,4 +58,16 @@ public class EnglishMessages : IMessages
 
     public string MaxPriceSaved()
         => "Max price has been saved";
+
+    public string NotOpenForJoining()
+        => "Sorry, Secret Santa hasn't opened yet";
+
+    public string YouHaveAlreadyJoined()
+     => "You have already joined";
+
+    public string YouHaveSuccessfullyJoined()
+        => "Thank you, you are now signed up for Secret Santa";
+
+    public string NotAValidWishlistUrl()
+        => "That is not a valid wishlist url, please try again.";
 }

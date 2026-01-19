@@ -2,7 +2,7 @@
 
 | Command       | Description                                                    | Permission                 | Version |
 |---------------|----------------------------------------------------------------|----------------------------|---------|
-| join          | Request to join an on going secret santa                       | People not in secret santa | N/A     |
+| join          | Request to join an on going secret santa                       | People not in secret santa | v1      |
 | add @username | Toggles a user as an admin                                     | Admin                      | v1      |
 | sent          | Mark that you have sent your secret santa their gift           | People in secret santa     | N/A     |
 | recieved      | Mark that you have recieved your secret santa gift             | People in secret santa     | N/A     |

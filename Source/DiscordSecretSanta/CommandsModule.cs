@@ -74,6 +74,26 @@ public class CommandsModule : ModuleBase
         });
     }
 
+    [Command("draw")]
+    [Summary("(Admin Only) Draws the secret santas")]
+    public async Task DrawSecretSantaAsync()
+    {
+        await IfUserIsValid(async (requester) =>
+        {
+            var requestingUser = InputUser.From(requester);
+            var command = _services.GetRequiredService<DrawCommand>();
+            var messages = _services.GetRequiredService<IMessages>();
+            var (reply, directMessages) = await command.Handle(requestingUser, CancellationToken.None);
+            if (directMessages.Length != 0)
+            {
+                foreach (var dm in directMessages)
+                    await SendDirectMessage(dm, messages);
+            }
+            
+            await ReplyAsync(reply.ToString());
+        });
+    }
+
     private async Task IfUserIsValid(Func<SocketGuildUser, Task> action)
     {
         if (Context.User is not SocketGuildUser requester)
@@ -83,5 +103,14 @@ public class CommandsModule : ModuleBase
         }
         
         await action(requester);
+    }
+
+    private async Task SendDirectMessage(DrawCommand.DirectMessage dm, IMessages message)
+    {
+        var recipient = await Context.Guild.GetUserAsync(dm.TargetUserId.Value);
+        var secretSanta = await Context.Guild.GetUserAsync(dm.SecretSantaId.Value);
+
+        var channel = await recipient.CreateDMChannelAsync();
+        await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.Nickname, dm.WishlistUrl));
     }
 }

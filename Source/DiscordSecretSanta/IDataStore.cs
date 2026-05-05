@@ -10,11 +10,13 @@ public interface IDataStore
     
     Task SetStatus(Status status, CancellationToken cancellationToken);
 
+    Task<SecretSantaMember?> GetMember(DiscordUserId discordUserId, CancellationToken cancellationToken);
     Task<int> GetNumberOfMembers(CancellationToken cancellationToken);
+    Task<SecretSantaMember[]> GetMembers(CancellationToken cancellationToken);
     
     Task ToggleAdmin(DiscordUserId userId, bool isAdmin, CancellationToken cancellationToken);
     
     Task SetMaxPrice(string newMaxPrice, CancellationToken cancellationToken);
     Task AddMember(DiscordUserId discordUserId, Uri wishlistUrl, CancellationToken cancellationToken);
-    Task<SecretSantaMember?> GetMember(DiscordUserId discordUserId, CancellationToken cancellationToken);
+    Task SetSecretSanta(DiscordUserId targetUser, DiscordUserId secretSanta, CancellationToken cancellationToken);
 }

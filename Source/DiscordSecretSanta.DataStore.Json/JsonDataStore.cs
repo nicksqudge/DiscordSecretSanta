@@ -43,6 +43,11 @@ public class JsonDataStore : IDataStore
         return Task.FromResult(_data.Members.Length);
     }
 
+    public Task<SecretSantaMember[]> GetMembers(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_data.Members.Select(member => new SecretSantaMember(new DiscordUserId(member.DiscordId), new Uri(member.WishlistUrl))).ToArray());
+    }
+
     public Task ToggleAdmin(DiscordUserId userId, bool isAdmin, CancellationToken cancellationToken)
     {
         if (_data.Admins.Contains(userId.Value))
@@ -73,6 +78,15 @@ public class JsonDataStore : IDataStore
             DiscordId = discordUserId.Value,
             WishlistUrl = wishlistUrl.ToString(),
         });
+        _data.Members = members.ToArray();
+        WriteFile();
+        return Task.CompletedTask;
+    }
+
+    public Task SetSecretSanta(DiscordUserId targetUser, DiscordUserId secretSanta, CancellationToken cancellationToken)
+    {
+        var members = _data.Members.ToList();
+        members.FirstOrDefault(m => m.DiscordId == targetUser.Value).SecretSanta = secretSanta.Value;
         _data.Members = members.ToArray();
         WriteFile();
         return Task.CompletedTask;

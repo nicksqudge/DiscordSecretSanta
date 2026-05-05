@@ -8,6 +8,11 @@ public class TestFactory
         return new InputUser(new DiscordUserId(id), $"Test {id}", isServerAdmin);
     }
 
+    public static Uri WishlistUrl()
+    {
+        return new Uri("http://amazon.co.uk/wishlist/12345");
+    }
+
     private static ulong LongRandom()
     {
         var rand = new Random();

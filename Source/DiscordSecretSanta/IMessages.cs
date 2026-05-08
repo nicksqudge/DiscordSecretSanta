@@ -1,3 +1,5 @@
+using DiscordSecretSanta.Commands;
+
 namespace DiscordSecretSanta;
 
 public interface IMessages
@@ -16,6 +18,7 @@ public interface IMessages
     string IsNoLongerAnAdmin(string name);
     string IsNowAnAdmin(string name);
     string YouDoNotHavePermissionToMakeAdmin();
+    string YouDoNotHavePermissionToDraw();
     string YouAreNotAnAdmin();
     string MaxPriceMustHaveAValue();
     string MaxPriceSaved();
@@ -23,4 +26,7 @@ public interface IMessages
     string YouHaveAlreadyJoined();
     string YouHaveSuccessfullyJoined();
     string NotAValidWishlistUrl();
+    string DrawComplete();
+    string CouldNotDraw();
+    string SecretSantaDrawnDirectMessage(string guildName, string secretSanta, Uri url);
 }

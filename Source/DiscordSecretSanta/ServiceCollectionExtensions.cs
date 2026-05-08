@@ -38,14 +38,18 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<CommandHandler>();
         
         services.AddTransient<IMessages, EnglishMessages>();
+        
+        // Commands
         services.AddTransient<StatusCommand>();
         services.AddTransient<OpenCommand>();
         services.AddTransient<ToggleAdminCommand>();
         services.AddTransient<SetMaxPriceCommand>();
         services.AddTransient<JoinCommand>();
+        services.AddTransient<DrawCommand>();
         
         // Permissions
         services.AddTransient<ICanSetMaxPrice, CanSetMaxPrice>();
+        services.AddTransient<ICanStartDraw, CanStartDraw>();
         
         return new SecretSantaServices(services);
     }

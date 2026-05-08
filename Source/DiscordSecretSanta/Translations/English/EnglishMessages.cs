@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace DiscordSecretSanta.Translations.English;
 
 public class EnglishMessages : IMessages
@@ -15,7 +17,7 @@ public class EnglishMessages : IMessages
         return message;
     }
 
-    public string StatusIsDrawn() => "All names have been drawn and so I am no longer accepting new people to join.";
+    public string StatusIsDrawn() => "Secret Santa names have been drawn.";
 
     public string StatusIsNotConfigured()
         => "A secret santa has not been configured by an admin yet. They just need to say \"setup\" and I will start the setup process with them";
@@ -50,6 +52,9 @@ public class EnglishMessages : IMessages
     public string YouDoNotHavePermissionToMakeAdmin()
         => "Sorry you do not have permission to make that user a secret santa admin";
 
+    public string YouDoNotHavePermissionToDraw()
+        => "Sorry you do not have permission to start the drawing of secret santas";
+
     public string YouAreNotAnAdmin()
         => "Sorry you are not an admin";
 
@@ -70,4 +75,23 @@ public class EnglishMessages : IMessages
 
     public string NotAValidWishlistUrl()
         => "That is not a valid wishlist url, please try again.";
+
+    public string DrawComplete()
+        => "All secret santas have been drawn";
+
+    public string CouldNotDraw()
+        => "Secret santa cannot be drawn at this point";
+
+    public string SecretSantaDrawnDirectMessage(string guildName, string secretSanta, Uri url)
+    {
+        var result = new StringBuilder();
+        result.AppendLine($"Hi, I am the Secret Santa bot from: {guildName}.");
+        result.AppendLine($"The Secret Santa's have been drawn and yours is: {secretSanta}.");
+        result.AppendLine($"Their wishlist is: {url}");
+        result.AppendLine(
+            "When you have sent their gift then send me the message \"sent\" and I will let them know their gift is on the way");
+        result.AppendLine($"Any issues please let the admins of the Secret Santa know on the {guildName} server");
+
+        return result.ToString();
+    }
 }

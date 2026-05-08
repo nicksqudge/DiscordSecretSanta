@@ -31,6 +31,9 @@ public class DrawCommand(IDataStore dataStore, IMessages messages, ICanStartDraw
 
         foreach (var member in members)
         {
+            if (unpickedMembers.All(u => u == member.UserId))
+                break;
+            
             var secretSantaId = unpickedMembers.First(u => u != member.UserId);
             var secretSanta = members.FirstOrDefault(m => m.UserId == secretSantaId);
             ArgumentNullException.ThrowIfNull(secretSanta);

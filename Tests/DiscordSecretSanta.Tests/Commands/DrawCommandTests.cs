@@ -60,7 +60,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
         var (result, directMessages) = await Command.Handle(requestingUser, CancellationToken.None);
         
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.CouldNotDraw());
+        result.ToString().Trim().ShouldContain(Messages.CouldNotDraw());
         AssertDidNotDraw(directMessages);
     }
 

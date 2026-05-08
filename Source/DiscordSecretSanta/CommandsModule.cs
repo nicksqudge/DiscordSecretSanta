@@ -111,6 +111,6 @@ public class CommandsModule : ModuleBase
         var secretSanta = await Context.Guild.GetUserAsync(dm.SecretSantaId.Value);
 
         var channel = await recipient.CreateDMChannelAsync();
-        await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.Nickname, dm.WishlistUrl));
+        await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.DisplayName, dm.WishlistUrl));
     }
 }

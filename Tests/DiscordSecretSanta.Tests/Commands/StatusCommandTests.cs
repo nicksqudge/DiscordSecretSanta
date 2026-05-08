@@ -15,9 +15,15 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
      => new  (DataStore, Messages);
 
     [TestCaseSource(typeof(TestData), nameof(TestData.TestCases))]
-    public async Task NotOpenOrDrawn(Status status, string expectedResult)
+    public async Task NotOpenOrDrawn(Status status, string expectedResult, bool expectShowMaxPrice)
     {
         // ARRANGE
+        var maxPrice = "£10";
+        A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored))
+            .Returns(new SecretSantaConfig()
+            {
+                MaxPrice = maxPrice
+            });
         A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored))
             .Returns(status);
 
@@ -26,6 +32,15 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
 
         // ASSERT
         result.ToString().ShouldContain(expectedResult);
+
+        if (expectShowMaxPrice)
+        {
+            result.ToString().ShouldContain(Messages.StatusMaxPrice(maxPrice));
+        }
+        else
+        {
+            result.ToString().ShouldNotContain(Messages.StatusMaxPrice(maxPrice));
+        }
     }
 
     [TestCaseSource(typeof(StatusTestCaseData), nameof(StatusTestCaseData.AllStatuses))]
@@ -57,10 +72,10 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
         {
             get
             {
-                yield return new TestCaseData(Status.NotConfigured, new EnglishMessages().StatusIsNotConfigured());
-                yield return new TestCaseData(Status.Ready, new EnglishMessages().StatusIsReady());
-                yield return new TestCaseData(Status.Drawn, new EnglishMessages().StatusIsDrawn());
-                yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsOpen(0));
+                yield return new TestCaseData(Status.NotConfigured, new EnglishMessages().StatusIsNotConfigured(), false);
+                yield return new TestCaseData(Status.Ready, new EnglishMessages().StatusIsReady(), true);
+                yield return new TestCaseData(Status.Drawn, new EnglishMessages().StatusIsDrawn(), true);
+                yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsOpen(0), true);
             }
         }
     }

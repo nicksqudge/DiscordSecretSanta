@@ -17,7 +17,7 @@ public class EnglishMessages : IMessages
         return message;
     }
 
-    public string StatusIsDrawn() => "All names have been drawn and so I am no longer accepting new people to join.";
+    public string StatusIsDrawn() => "Secret Santa names have been drawn.";
 
     public string StatusIsNotConfigured()
         => "A secret santa has not been configured by an admin yet. They just need to say \"setup\" and I will start the setup process with them";

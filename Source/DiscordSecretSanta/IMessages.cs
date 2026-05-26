@@ -29,4 +29,6 @@ public interface IMessages
     string DrawComplete();
     string CouldNotDraw();
     string SecretSantaDrawnDirectMessage(string guildName, string secretSanta, Uri url);
+    string CouldNotShowWho();
+    string CouldShow();
 }

@@ -6,7 +6,7 @@ namespace DiscordSecretSanta.Tests.Commands;
 public class WhoCommandTests : AbstractCommandTest<WhoCommand>
 {
     protected override WhoCommand InitCommand()
-        => new WhoCommand();
+        => new (DataStore, Messages);
 
     [TestCase(Status.NotConfigured)]
     [TestCase(Status.Open)]
@@ -22,7 +22,7 @@ public class WhoCommandTests : AbstractCommandTest<WhoCommand>
 
         // ASSERT
         result.ToString().Trim().ShouldBe(Messages.CouldNotShowWho());
-        directMessage.ShouldNotBeNull();
+        directMessage.ShouldBeNull();
     }
 
     [Test]

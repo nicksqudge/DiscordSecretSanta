@@ -94,4 +94,10 @@ public class EnglishMessages : IMessages
 
         return result.ToString();
     }
+
+    public string CouldNotShowWho()
+        => "Names have not been drawn yet so I cannot say who you have drawn";
+
+    public string CouldShow()
+        => "I have sent you a direct message with who you have drawn for secret santa.";
 }

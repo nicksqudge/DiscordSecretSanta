@@ -19,4 +19,9 @@ public abstract class AbstractCommandTest<T>
     {
         A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored)).Returns(status);
     }
+
+    protected void ArrangeGetMemberReturns(DiscordUserId id, SecretSantaMember member)
+    {
+        A.CallTo(() => DataStore.GetMember(A<DiscordUserId>.That.Matches(x => x.Value == id.Value), A<CancellationToken>._)).Returns(member);
+    }
 }

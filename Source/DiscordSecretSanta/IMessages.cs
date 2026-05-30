@@ -31,4 +31,5 @@ public interface IMessages
     string SecretSantaDrawnDirectMessage(string guildName, string secretSanta, Uri url);
     string CouldNotShowWho();
     string CouldShow();
+    string UnexpectedError(string detail);
 }

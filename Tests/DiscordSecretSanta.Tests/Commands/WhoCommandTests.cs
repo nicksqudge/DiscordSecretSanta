@@ -32,15 +32,19 @@ public class WhoCommandTests : AbstractCommandTest<WhoCommand>
         ArrangeGetStatusReturns(Status.Drawn);
         var requestingUser = TestFactory.InputUser();
         var secretSanta = TestFactory.DiscordUserId();
-        A.CallTo(() => DataStore.GetMember(requestingUser.Id, CancellationToken.None))
-            .ReturnsLazily(() => new SecretSantaMember(secretSanta, TestFactory.WishlistUrl()));
+        ArrangeGetMemberReturns(requestingUser.Id, new SecretSantaMember(requestingUser.Id, TestFactory.WishlistUrl())
+        {
+            SecretSantaId = secretSanta
+        });
+        ArrangeGetMemberReturns(secretSanta, new SecretSantaMember(secretSanta, TestFactory.WishlistUrl()));
 
         // ACT
         var (result, directMessage) = await Command.Handle(requestingUser, CancellationToken.None);
 
         // ASSERT
         result.ToString().Trim().ShouldBe(Messages.CouldShow());
-        directMessage.secretSanta.ShouldBe(secretSanta);
-        directMessage.targetUserId.ShouldBe(requestingUser.Id);
+        directMessage.SecretSantaId.ShouldBe(secretSanta);
+        directMessage.WhoAskedId.ShouldBe(requestingUser.Id);
+        directMessage.SecretSantaWishlist.ShouldNotBeNull();
     }
 }

@@ -17,10 +17,10 @@ public class EnglishMessages : IMessages
         return message;
     }
 
-    public string StatusIsDrawn() => "Secret Santa names have been drawn.";
+    public string StatusIsDrawn() => "Secret Santa names have been drawn. If you have signed up but haven't been told yet, make sure that I can message you and then run the command \"who\"";
 
     public string StatusIsNotConfigured()
-        => "A secret santa has not been configured by an admin yet. They just need to say \"setup\" and I will start the setup process with them";
+        => "A secret santa has not been configured by an admin yet. An admin needs to set the max price first, through the command \"max-price\".";
 
     public string StatusMaxPrice(string maxPrice)
         => "Max Gift Price is " + maxPrice;
@@ -100,4 +100,7 @@ public class EnglishMessages : IMessages
 
     public string CouldShow()
         => "I have sent you a direct message with who you have drawn for secret santa.";
+
+    public string UnexpectedError(string detail)
+        => $"I am sorry an unexpected error has occured. Please contact an admin. Code: {detail}";
 }

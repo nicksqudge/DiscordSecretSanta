@@ -12,3 +12,4 @@
 | close         | Closes the secret santa without drawing                        | Admin                      | N/A     |
 | max-price     | Sets the max price for the campaign (only before draw)         | Admin                      | v1      |
 | help          | Provides a link to the github and the version number           | Anyone                     | N/A     |
+| who           | Find out who you drew in secret santa (only done after draw)   | People in secret santa     | v1      |

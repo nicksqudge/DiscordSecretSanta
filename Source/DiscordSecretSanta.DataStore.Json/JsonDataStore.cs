@@ -45,7 +45,7 @@ public class JsonDataStore : IDataStore
 
     public Task<SecretSantaMember[]> GetMembers(CancellationToken cancellationToken)
     {
-        return Task.FromResult(_data.Members.Select(member => new SecretSantaMember(new DiscordUserId(member.DiscordId), new Uri(member.WishlistUrl))).ToArray());
+        return Task.FromResult(_data.Members.Select(ToSecretSantaMember).ToArray());
     }
 
     public Task ToggleAdmin(DiscordUserId userId, bool isAdmin, CancellationToken cancellationToken)
@@ -98,8 +98,7 @@ public class JsonDataStore : IDataStore
         if (member is null)
             return Task.FromResult<SecretSantaMember?>(null);
 
-        var result = new SecretSantaMember(new DiscordUserId(member.DiscordId), new Uri(member.WishlistUrl));
-        return Task.FromResult<SecretSantaMember?>(result);
+        return Task.FromResult<SecretSantaMember?>(ToSecretSantaMember(member));
     }
 
     private void WriteFile()
@@ -113,4 +112,10 @@ public class JsonDataStore : IDataStore
         var fileData = File.ReadAllText(_filePath);
         _data = JsonSerializer.Deserialize<JsonFile>(fileData) ??  new JsonFile();
     }
+
+    private SecretSantaMember ToSecretSantaMember(JsonFile.Member member)
+        => new(new DiscordUserId(member.DiscordId), new Uri(member.WishlistUrl))
+        {
+            SecretSantaId = member.SecretSanta != null ? new DiscordUserId(member.SecretSanta.Value) : null,
+        };
 }

@@ -2,7 +2,7 @@ namespace DiscordSecretSanta.DataStore.Json;
 
 public class JsonFile
 {
-    public Status Status { get; set; } = Status.Ready;
+    public Status Status { get; set; } = Status.NotConfigured;
     public Member[] Members { get; set; } = [];
     public SecretSantaConfig Config { get; set; } = new ();
     public ulong[] Admins  { get; set; } = [];

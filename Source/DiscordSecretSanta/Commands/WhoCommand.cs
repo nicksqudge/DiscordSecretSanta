@@ -4,7 +4,7 @@ namespace DiscordSecretSanta.Commands;
 
 public class WhoCommand(IDataStore dataStore, IMessages messages)
 {
-    public sealed record DirectMessage(DiscordUserId targetUserId, DiscordUserId secretSanta);
+    public sealed record DirectMessage(DiscordUserId WhoAskedId, DiscordUserId SecretSantaId, Uri SecretSantaWishlist);
     
     public async Task<(StringBuilder Response, DirectMessage? DirectMessages)> Handle(InputUser requestingUser,
         CancellationToken cancellationToken)
@@ -12,9 +12,26 @@ public class WhoCommand(IDataStore dataStore, IMessages messages)
         var status = await dataStore.GetStatus(cancellationToken);
         if (status != Status.Drawn)
         {
-            return (new StringBuilder().AppendLine(messages.CouldNotShowWho()), null);
+            return JustMessage(messages.CouldNotShowWho());
         }
         
-        return (new StringBuilder(), new DirectMessage(new DiscordUserId(12308123), new DiscordUserId(12308123)));
+        var requester = await dataStore.GetMember(requestingUser.Id, cancellationToken);
+        if (requester == null)
+            return JustMessage(messages.UnexpectedError($"COULD NOT FIND MEMBER: {requestingUser.Id}"));
+
+        if (requester.SecretSantaId is null)
+            return JustMessage(
+                messages.UnexpectedError($"STATUS IS DRAWN MEMBER DOES NOT HAVE SECRET SANTA: {requestingUser.Id}"));
+        
+        var secretSanta = await dataStore.GetMember(requester.SecretSantaId, cancellationToken);
+        if (secretSanta == null)
+            return JustMessage(messages.UnexpectedError($"COULD NOT FIND MEMBER: {requestingUser.Id}"));
+        
+        return (new StringBuilder().AppendLine(messages.CouldShow()), new DirectMessage(requester.UserId, secretSanta.UserId, secretSanta.WishlistUrl));
+    }
+
+    private (StringBuilder Response, DirectMessage? DirectMessages) JustMessage(string message)
+    {
+        return (new StringBuilder().AppendLine(message), null);
     }
 }

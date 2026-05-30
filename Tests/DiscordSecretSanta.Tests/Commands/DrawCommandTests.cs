@@ -9,10 +9,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     private Dictionary<DiscordUserId, DiscordUserId> _secretSantas = new();
     private List<SecretSantaMember> _members = new();
     
-    protected override DrawCommand InitCommand()
-    {
-        return new DrawCommand(DataStore, Messages, new CanStartDraw());
-    }
+    protected override DrawCommand InitCommand() => new(DataStore, Messages, new CanStartDraw());
 
     [TestCase(10)]
     [TestCase(100)]
@@ -20,7 +17,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     public async Task ShouldAssignPeopleSecretSantas(int numberOfMembers)
     {
         // ARRANGE
-        ArrangeStatus(Status.Open);
+        ArrangeGetStatusReturns(Status.Open);
         ArrangeNumberOfMembers(numberOfMembers);
         var requestingUser = TestFactory.InputUser(isServerAdmin: true);
         
@@ -52,7 +49,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     public async Task ShouldHaveAtLeast3People(int members)
     {
         // ARRANGE
-        ArrangeStatus(Status.Open);
+        ArrangeGetStatusReturns(Status.Open);
         ArrangeNumberOfMembers(members);
         var requestingUser = TestFactory.InputUser(isServerAdmin: true);
         
@@ -70,7 +67,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     public async Task GivenStatus_CanTheDrawCommandBeRan(Status startingStatus)
     {
         // ARRANGE
-        ArrangeStatus(startingStatus);
+        ArrangeGetStatusReturns(startingStatus);
         var requestingUser = TestFactory.InputUser(isServerAdmin: true);
         
         // ACT
@@ -93,12 +90,6 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
         // ASSERT
         result.ToString().Trim().ShouldBe(Messages.YouDoNotHavePermissionToDraw());
         AssertDidNotDraw(directMessages);
-    }
-    
-
-    private void ArrangeStatus(Status status)
-    {
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>._)).Returns(status);
     }
 
     private void ArrangeNumberOfMembers(int members)

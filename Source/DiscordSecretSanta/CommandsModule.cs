@@ -16,6 +16,7 @@ public class CommandsModule : ModuleBase
         _services = services;
     }
 
+    [RequireContext(ContextType.Guild)]
     [Command("status")]
     [Summary("Provides a status on secret santa")]
     public async Task StatusAsync()
@@ -25,6 +26,7 @@ public class CommandsModule : ModuleBase
         await ReplyAsync(reply.ToString());
     }
 
+    [RequireContext(ContextType.Guild)]
     [Command("open")]
     [Summary("(Admin Only) Opens the secret santa for sign ups")]
     public async Task OpenAsync()
@@ -48,6 +50,7 @@ public class CommandsModule : ModuleBase
         });
     }
 
+    [RequireContext(ContextType.Guild)]
     [Command("max-price")]
     [Summary("(Admin Only) Sets the max price for gifts")]
     public async Task SetMaxPriceAsync(string maxPrice)
@@ -61,6 +64,7 @@ public class CommandsModule : ModuleBase
         });
     }
     
+    [RequireContext(ContextType.Guild)]
     [Command("join")]
     [Summary("When open, allows people to sign up to the secret santa with a wishlist url")]
     public async Task JoinAsync(string wishlistUrl)
@@ -74,6 +78,7 @@ public class CommandsModule : ModuleBase
         });
     }
 
+    [RequireContext(ContextType.Guild)]
     [Command("draw")]
     [Summary("(Admin Only) Draws the secret santas")]
     public async Task DrawSecretSantaAsync()
@@ -93,7 +98,7 @@ public class CommandsModule : ModuleBase
             await ReplyAsync(reply.ToString());
         });
     }
-
+    
     [Command("who")]
     [Summary("Find out who you have drawn for Secret Santa")]
     public async Task WhoAsync()
@@ -109,6 +114,14 @@ public class CommandsModule : ModuleBase
             
             await ReplyAsync(reply.ToString());
         });
+    }
+
+    [RequireContext(ContextType.DM)]
+    [Command("sent")]
+    [Summary("Tell Secret Santa you have sent your package")]
+    public async Task SentAsync()
+    {
+        await ReplyAsync("Woo!");
     }
 
     private async Task IfUserIsValid(Func<SocketGuildUser, Task> action)

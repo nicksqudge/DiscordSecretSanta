@@ -103,4 +103,7 @@ public class EnglishMessages : IMessages
 
     public string UnexpectedError(string detail)
         => $"I am sorry an unexpected error has occured. Please contact an admin. Code: {detail}";
+
+    public string StatusNotValidForSent()
+        => "The campaign is not in the right stage for you to be able to mark this as sent.";
 }

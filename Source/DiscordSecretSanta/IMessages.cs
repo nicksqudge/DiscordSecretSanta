@@ -32,4 +32,5 @@ public interface IMessages
     string CouldNotShowWho();
     string CouldShow();
     string UnexpectedError(string detail);
+    string StatusNotValidForSent();
 }

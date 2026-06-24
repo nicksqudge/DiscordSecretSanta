@@ -17,26 +17,54 @@ public class SendCommandTests : AbstractCommandTest<SentCommand>
         ArrangeGetStatusReturns(status);
         
         // ACT
-        var result = await Command.Handle(CancellationToken.None);
+        var (response, directMessage) = await Command.Handle(TestFactory.DiscordUserId(), CancellationToken.None);
         
         // ASSERT
-        result.ToString().ShouldBe(Messages.StatusNotValidForSent());
+        response.ToString().ShouldBe(Messages.StatusNotValidForSent());
+        directMessage.ShouldBeNull();
     }
 
-    [Test]
-    public async Task NotAlreadySent()
+    [TestCase(SecretSantaStatus.Sent)]
+    [TestCase(SecretSantaStatus.Received)]
+    public async Task NotAlreadySent(SecretSantaStatus status)
     {
         // ARRANGE
+        var sender = TestFactory.DiscordUserId();
+        var receiver = TestFactory.DiscordUserId();
         ArrangeGetStatusReturns(Status.Drawn);
+        ArrangeGetMemberReturns(sender, new SecretSantaMember(sender, TestFactory.WishlistUrl())
+        {
+            SecretSantaId = receiver,
+            SecretSantaStatus = status
+        });
         
         // ACT
+        var (response, directMessage) = await Command.Handle(sender, CancellationToken.None);
         
         // ASSERT
+        response.ToString().ShouldBe(Messages.AlreadySent());
+        directMessage.ShouldBeNull();
     }
 
     [Test]
     public async Task Sends()
     {
+        // ARRANGE
+        var sender = TestFactory.DiscordUserId();
+        var receiver = TestFactory.DiscordUserId();
+        ArrangeGetStatusReturns(Status.Drawn);
+        ArrangeGetMemberReturns(sender, new SecretSantaMember(sender, TestFactory.WishlistUrl())
+        {
+            SecretSantaId = receiver,
+            SecretSantaStatus = SecretSantaStatus.Pending
+        });
         
+        // ACT
+        var (response, directMessage) = await Command.Handle(sender, CancellationToken.None);
+        
+        // ASSERT
+        response.ToString().ShouldBe(Messages.MarkedAsSent());
+        directMessage.ShouldNotBeNull();
+        directMessage.Receiver.ShouldBe(receiver);
     }
 }

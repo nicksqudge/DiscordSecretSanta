@@ -19,4 +19,5 @@ public interface IDataStore
     Task SetMaxPrice(string newMaxPrice, CancellationToken cancellationToken);
     Task AddMember(DiscordUserId discordUserId, Uri wishlistUrl, CancellationToken cancellationToken);
     Task SetSecretSanta(DiscordUserId targetUser, DiscordUserId secretSanta, CancellationToken cancellationToken);
+    Task SetSecretSantaStatus(DiscordUserId targetUser, SecretSantaStatus status, CancellationToken cancellationToken);
 }

@@ -12,5 +12,6 @@ public class JsonFile
         public ulong DiscordId { get; set; }
         public string WishlistUrl { get; set; } = string.Empty;
         public ulong? SecretSanta { get; set; }
+        public SecretSantaStatus SecretSantaStatus { get; set; }
     }
 }

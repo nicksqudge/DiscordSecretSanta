@@ -17,15 +17,14 @@ public class WhoCommand(IDataStore dataStore, IMessages messages)
         
         var requester = await dataStore.GetMember(requestingUser.Id, cancellationToken);
         if (requester == null)
-            return JustMessage(messages.UnexpectedError($"COULD NOT FIND MEMBER: {requestingUser.Id}"));
+            return UnexpectedError($"COULD NOT FIND MEMBER: {requestingUser.Id}");
 
         if (requester.SecretSantaId is null)
-            return JustMessage(
-                messages.UnexpectedError($"STATUS IS DRAWN MEMBER DOES NOT HAVE SECRET SANTA: {requestingUser.Id}"));
+            return UnexpectedError($"STATUS IS DRAWN MEMBER DOES NOT HAVE SECRET SANTA: {requestingUser.Id}");
         
         var secretSanta = await dataStore.GetMember(requester.SecretSantaId, cancellationToken);
         if (secretSanta == null)
-            return JustMessage(messages.UnexpectedError($"COULD NOT FIND MEMBER: {requestingUser.Id}"));
+            return UnexpectedError($"COULD NOT FIND MEMBER: {requestingUser.Id}");
         
         return (new StringBuilder().AppendLine(messages.CouldShow()), new DirectMessage(requester.UserId, secretSanta.UserId, secretSanta.WishlistUrl));
     }
@@ -34,4 +33,7 @@ public class WhoCommand(IDataStore dataStore, IMessages messages)
     {
         return (new StringBuilder().AppendLine(message), null);
     }
+    
+    private (StringBuilder Response, DirectMessage? DirectMessages) UnexpectedError(string message)
+        => JustMessage(messages.UnexpectedError(nameof(WhoCommand), message));   
 }

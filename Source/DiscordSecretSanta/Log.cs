@@ -21,4 +21,9 @@ public class Logger
     {
         Console.WriteLine("WARNING: " + warning);
     }
+
+    public static void Error(string error)
+    {
+        Console.WriteLine("ERROR: " + error);
+    }
 }

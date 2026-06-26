@@ -19,7 +19,7 @@ public class SentCommand(IDataStore dataStore, IMessages messages)
         if (requester.SecretSantaId is null)
             return UnexpectedError($"REQUESTING USER ID: {requestingUserId} DOES NOT HAVE AN ASSIGNED SECRET SANTA");
 
-        if (requester.SecretSantaStatus != SecretSantaStatus.Pending)
+        if (requester.SecretSantaStatus != SecretSantaStatus.Pending && requester.SecretSantaStatus is not null)
             return ReturnFail(messages.AlreadySent());
         
         await dataStore.SetSecretSantaStatus(requester.UserId, SecretSantaStatus.Sent, cancellationToken);

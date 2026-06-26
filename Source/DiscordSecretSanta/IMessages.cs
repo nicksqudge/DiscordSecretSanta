@@ -35,4 +35,5 @@ public interface IMessages
     string StatusNotValidForSent();
     string AlreadySent();
     string MarkedAsSent();
+    string YourGiftIsOnTheWay();
 }

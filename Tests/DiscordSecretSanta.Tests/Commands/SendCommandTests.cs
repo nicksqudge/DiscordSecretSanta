@@ -46,8 +46,9 @@ public class SendCommandTests : AbstractCommandTest<SentCommand>
         directMessage.ShouldBeNull();
     }
 
-    [Test]
-    public async Task Sends()
+    [TestCase(SecretSantaStatus.Pending)]
+    [TestCase(null)]
+    public async Task Sends(SecretSantaStatus? status)
     {
         // ARRANGE
         var sender = TestFactory.DiscordUserId();
@@ -56,7 +57,7 @@ public class SendCommandTests : AbstractCommandTest<SentCommand>
         ArrangeGetMemberReturns(sender, new SecretSantaMember(sender, TestFactory.WishlistUrl())
         {
             SecretSantaId = receiver,
-            SecretSantaStatus = SecretSantaStatus.Pending
+            SecretSantaStatus = status
         });
         
         // ACT

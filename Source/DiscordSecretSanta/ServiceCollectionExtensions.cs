@@ -47,6 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<JoinCommand>();
         services.AddTransient<DrawCommand>();
         services.AddTransient<WhoCommand>();
+        services.AddTransient<SentCommand>();
         
         // Permissions
         services.AddTransient<ICanSetMaxPrice, CanSetMaxPrice>();

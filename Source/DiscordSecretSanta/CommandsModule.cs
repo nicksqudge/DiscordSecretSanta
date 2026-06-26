@@ -42,10 +42,9 @@ public class CommandsModule : ModuleBase
     {
         await IfUserIsValid(async (requester) =>
         {
-            var requestingUser = InputUser.From(requester);
             var targetUser = InputUser.From(target);
             var command = _services.GetRequiredService<ToggleAdminCommand>();
-            var reply = await command.Handle(targetUser, requestingUser, CancellationToken.None);
+            var reply = await command.Handle(targetUser, requester, CancellationToken.None);
             await ReplyAsync(reply.ToString());
         });
     }
@@ -57,9 +56,8 @@ public class CommandsModule : ModuleBase
     {
         await IfUserIsValid(async (requester) =>
         {
-            var requestingUser = InputUser.From(requester);
             var command = _services.GetRequiredService<SetMaxPriceCommand>();
-            var reply = await command.Handle(requestingUser, maxPrice, CancellationToken.None);
+            var reply = await command.Handle(requester, maxPrice, CancellationToken.None);
             await ReplyAsync(reply.ToString());
         });
     }
@@ -71,9 +69,8 @@ public class CommandsModule : ModuleBase
     {
         await IfUserIsValid(async (requester) =>
         {
-            var requestingUser = InputUser.From(requester);
             var command = _services.GetRequiredService<JoinCommand>();
-            var reply = await command.Handle(requestingUser.Id, wishlistUrl, CancellationToken.None);
+            var reply = await command.Handle(requester.Id, wishlistUrl, CancellationToken.None);
             await ReplyAsync(reply.ToString());
         });
     }
@@ -85,10 +82,9 @@ public class CommandsModule : ModuleBase
     {
         await IfUserIsValid(async (requester) =>
         {
-            var requestingUser = InputUser.From(requester);
             var command = _services.GetRequiredService<DrawCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessages) = await command.Handle(requestingUser, CancellationToken.None);
+            var (reply, directMessages) = await command.Handle(requester, CancellationToken.None);
             if (directMessages.Length != 0)
             {
                 foreach (var dm in directMessages)
@@ -105,10 +101,9 @@ public class CommandsModule : ModuleBase
     {
         await IfUserIsValid(async (requester) =>
         {
-            var requestingUser = InputUser.From(requester);
             var command = _services.GetRequiredService<WhoCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessage) = await command.Handle(requestingUser, CancellationToken.None);
+            var (reply, directMessage) = await command.Handle(requester, CancellationToken.None);
             if (directMessage != null)
                 await SendDirectMessage(directMessage, messages);
             
@@ -121,24 +116,50 @@ public class CommandsModule : ModuleBase
     [Summary("Tell Secret Santa you have sent your package")]
     public async Task SentAsync()
     {
-        await ReplyAsync("Woo!");
+        await IfUserIsValid(async (requester) =>
+        {
+            var command = _services.GetRequiredService<SentCommand>();
+            var messages = _services.GetRequiredService<IMessages>();
+            var (reply, directMessage) = await command.Handle(requester.Id, CancellationToken.None);
+            if (directMessage != null)
+                await SendDirectMessage(directMessage, messages);
+            
+            await ReplyAsync(reply.ToString());
+        });
     }
 
-    private async Task IfUserIsValid(Func<SocketGuildUser, Task> action)
+    private async Task IfUserIsValid(Func<InputUser, Task> action)
     {
-        if (Context.User is not SocketGuildUser requester)
+        if (Context.User.IsBot)
         {
-            Logger.Debug("Not a guild user");
+            Logger.Debug("User is a bot");
             return;
         }
-        
-        await action(requester);
+
+        if (Context.User is SocketGuildUser requester)
+        {
+            await action(InputUser.From(requester));
+            return;
+        }
+
+        await action(new InputUser(new DiscordUserId(Context.User.Id), Context.User.GlobalName));
     }
 
     private async Task SendDirectMessage(DrawCommand.DirectMessage dm, IMessages message)
     {
-        var recipient = await Context.Guild.GetUserAsync(dm.TargetUserId.Value);
-        var secretSanta = await Context.Guild.GetUserAsync(dm.SecretSantaId.Value);
+        var recipient = await GetGuildUser(dm.TargetUserId.Value);
+        if (recipient is null)
+        {
+            Logger.Error($"Could not find user {dm.TargetUserId.Value}");
+            return;
+        }
+        
+        var secretSanta = await GetGuildUser(dm.SecretSantaId.Value);
+        if (secretSanta is null)
+        {
+            Logger.Error($"Could not find user {dm.SecretSantaId.Value}");
+            return;
+        }
 
         var channel = await recipient.CreateDMChannelAsync();
         await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.DisplayName, dm.WishlistUrl));
@@ -146,10 +167,48 @@ public class CommandsModule : ModuleBase
 
     private async Task SendDirectMessage(WhoCommand.DirectMessage dm, IMessages message)
     {
-        var recipient = await Context.Guild.GetUserAsync(dm.WhoAskedId.Value);
-        var secretSanta = await Context.Guild.GetUserAsync(dm.SecretSantaId.Value);
+        var recipient = await GetGuildUser(dm.WhoAskedId.Value);
+        if (recipient is null)
+        {
+            Logger.Error($"Could not find user {dm.WhoAskedId.Value}");
+            return;
+        }
+        
+        var secretSanta = await GetGuildUser(dm.SecretSantaId.Value);
+        if (secretSanta is null)
+        {
+            Logger.Error($"Could not find user {dm.SecretSantaId.Value}");
+            return;
+        }
 
         var channel = await recipient.CreateDMChannelAsync();
         await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.DisplayName, dm.SecretSantaWishlist));
+    }
+
+    private async Task SendDirectMessage(SentCommand.DirectMessage dm, IMessages message)
+    {
+        var secretSanta = await GetGuildUser(dm.Receiver.Value);
+        if (secretSanta is null)
+        {
+            Logger.Error($"Could not find user {dm.Receiver.Value}");
+            return;
+        }
+        
+        var channel = await secretSanta.CreateDMChannelAsync();
+        await channel.SendMessageAsync(message.YourGiftIsOnTheWay());
+    }
+
+    private async Task<IGuildUser?> GetGuildUser(ulong id)
+    {
+        if (Context.Guild is not null)
+            return await Context.Guild.GetUserAsync(id);
+        
+        if (Context.User is SocketUser user)
+        {
+            var guild = user.MutualGuilds.First();
+            return guild.GetUser(id);
+        }
+
+        return null;
     }
 }

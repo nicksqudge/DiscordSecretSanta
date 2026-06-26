@@ -101,6 +101,18 @@ public class EnglishMessages : IMessages
     public string CouldShow()
         => "I have sent you a direct message with who you have drawn for secret santa.";
 
-    public string UnexpectedError(string detail)
-        => $"I am sorry an unexpected error has occured. Please contact an admin. Code: {detail}";
+    public string UnexpectedError(string command, string detail)
+        => $"I am sorry an unexpected error has occured. Please contact an admin. Code: {command}-{detail}";
+
+    public string StatusNotValidForSent()
+        => "The campaign is not in the right stage for you to be able to mark this as sent.";
+
+    public string AlreadySent()
+        => "You have already told us that you have sent your gift.";
+
+    public string MarkedAsSent()
+        => "Thanks, I will let your secret santa know that you have sent their gift.";
+
+    public string YourGiftIsOnTheWay()
+        => "Your gift is on the way. When it arrives just send me the message \"received\"";
 }

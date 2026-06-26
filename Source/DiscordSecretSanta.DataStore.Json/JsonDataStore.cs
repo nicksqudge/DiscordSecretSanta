@@ -84,9 +84,26 @@ public class JsonDataStore : IDataStore
     }
 
     public Task SetSecretSanta(DiscordUserId targetUser, DiscordUserId secretSanta, CancellationToken cancellationToken)
+        => UpdateMember(targetUser, (member) =>
+        {
+            member.SecretSanta = secretSanta.Value;
+            member.SecretSantaStatus = SecretSantaStatus.Pending;
+        });
+
+    public Task SetSecretSantaStatus(DiscordUserId targetUser, SecretSantaStatus status, CancellationToken cancellationToken) 
+        => UpdateMember(targetUser, (member) =>
+        {
+            member.SecretSantaStatus = status;
+        });
+
+    private Task UpdateMember(DiscordUserId memberId, Action<JsonFile.Member> updateAction)
     {
         var members = _data.Members.ToList();
-        members.FirstOrDefault(m => m.DiscordId == targetUser.Value).SecretSanta = secretSanta.Value;
+        var member = members.FirstOrDefault(m => m.DiscordId == memberId.Value);
+        if (member is null)
+            return Task.CompletedTask;
+        
+        updateAction(member);
         _data.Members = members.ToArray();
         WriteFile();
         return Task.CompletedTask;

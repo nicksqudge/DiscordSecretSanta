@@ -31,5 +31,9 @@ public interface IMessages
     string SecretSantaDrawnDirectMessage(string guildName, string secretSanta, Uri url);
     string CouldNotShowWho();
     string CouldShow();
-    string UnexpectedError(string detail);
+    string UnexpectedError(string command, string detail);
+    string StatusNotValidForSent();
+    string AlreadySent();
+    string MarkedAsSent();
+    string YourGiftIsOnTheWay();
 }

@@ -43,9 +43,11 @@ public class CommandHandler
             return;
         }
 
-        if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos))
+        var isBotMentioned = message.HasMentionPrefix(_client.CurrentUser, ref argPos);
+        var isDirectMessage = message.Channel is SocketDMChannel;
+        if (!isBotMentioned && !isDirectMessage)
         {
-            Logger.Debug("Does not mention bot");
+            Logger.Debug("Does not mention bot or is not dm");
             return;
         }
 

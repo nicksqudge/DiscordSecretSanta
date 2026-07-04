@@ -3,7 +3,7 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class SendCommandTests : AbstractCommandTest<SentCommand>
+public class SentCommandTests : AbstractCommandTest<SentCommand>
 {
     protected override SentCommand InitCommand()
         => new(DataStore, Messages);

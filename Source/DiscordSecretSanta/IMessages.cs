@@ -36,4 +36,8 @@ public interface IMessages
     string AlreadySent();
     string MarkedAsSent();
     string YourGiftIsOnTheWay();
+    string StatusNotValidForArrived();
+    string AlreadyArrived();
+    string MarkedAsArrived();
+    string YourGiftHasArrived();
 }

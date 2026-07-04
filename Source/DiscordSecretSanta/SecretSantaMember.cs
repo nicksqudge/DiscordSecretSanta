@@ -10,5 +10,5 @@ public enum SecretSantaStatus
 {
     Pending,
     Sent,
-    Received
+    Arrived
 }

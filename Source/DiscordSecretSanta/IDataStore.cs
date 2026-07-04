@@ -11,6 +11,7 @@ public interface IDataStore
     Task SetStatus(Status status, CancellationToken cancellationToken);
 
     Task<SecretSantaMember?> GetMember(DiscordUserId discordUserId, CancellationToken cancellationToken);
+    Task<SecretSantaMember?> GetMembersSecretSanta(DiscordUserId discordUserId, CancellationToken cancellationToken);
     Task<int> GetNumberOfMembers(CancellationToken cancellationToken);
     Task<SecretSantaMember[]> GetMembers(CancellationToken cancellationToken);
     

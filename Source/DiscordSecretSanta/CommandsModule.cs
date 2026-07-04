@@ -113,12 +113,29 @@ public class CommandsModule : ModuleBase
 
     [RequireContext(ContextType.DM)]
     [Command("sent")]
-    [Summary("Tell Secret Santa you have sent your package")]
+    [Summary("Tell the person you are buying for that their gift is in the way")]
     public async Task SentAsync()
     {
         await IfUserIsValid(async (requester) =>
         {
             var command = _services.GetRequiredService<SentCommand>();
+            var messages = _services.GetRequiredService<IMessages>();
+            var (reply, directMessage) = await command.Handle(requester.Id, CancellationToken.None);
+            if (directMessage != null)
+                await SendDirectMessage(directMessage, messages);
+            
+            await ReplyAsync(reply.ToString());
+        });
+    }
+    
+    [RequireContext(ContextType.DM)]
+    [Command("arrived")]
+    [Summary("Tell your secret santa that your gift has arrived")]
+    public async Task ArrivedAsync()
+    {
+        await IfUserIsValid(async (requester) =>
+        {
+            var command = _services.GetRequiredService<ArrivedCommand>();
             var messages = _services.GetRequiredService<IMessages>();
             var (reply, directMessage) = await command.Handle(requester.Id, CancellationToken.None);
             if (directMessage != null)
@@ -196,6 +213,19 @@ public class CommandsModule : ModuleBase
         
         var channel = await secretSanta.CreateDMChannelAsync();
         await channel.SendMessageAsync(message.YourGiftIsOnTheWay());
+    }
+    
+    private async Task SendDirectMessage(ArrivedCommand.DirectMessage dm, IMessages message)
+    {
+        var secretSanta = await GetGuildUser(dm.Sender.Value);
+        if (secretSanta is null)
+        {
+            Logger.Error($"Could not find user {dm.Sender.Value}");
+            return;
+        }
+        
+        var channel = await secretSanta.CreateDMChannelAsync();
+        await channel.SendMessageAsync(message.YourGiftHasArrived());
     }
 
     private async Task<IGuildUser?> GetGuildUser(ulong id)

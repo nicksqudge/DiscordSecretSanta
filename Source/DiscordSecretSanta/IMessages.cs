@@ -39,4 +39,5 @@ public interface IMessages
     string StatusNotValidForArrived();
     string AlreadyArrived();
     string MarkedAsArrived();
+    string YourGiftHasArrived();
 }

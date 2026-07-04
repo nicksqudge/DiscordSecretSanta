@@ -124,4 +124,7 @@ public class EnglishMessages : IMessages
 
     public string MarkedAsArrived()
         => "Thank you, I will let your secret santa know that your gift has arrived";
+
+    public string YourGiftHasArrived()
+        => "Your secret santa has received their gift.";
 }

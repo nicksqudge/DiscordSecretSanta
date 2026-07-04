@@ -38,6 +38,15 @@ public class JsonDataStore : IDataStore
         return Task.CompletedTask;
     }
 
+    public Task<SecretSantaMember?> GetMembersSecretSanta(DiscordUserId discordUserId, CancellationToken cancellationToken)
+    {
+        var member = _data.Members.FirstOrDefault(m => m.SecretSanta is not null && m.SecretSanta.Value == discordUserId.Value);
+        if (member is null)
+            return Task.FromResult<SecretSantaMember?>(null);
+        
+        return Task.FromResult<SecretSantaMember?>(ToSecretSantaMember(member));
+    }
+
     public Task<int> GetNumberOfMembers(CancellationToken cancellationToken)
     {
         return Task.FromResult(_data.Members.Length);

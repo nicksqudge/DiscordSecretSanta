@@ -114,5 +114,14 @@ public class EnglishMessages : IMessages
         => "Thanks, I will let your secret santa know that you have sent their gift.";
 
     public string YourGiftIsOnTheWay()
-        => "Your gift is on the way. When it arrives just send me the message \"received\"";
+        => "Your gift is on the way. When it arrives just send me the message \"arrived\"";
+
+    public string StatusNotValidForArrived()
+        => "The campaign is not in the right stage for you to be able to mark this as arrived.";
+
+    public string AlreadyArrived()
+        => "You have already told your secret santa that your gift has arrived.";
+
+    public string MarkedAsArrived()
+        => "Thank you, I will let your secret santa know that your gift has arrived";
 }

@@ -29,7 +29,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
         
         A.CallTo(() => DataStore.SetSecretSanta(A<DiscordUserId>._, A<DiscordUserId>._, CancellationToken.None))
             .MustHaveHappened(numberOfMembers, Times.Exactly);
-        A.CallTo(() => DataStore.SetStatus(A<Status>.That.Matches(x => x == Status.Drawn), A<CancellationToken>._)).MustHaveHappened();
+        AssertSetStatus(Status.Drawn).MustHaveHappened();
         
         _secretSantas.Count.ShouldBe(numberOfMembers);
         
@@ -64,7 +64,8 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     [TestCase(Status.Drawn)]
     [TestCase(Status.NotConfigured)]
     [TestCase(Status.Ready)]
-    public async Task GivenStatus_CanTheDrawCommandBeRan(Status startingStatus)
+    [TestCase(Status.Closed)]
+    public async Task GivenStatus_ShouldNotDraw(Status startingStatus)
     {
         // ARRANGE
         ArrangeGetStatusReturns(startingStatus);
@@ -113,7 +114,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
 
     private void AssertDidNotDraw(DrawCommand.DirectMessage[] messages)
     {
-        A.CallTo(() => DataStore.SetStatus(A<Status>.That.Matches(x => x == Status.Drawn), A<CancellationToken>._)).MustNotHaveHappened();
+        AssertSetStatus(Status.Drawn).MustNotHaveHappened();
         A.CallTo(() => DataStore.SetSecretSanta(A<DiscordUserId>._, A<DiscordUserId>._, CancellationToken.None)).MustNotHaveHappened();
         _secretSantas.Count.ShouldBe(0);
         messages.Length.ShouldBe(0);

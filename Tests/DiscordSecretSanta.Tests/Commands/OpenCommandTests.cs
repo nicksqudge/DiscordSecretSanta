@@ -30,7 +30,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         // ASSERT
         result.ToString().ShouldBe(ViaStringBuilder(Messages.OpenNotConfigured(), Messages.MustHaveMaxPrice()));
         
-        A.CallTo(() => DataStore.SetStatus(A<Status>._, A<CancellationToken>.Ignored)).MustNotHaveHappened();
+        AssertSetStatus().MustNotHaveHappened();
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         await Command.Handle(CancellationToken.None);
 
         // ASSERT
-        A.CallTo(() => DataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustHaveHappened();
+        AssertSetStatus(Status.Open).MustHaveHappened();
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         
         // ASSERT
         result.ToString().ShouldBe(ViaStringBuilder(Messages.NowOpen()));
-        A.CallTo(() => DataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustHaveHappened();
+        AssertSetStatus(Status.Open).MustHaveHappened();
     }
 
     [TestCaseSource(typeof(TestData), nameof(TestData.TestCases))]
@@ -74,7 +74,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         
         // ASSERT
         result.ToString().ShouldBe(ViaStringBuilder(expectedMessage));
-        A.CallTo(() => DataStore.SetStatus(Status.Open, A<CancellationToken>.Ignored)).MustNotHaveHappened();
+        AssertSetStatus(Status.Open).MustNotHaveHappened();
     }
 
     private string ViaStringBuilder(params string[] input)
@@ -90,6 +90,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
             {
                 yield return new TestCaseData(Status.Drawn, new EnglishMessages().AlreadyDrawn());
                 yield return new TestCaseData(Status.Open, new EnglishMessages().AlreadyOpen());
+                yield return new TestCaseData(Status.Closed, new EnglishMessages().StatusIsClosed());
             }
         }
     }

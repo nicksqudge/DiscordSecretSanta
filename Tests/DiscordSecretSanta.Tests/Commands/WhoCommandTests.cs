@@ -11,6 +11,7 @@ public class WhoCommandTests : AbstractCommandTest<WhoCommand>
     [TestCase(Status.NotConfigured)]
     [TestCase(Status.Open)]
     [TestCase(Status.Ready)]
+    [TestCase(Status.Closed)]
     public async Task GivenStatus_ShouldSayCannotShowValue(Status status)
     {
         // ARRANGE

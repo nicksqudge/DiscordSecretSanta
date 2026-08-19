@@ -1,3 +1,5 @@
+using FakeItEasy.Configuration;
+
 namespace DiscordSecretSanta.Tests.TestHelpers;
 
 public abstract class AbstractCommandTest<T>
@@ -23,5 +25,15 @@ public abstract class AbstractCommandTest<T>
     protected void ArrangeGetMemberReturns(DiscordUserId id, SecretSantaMember member)
     {
         A.CallTo(() => DataStore.GetMember(A<DiscordUserId>.That.Matches(x => x.Value == id.Value), A<CancellationToken>._)).Returns(member);
+    }
+
+    protected IReturnValueArgumentValidationConfiguration<Task> AssertSetStatus(Status? expectedStatus=null)
+    {
+        if (expectedStatus.HasValue)
+            return A.CallTo(() =>
+            DataStore.SetStatus(A<Status>.That.Matches(x => x == expectedStatus), A<CancellationToken>.Ignored));
+        
+        return A.CallTo(() =>
+            DataStore.SetStatus(A<Status>._, A<CancellationToken>.Ignored));
     }
 }

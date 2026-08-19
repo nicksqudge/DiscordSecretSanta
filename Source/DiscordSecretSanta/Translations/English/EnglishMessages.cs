@@ -25,6 +25,9 @@ public class EnglishMessages : IMessages
     public string StatusMaxPrice(string maxPrice)
         => "Max Gift Price is " + maxPrice;
 
+    public string StatusIsClosed()
+        => "This campaign has been closed.";
+
     public string OpenNotConfigured()
         => "Sorry I cannot be opened, I have not been configured. Please make sure the following is configured: ";
 

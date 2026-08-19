@@ -9,6 +9,7 @@ public interface IMessages
     string StatusIsDrawn();
     string StatusIsNotConfigured();
     string StatusMaxPrice(string maxPrice);
+    string StatusIsClosed();
     string OpenNotConfigured();
     string MustHaveMaxPrice();
     string NowOpen();

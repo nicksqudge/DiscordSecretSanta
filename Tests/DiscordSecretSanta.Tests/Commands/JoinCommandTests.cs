@@ -17,7 +17,10 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
     protected override JoinCommand InitCommand()
         => new(DataStore, Messages, _validators);
 
-    [TestCaseSource(typeof(StatusTestCaseData), nameof(StatusTestCaseData.StatusThatAreNotOpen))]
+    [TestCase(Status.Closed)]
+    [TestCase(Status.Drawn)]
+    [TestCase(Status.Ready)]
+    [TestCase(Status.NotConfigured)]
     public async Task NotOpen(Status status)
     {
         // ARRANGE

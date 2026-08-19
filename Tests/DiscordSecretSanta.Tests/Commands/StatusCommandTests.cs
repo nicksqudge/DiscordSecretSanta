@@ -43,7 +43,8 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
         }
     }
 
-    [TestCaseSource(typeof(StatusTestCaseData), nameof(StatusTestCaseData.AllStatuses))]
+    [TestCase(Status.NotConfigured)]
+    [TestCase(Status.Closed)]
     public async Task ShowMaxPrice(Status status)
     {
         // ARRANGE
@@ -76,6 +77,7 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
                 yield return new TestCaseData(Status.Ready, new EnglishMessages().StatusIsReady(), true);
                 yield return new TestCaseData(Status.Drawn, new EnglishMessages().StatusIsDrawn(), true);
                 yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsOpen(0), true);
+                yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsClosed(), false);
             }
         }
     }

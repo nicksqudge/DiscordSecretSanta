@@ -11,6 +11,7 @@ public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand>
     [TestCase(Status.Open)]
     [TestCase(Status.NotConfigured)]
     [TestCase(Status.Ready)]
+    [TestCase(Status.Closed)]
     public async Task NotRightCampaignStatus(Status status)
     {
         // ARRANGE

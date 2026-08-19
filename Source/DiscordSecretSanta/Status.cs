@@ -17,5 +17,9 @@ public enum Status
     /// <summary>
     /// The secret santa campaign has been drawn and so no one can join
     /// </summary>
-    Drawn
+    Drawn,
+    /// <summary>
+    /// The campaign has closed
+    /// </summary>
+    Closed,
 }

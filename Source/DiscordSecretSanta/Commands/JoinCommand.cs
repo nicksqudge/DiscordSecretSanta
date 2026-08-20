@@ -18,7 +18,7 @@ public class JoinCommand
     public async Task<StringBuilder> Handle(DiscordUserId userId, string wishlistUrl, CancellationToken cancellationToken)
     {
         var status = await _dataStore.GetStatus(cancellationToken);
-        if (status != Status.Open)
+        if (status != CampaignStatusId.Open)
             return new StringBuilder(_messages.NotOpenForJoining());
 
         var validWishlistUrl = await IsValidWishlistUrl(wishlistUrl, cancellationToken);

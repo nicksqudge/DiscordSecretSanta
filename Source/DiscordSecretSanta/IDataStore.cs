@@ -4,11 +4,11 @@ public interface IDataStore
 {
     Task<bool> IsAdminInConfig(DiscordUserId userId, CancellationToken cancellationToken);
     
-    Task<Status> GetStatus(CancellationToken cancellationToken);
+    Task<CampaignStatusId> GetStatus(CancellationToken cancellationToken);
 
     Task<SecretSantaConfig> GetConfig(CancellationToken cancellationToken);
     
-    Task SetStatus(Status status, CancellationToken cancellationToken);
+    Task SetStatus(CampaignStatusId status, CancellationToken cancellationToken);
 
     Task<SecretSantaMember?> GetMember(DiscordUserId discordUserId, CancellationToken cancellationToken);
     Task<SecretSantaMember?> GetMembersSecretSanta(DiscordUserId discordUserId, CancellationToken cancellationToken);

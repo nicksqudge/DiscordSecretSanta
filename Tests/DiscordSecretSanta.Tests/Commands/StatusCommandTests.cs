@@ -15,7 +15,7 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
      => new  (DataStore, Messages);
 
     [TestCaseSource(typeof(TestData), nameof(TestData.TestCases))]
-    public async Task NotOpenOrDrawn(Status status, string expectedResult, bool expectShowMaxPrice)
+    public async Task NotOpenOrDrawn(CampaignStatusId status, string expectedResult, bool expectShowMaxPrice)
     {
         // ARRANGE
         var maxPrice = "£10";
@@ -43,9 +43,9 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
         }
     }
 
-    [TestCase(Status.NotConfigured)]
-    [TestCase(Status.Closed)]
-    public async Task ShowMaxPrice(Status status)
+    [TestCase(CampaignStatusId.NotConfigured)]
+    [TestCase(CampaignStatusId.Closed)]
+    public async Task ShowMaxPrice(CampaignStatusId status)
     {
         // ARRANGE
         var maxPrice = "£10";
@@ -61,7 +61,7 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
         var result = await Command.Handle(CancellationToken.None);
 
         // ASSERT
-        if (status != Status.NotConfigured)
+        if (status != CampaignStatusId.NotConfigured)
             result.ToString().ShouldContain(Messages.StatusMaxPrice(maxPrice));
         else
             result.ToString().ShouldNotContain(Messages.StatusMaxPrice(maxPrice));
@@ -73,11 +73,11 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
         {
             get
             {
-                yield return new TestCaseData(Status.NotConfigured, new EnglishMessages().StatusIsNotConfigured(), false);
-                yield return new TestCaseData(Status.Ready, new EnglishMessages().StatusIsReady(), true);
-                yield return new TestCaseData(Status.Drawn, new EnglishMessages().StatusIsDrawn(), true);
-                yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsOpen(0), true);
-                yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsClosed(), false);
+                yield return new TestCaseData(CampaignStatusId.NotConfigured, new EnglishMessages().StatusIsNotConfigured(), false);
+                yield return new TestCaseData(CampaignStatusId.Ready, new EnglishMessages().StatusIsReady(), true);
+                yield return new TestCaseData(CampaignStatusId.Drawn, new EnglishMessages().StatusIsDrawn(), true);
+                yield return new TestCaseData(CampaignStatusId.Open, new EnglishMessages().StatusIsOpen(0), true);
+                yield return new TestCaseData(CampaignStatusId.Open, new EnglishMessages().StatusIsClosed(), false);
             }
         }
     }

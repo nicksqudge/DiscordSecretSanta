@@ -9,7 +9,7 @@ public class SentCommand(IDataStore dataStore, IMessages messages)
     public async Task<(StringBuilder Response, DirectMessage? ToSend)> Handle(DiscordUserId requestingUserId, CancellationToken cancellationToken)
     {
         var status = await dataStore.GetStatus(cancellationToken);
-        if (status != Status.Drawn)
+        if (status != CampaignStatusId.Drawn)
             return ReturnFail(messages.StatusNotValidForSent());
         
         var requester = await dataStore.GetMember(requestingUserId, cancellationToken);

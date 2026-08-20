@@ -8,11 +8,11 @@ public class SentCommandTests : AbstractCommandTest<SentCommand>
     protected override SentCommand InitCommand()
         => new(DataStore, Messages);
 
-    [TestCase(Status.Open)]
-    [TestCase(Status.NotConfigured)]
-    [TestCase(Status.Ready)]
-    [TestCase(Status.Closed)]
-    public async Task NotRightCampaignStatus(Status status)
+    [TestCase(CampaignStatusId.Open)]
+    [TestCase(CampaignStatusId.NotConfigured)]
+    [TestCase(CampaignStatusId.Ready)]
+    [TestCase(CampaignStatusId.Closed)]
+    public async Task NotRightCampaignStatus(CampaignStatusId status)
     {
         // ARRANGE
         ArrangeGetStatusReturns(status);
@@ -32,7 +32,7 @@ public class SentCommandTests : AbstractCommandTest<SentCommand>
         // ARRANGE
         var sender = TestFactory.DiscordUserId();
         var receiver = TestFactory.DiscordUserId();
-        ArrangeGetStatusReturns(Status.Drawn);
+        ArrangeGetStatusReturns(CampaignStatusId.Drawn);
         ArrangeGetMemberReturns(sender, new SecretSantaMember(sender, TestFactory.WishlistUrl())
         {
             SecretSantaId = receiver,
@@ -54,7 +54,7 @@ public class SentCommandTests : AbstractCommandTest<SentCommand>
         // ARRANGE
         var sender = TestFactory.DiscordUserId();
         var receiver = TestFactory.DiscordUserId();
-        ArrangeGetStatusReturns(Status.Drawn);
+        ArrangeGetStatusReturns(CampaignStatusId.Drawn);
         ArrangeGetMemberReturns(sender, new SecretSantaMember(sender, TestFactory.WishlistUrl())
         {
             SecretSantaId = receiver,

@@ -15,11 +15,11 @@ public class DrawCommand(IDataStore dataStore, IMessages messages, ICanStartDraw
         if (await dataStore.GetNumberOfMembers(cancellationToken) < 3)
             return Fail(messages.CouldNotDraw());
         
-        if (await dataStore.GetStatus(cancellationToken) != Status.Open)
+        if (await dataStore.GetStatus(cancellationToken) != CampaignStatusId.Open)
             return Fail(messages.CouldNotDraw());
 
         var directMessages = await DrawSecretSantas(cancellationToken);
-        await dataStore.SetStatus(Status.Drawn, cancellationToken);
+        await dataStore.SetStatus(CampaignStatusId.Drawn, cancellationToken);
         return (new StringBuilder().AppendLine(messages.DrawComplete()), directMessages.ToArray());
     }
 

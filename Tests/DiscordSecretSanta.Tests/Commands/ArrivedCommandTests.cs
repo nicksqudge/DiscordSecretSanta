@@ -6,23 +6,9 @@ namespace DiscordSecretSanta.Tests.Commands;
 public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand>
 {
     protected override ArrivedCommand InitCommand()
-        => new(DataStore, Messages);
-
-    [TestCase(Status.Open)]
-    [TestCase(Status.NotConfigured)]
-    [TestCase(Status.Ready)]
-    [TestCase(Status.Closed)]
-    public async Task NotRightCampaignStatus(Status status)
     {
-        // ARRANGE
-        ArrangeGetStatusReturns(status);
-        
-        // ACT
-        var (response, directMessage) = await Command.Handle(TestFactory.DiscordUserId(), CancellationToken.None);
-        
-        // ASSERT
-        response.ToString().ShouldBe(Messages.StatusNotValidForArrived());
-        directMessage.ShouldBeNull();
+        A.CallTo(() => StatusService.CanDoArrived(A<CampaignStatusId>._)).Returns(true);
+        return new ArrivedCommand(DataStore, Messages, StatusService);
     }
 
     [TestCase(SecretSantaStatus.Arrived)]
@@ -31,7 +17,7 @@ public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand>
         // ARRANGE
         var sender = TestFactory.DiscordUserId();
         var receiver = TestFactory.DiscordUserId();
-        ArrangeGetStatusReturns(Status.Drawn);
+        ArrangeGetStatusReturns(CampaignStatusId.Drawn);
         ArrangeGetMembersSecretSanta(receiver, new SecretSantaMember(sender, TestFactory.WishlistUrl())
         {
             SecretSantaId = receiver,
@@ -54,7 +40,7 @@ public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand>
         // ARRANGE
         var sender = TestFactory.DiscordUserId();
         var receiver = TestFactory.DiscordUserId();
-        ArrangeGetStatusReturns(Status.Drawn);
+        ArrangeGetStatusReturns(CampaignStatusId.Drawn);
         ArrangeGetMembersSecretSanta(receiver, new SecretSantaMember(sender, TestFactory.WishlistUrl())
         {
             SecretSantaId = receiver,
@@ -65,6 +51,8 @@ public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand>
         var (response, directMessage) = await Command.Handle(receiver, CancellationToken.None);
         
         // ASSERT
+        A.CallTo(() => StatusService.CanDoArrived(A<CampaignStatusId>._))
+            .MustHaveHappened();
         A.CallTo(() => DataStore.SetSecretSantaStatus(A<DiscordUserId>.That.Matches(x => x == sender),
                 A<SecretSantaStatus>.That.Matches(x => x == SecretSantaStatus.Arrived), A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();

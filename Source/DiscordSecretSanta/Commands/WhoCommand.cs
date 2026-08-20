@@ -10,7 +10,7 @@ public class WhoCommand(IDataStore dataStore, IMessages messages)
         CancellationToken cancellationToken)
     {
         var status = await dataStore.GetStatus(cancellationToken);
-        if (status != Status.Drawn)
+        if (status != CampaignStatusId.Drawn)
         {
             return JustMessage(messages.CouldNotShowWho());
         }

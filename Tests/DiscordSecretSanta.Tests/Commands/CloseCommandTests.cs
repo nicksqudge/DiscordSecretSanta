@@ -8,11 +8,11 @@ public class CloseCommandTests : AbstractCommandTest<CloseCommand>
     protected override CloseCommand InitCommand()
         => new(DataStore, Messages);
     
-    [TestCase(Status.Open)]
-    [TestCase(Status.NotConfigured)]
-    [TestCase(Status.Ready)]
-    [TestCase(Status.Closed)]
-    public async Task NotRightCampaignStatus(Status status)
+    [TestCase(CampaignStatusId.Open)]
+    [TestCase(CampaignStatusId.NotConfigured)]
+    [TestCase(CampaignStatusId.Ready)]
+    [TestCase(CampaignStatusId.Closed)]
+    public async Task NotRightCampaignStatus(CampaignStatusId status)
     {
         // ARRANGE
         ArrangeGetStatusReturns(status);

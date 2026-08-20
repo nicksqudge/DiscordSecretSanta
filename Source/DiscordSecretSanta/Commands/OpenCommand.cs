@@ -21,7 +21,7 @@ public class OpenCommand
 
         switch (status)
         {
-            case Status.NotConfigured:
+            case CampaignStatusId.NotConfigured:
                 var validator = new SecretSantaConfigValidator(_messages);
                 var validationResult = await validator.ValidateAsync(config, token);
 
@@ -34,14 +34,14 @@ public class OpenCommand
 
                 break;
             
-            case Status.Drawn:
+            case CampaignStatusId.Drawn:
                 return result.AppendLine(_messages.AlreadyDrawn());
             
-            case Status.Open:
+            case CampaignStatusId.Open:
                 return result.AppendLine(_messages.AlreadyOpen());
         }
         
-        await _dataStore.SetStatus(Status.Open, token);
+        await _dataStore.SetStatus(CampaignStatusId.Open, token);
         return result.AppendLine(_messages.NowOpen());
     }
 }

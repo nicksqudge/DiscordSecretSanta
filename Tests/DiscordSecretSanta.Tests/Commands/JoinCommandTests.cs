@@ -17,11 +17,11 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
     protected override JoinCommand InitCommand()
         => new(DataStore, Messages, _validators);
 
-    [TestCase(Status.Closed)]
-    [TestCase(Status.Drawn)]
-    [TestCase(Status.Ready)]
-    [TestCase(Status.NotConfigured)]
-    public async Task NotOpen(Status status)
+    [TestCase(CampaignStatusId.Closed)]
+    [TestCase(CampaignStatusId.Drawn)]
+    [TestCase(CampaignStatusId.Ready)]
+    [TestCase(CampaignStatusId.NotConfigured)]
+    public async Task NotOpen(CampaignStatusId status)
     {
         // ARRANGE
         ArrangeGetStatusReturns(status);
@@ -38,7 +38,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
     public async Task AllValidatorsReturnFalseToValidWishlistUrl()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeValidatorReturns(false);
         ArrangeValidatorReturns(false);
         
@@ -54,7 +54,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
     public async Task AlreadyAMember()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeValidatorReturns(true);
         ArrangeHasMemberAlreadySignedUp(true);
         
@@ -70,7 +70,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
     public async Task ValidUrl()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeValidatorReturns(true);
         ArrangeValidatorReturns(false);
         ArrangeHasMemberAlreadySignedUp(false);

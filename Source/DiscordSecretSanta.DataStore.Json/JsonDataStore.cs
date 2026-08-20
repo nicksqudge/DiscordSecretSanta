@@ -27,11 +27,11 @@ public class JsonDataStore : IDataStore
     public Task<bool> IsAdminInConfig(DiscordUserId userId, CancellationToken cancellationToken)
         => Task.FromResult(_data.Admins.Contains(userId.Value));
 
-    public Task<Status> GetStatus(CancellationToken cancellationToken) => Task.FromResult(_data.Status);
+    public Task<CampaignStatusId> GetStatus(CancellationToken cancellationToken) => Task.FromResult(_data.Status);
 
     public Task<SecretSantaConfig> GetConfig(CancellationToken cancellationToken) => Task.FromResult(_data.Config);
 
-    public Task SetStatus(Status status, CancellationToken cancellationToken)
+    public Task SetStatus(CampaignStatusId status, CancellationToken cancellationToken)
     {
         _data.Status = status;
         WriteFile();

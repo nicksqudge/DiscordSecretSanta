@@ -18,7 +18,7 @@ public class SetMaxPriceCommand(
             return new StringBuilder(messages.MaxPriceMustHaveAValue());
 
         var status = await dataStore.GetStatus(cancellationToken);
-        if (status == Status.Drawn)
+        if (status == CampaignStatusId.Drawn)
             return new StringBuilder(messages.AlreadyDrawn());
 
         Logger.Debug($"Setting max price: {maxPrice}");

@@ -17,7 +17,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     public async Task ShouldAssignPeopleSecretSantas(int numberOfMembers)
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeNumberOfMembers(numberOfMembers);
         var requestingUser = TestFactory.InputUser(isServerAdmin: true);
         
@@ -29,7 +29,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
         
         A.CallTo(() => DataStore.SetSecretSanta(A<DiscordUserId>._, A<DiscordUserId>._, CancellationToken.None))
             .MustHaveHappened(numberOfMembers, Times.Exactly);
-        AssertSetStatus(Status.Drawn).MustHaveHappened();
+        AssertSetStatus(CampaignStatusId.Drawn).MustHaveHappened();
         
         _secretSantas.Count.ShouldBe(numberOfMembers);
         
@@ -49,7 +49,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     public async Task ShouldHaveAtLeast3People(int members)
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeNumberOfMembers(members);
         var requestingUser = TestFactory.InputUser(isServerAdmin: true);
         
@@ -61,11 +61,11 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
         AssertDidNotDraw(directMessages);
     }
 
-    [TestCase(Status.Drawn)]
-    [TestCase(Status.NotConfigured)]
-    [TestCase(Status.Ready)]
-    [TestCase(Status.Closed)]
-    public async Task GivenStatus_ShouldNotDraw(Status startingStatus)
+    [TestCase(CampaignStatusId.Drawn)]
+    [TestCase(CampaignStatusId.NotConfigured)]
+    [TestCase(CampaignStatusId.Ready)]
+    [TestCase(CampaignStatusId.Closed)]
+    public async Task GivenStatus_ShouldNotDraw(CampaignStatusId startingStatus)
     {
         // ARRANGE
         ArrangeGetStatusReturns(startingStatus);
@@ -114,7 +114,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
 
     private void AssertDidNotDraw(DrawCommand.DirectMessage[] messages)
     {
-        AssertSetStatus(Status.Drawn).MustNotHaveHappened();
+        AssertSetStatus(CampaignStatusId.Drawn).MustNotHaveHappened();
         A.CallTo(() => DataStore.SetSecretSanta(A<DiscordUserId>._, A<DiscordUserId>._, CancellationToken.None)).MustNotHaveHappened();
         _secretSantas.Count.ShouldBe(0);
         messages.Length.ShouldBe(0);

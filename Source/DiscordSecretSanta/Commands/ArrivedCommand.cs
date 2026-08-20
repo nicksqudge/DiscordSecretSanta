@@ -2,7 +2,7 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class ArrivedCommand(IDataStore dataStore, IMessages messages)
+public class ArrivedCommand(IDataStore dataStore, IMessages messages, ICampaignStatusService statusService)
 {
     public sealed record DirectMessage(DiscordUserId Sender);
 
@@ -10,7 +10,7 @@ public class ArrivedCommand(IDataStore dataStore, IMessages messages)
         CancellationToken cancellationToken)
     {
         var status = await dataStore.GetStatus(cancellationToken);
-        if (status < Status.Drawn)
+        if (!statusService.CanDoArrived(status))
             return ReturnFail(messages.StatusNotValidForArrived());
         
         var secretSanta = await dataStore.GetMembersSecretSanta(requestingUserId, cancellationToken);

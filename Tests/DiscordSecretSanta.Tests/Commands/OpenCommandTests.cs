@@ -18,7 +18,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
     public async Task NotConfigured()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.NotConfigured);
+        ArrangeGetStatusReturns(CampaignStatusId.NotConfigured);
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(new SecretSantaConfig()
         {
             MaxPrice = string.Empty
@@ -37,21 +37,21 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
     public async Task NotConfiguredButActuallyIs()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.NotConfigured);
+        ArrangeGetStatusReturns(CampaignStatusId.NotConfigured);
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
         await Command.Handle(CancellationToken.None);
 
         // ASSERT
-        AssertSetStatus(Status.Open).MustHaveHappened();
+        AssertSetStatus(CampaignStatusId.Open).MustHaveHappened();
     }
 
     [Test]
     public async Task IsConfigured()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Ready);
+        ArrangeGetStatusReturns(CampaignStatusId.Ready);
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
@@ -59,11 +59,11 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         
         // ASSERT
         result.ToString().ShouldBe(ViaStringBuilder(Messages.NowOpen()));
-        AssertSetStatus(Status.Open).MustHaveHappened();
+        AssertSetStatus(CampaignStatusId.Open).MustHaveHappened();
     }
 
     [TestCaseSource(typeof(TestData), nameof(TestData.TestCases))]
-    public async Task CannotBeOpenedBecauseOfWrongStatus(Status status, string expectedMessage)
+    public async Task CannotBeOpenedBecauseOfWrongStatus(CampaignStatusId status, string expectedMessage)
     {
         // ARRANGE
         ArrangeGetStatusReturns(status);
@@ -74,7 +74,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         
         // ASSERT
         result.ToString().ShouldBe(ViaStringBuilder(expectedMessage));
-        AssertSetStatus(Status.Open).MustNotHaveHappened();
+        AssertSetStatus(CampaignStatusId.Open).MustNotHaveHappened();
     }
 
     private string ViaStringBuilder(params string[] input)
@@ -88,9 +88,9 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         {
             get
             {
-                yield return new TestCaseData(Status.Drawn, new EnglishMessages().AlreadyDrawn());
-                yield return new TestCaseData(Status.Open, new EnglishMessages().AlreadyOpen());
-                yield return new TestCaseData(Status.Closed, new EnglishMessages().StatusIsClosed());
+                yield return new TestCaseData(CampaignStatusId.Drawn, new EnglishMessages().AlreadyDrawn());
+                yield return new TestCaseData(CampaignStatusId.Open, new EnglishMessages().AlreadyOpen());
+                yield return new TestCaseData(CampaignStatusId.Closed, new EnglishMessages().StatusIsClosed());
             }
         }
     }

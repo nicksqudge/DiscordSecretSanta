@@ -8,11 +8,11 @@ public class WhoCommandTests : AbstractCommandTest<WhoCommand>
     protected override WhoCommand InitCommand()
         => new (DataStore, Messages);
 
-    [TestCase(Status.NotConfigured)]
-    [TestCase(Status.Open)]
-    [TestCase(Status.Ready)]
-    [TestCase(Status.Closed)]
-    public async Task GivenStatus_ShouldSayCannotShowValue(Status status)
+    [TestCase(CampaignStatusId.NotConfigured)]
+    [TestCase(CampaignStatusId.Open)]
+    [TestCase(CampaignStatusId.Ready)]
+    [TestCase(CampaignStatusId.Closed)]
+    public async Task GivenStatus_ShouldSayCannotShowValue(CampaignStatusId status)
     {
         // ARRANGE
         ArrangeGetStatusReturns(status);
@@ -30,7 +30,7 @@ public class WhoCommandTests : AbstractCommandTest<WhoCommand>
     public async Task CampaignIsDrawn_Returns()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Drawn);
+        ArrangeGetStatusReturns(CampaignStatusId.Drawn);
         var requestingUser = TestFactory.InputUser();
         var secretSanta = TestFactory.DiscordUserId();
         ArrangeGetMemberReturns(requestingUser.Id, new SecretSantaMember(requestingUser.Id, TestFactory.WishlistUrl())

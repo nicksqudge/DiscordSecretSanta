@@ -20,20 +20,20 @@ public class StatusCommand
 
         switch (status)
         {
-            case Status.Ready:
+            case CampaignStatusId.Ready:
                 result.AppendLine(_messages.StatusIsReady());
                 break;
             
-            case Status.Drawn:
+            case CampaignStatusId.Drawn:
                 result.AppendLine(_messages.StatusIsDrawn());
                 break;
             
-            case Status.Open:
+            case CampaignStatusId.Open:
                 var memberCount = await _dataStore.GetNumberOfMembers(cancellationToken);
                 result.AppendLine(_messages.StatusIsOpen(memberCount));
                 break;
             
-            case Status.NotConfigured:
+            case CampaignStatusId.NotConfigured:
                 result.AppendLine(_messages.StatusIsNotConfigured());
                 break;
          
@@ -42,7 +42,7 @@ public class StatusCommand
                 break;
         }
 
-        if (status != Status.NotConfigured)
+        if (status != CampaignStatusId.NotConfigured)
         {
             var config = await _dataStore.GetConfig(cancellationToken);
             result.AppendLine(_messages.StatusMaxPrice(config.MaxPrice));

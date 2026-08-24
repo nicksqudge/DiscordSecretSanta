@@ -2,7 +2,7 @@ using DiscordSecretSanta.Commands;
 using DiscordSecretSanta.Tests.TestHelpers;
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class JoinCommandTests : AbstractCommandTest<JoinCommand>
+public class JoinCommandTests : AbstractCommandTest<JoinCommand, JoinCommand.Input, JoinCommand.Output>
 {
     private readonly DiscordUserId _targetUserId = TestFactory.DiscordUserId();
     private readonly List<IWishlistUrlValidator> _validators = new();
@@ -16,22 +16,14 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
 
     protected override JoinCommand InitCommand()
         => new(DataStore, Messages, _validators);
-
-    [TestCase(CampaignStatusId.Closed)]
-    [TestCase(CampaignStatusId.Drawn)]
-    [TestCase(CampaignStatusId.Ready)]
-    [TestCase(CampaignStatusId.NotConfigured)]
-    public async Task NotOpen(CampaignStatusId status)
+    
+    [Test]
+    public async Task OnlySupportsOpen()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(status);
+        var input = new JoinCommand.Input(_targetUserId, "https://amazon.com");
         
-        // ACT
-        var result = await Command.Handle(_targetUserId, "https://amazon.com", CancellationToken.None);
-        
-        // ASSERT
-        result.ToString().ShouldBe(Messages.NotOpenForJoining());
-        A.CallTo(() => DataStore.AddMember(A<DiscordUserId>._, A<Uri>._, A<CancellationToken>._)).MustNotHaveHappened();
+        await AssertShouldOnlyAllowStatus(input, CampaignStatusId.Open);
     }
 
     [Test]
@@ -43,7 +35,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
         ArrangeValidatorReturns(false);
         
         // ACT
-        var result = await Command.Handle(_targetUserId, "anything", CancellationToken.None);
+        var result = await Command.Handle(new JoinCommand.Input(_targetUserId, "anything"), CancellationToken.None);
         
         // ASSERT
         result.ToString().ShouldBe(Messages.NotAValidWishlistUrl());
@@ -59,7 +51,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
         ArrangeHasMemberAlreadySignedUp(true);
         
         // ACT
-        var result = await Command.Handle(_targetUserId, ValidWishlistUrl, CancellationToken.None);
+        var result = await Command.Handle(new JoinCommand.Input(_targetUserId, ValidWishlistUrl), CancellationToken.None);
         
         // ASSERT
         result.ToString().ShouldBe(Messages.YouHaveAlreadyJoined());
@@ -76,7 +68,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
         ArrangeHasMemberAlreadySignedUp(false);
         
         // ACT
-        var result = await Command.Handle(_targetUserId, ValidWishlistUrl, CancellationToken.None);
+        var result = await Command.Handle(new JoinCommand.Input(_targetUserId, ValidWishlistUrl), CancellationToken.None);
         
         // ASSERT
         result.ToString().ShouldBe(Messages.YouHaveSuccessfullyJoined());

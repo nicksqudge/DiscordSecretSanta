@@ -70,8 +70,8 @@ public class CommandsModule : ModuleBase
         await IfUserIsValid(async (requester) =>
         {
             var command = _services.GetRequiredService<JoinCommand>();
-            var reply = await command.Handle(requester.Id, wishlistUrl, CancellationToken.None);
-            await ReplyAsync(reply.ToString());
+            var reply = await command.Handle(new JoinCommand.Input(requester.Id, wishlistUrl), CancellationToken.None);
+            await ReplyAsync(reply.Reply.ToString());
         });
     }
 

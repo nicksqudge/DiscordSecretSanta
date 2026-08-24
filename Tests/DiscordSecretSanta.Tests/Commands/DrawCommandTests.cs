@@ -15,6 +15,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand, DrawCommand.Inp
     public async Task OnlySupportsOpen()
     {
         await AssertShouldOnlyAllowStatus(new DrawCommand.Input(TestFactory.InputUser()), CampaignStatusId.Open);
+        AssertDidNotDraw([]);
     }
 
     [TestCase(10)]

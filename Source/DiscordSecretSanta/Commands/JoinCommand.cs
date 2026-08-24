@@ -2,42 +2,51 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class JoinCommand
+public class JoinCommand : AbstractCommand<JoinCommand.Input, JoinCommand.Output>
 {
-    private readonly IDataStore _dataStore;
-    private readonly IMessages _messages;
     private readonly IEnumerable<IWishlistUrlValidator> _validators;
 
-    public JoinCommand(IDataStore dataStore, IMessages messages, IEnumerable<IWishlistUrlValidator> validators)
+    public sealed record Input(DiscordUserId UserId, string WishlistUrl) : ICommandInput;
+
+    public sealed record Output: ICommandOutput
     {
-        _dataStore = dataStore;
-        _messages = messages;
+        public StringBuilder Reply { get; set; } = null!;
+    }
+
+    public JoinCommand(IDataStore dataStore, IMessages messages, IEnumerable<IWishlistUrlValidator> validators) : base(dataStore, messages)
+    {
         _validators = validators;
     }
 
-    public async Task<StringBuilder> Handle(DiscordUserId userId, string wishlistUrl, CancellationToken cancellationToken)
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
     {
-        var status = await _dataStore.GetStatus(cancellationToken);
+        var status = await DataStore.GetStatus(cancellationToken);
         if (status != CampaignStatusId.Open)
-            return new StringBuilder(_messages.NotOpenForJoining());
+            return ReturnMessage(Messages.NotOpenForJoining());
 
-        var validWishlistUrl = await IsValidWishlistUrl(wishlistUrl, cancellationToken);
+        var validWishlistUrl = await IsValidWishlistUrl(input.WishlistUrl, cancellationToken);
         if (validWishlistUrl is null)
-            return new StringBuilder(_messages.NotAValidWishlistUrl());
+            return ReturnMessage(Messages.NotAValidWishlistUrl());
 
-        var memberExists = await DoesMemberAlreadyExist(userId, cancellationToken);
+        var memberExists = await DoesMemberAlreadyExist(input.UserId, cancellationToken);
         if (memberExists)
-            return new StringBuilder(_messages.YouHaveAlreadyJoined());
+            return ReturnMessage(Messages.YouHaveAlreadyJoined());
         
-        await _dataStore.AddMember(userId, validWishlistUrl, cancellationToken);
-        Logger.Debug($"User joined {userId}");
+        await DataStore.AddMember(input.UserId, validWishlistUrl, cancellationToken);
+        Logger.Debug($"User joined {input.UserId}");
 
-        return new StringBuilder(_messages.YouHaveSuccessfullyJoined());
+        return ReturnMessage(Messages.YouHaveSuccessfullyJoined());
     }
+
+    private Output ReturnMessage(string message)
+        => new()
+        {
+            Reply = new StringBuilder(message)
+        };
 
     private async Task<bool> DoesMemberAlreadyExist(DiscordUserId userId, CancellationToken cancellationToken)
     {
-        var member = await _dataStore.GetMember(userId, cancellationToken);
+        var member = await DataStore.GetMember(userId, cancellationToken);
         Logger.Debug(member is null ? "Member doesnt already exist" : "Member does already exist");
         return member != null;
     }

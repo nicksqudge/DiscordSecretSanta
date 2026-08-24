@@ -4,6 +4,9 @@ namespace DiscordSecretSanta.Translations.English;
 
 public class EnglishMessages : IMessages
 {
+    public StringBuilder StatusNotSupported(CampaignStatusId status)
+        => new ($"Sorry, I cannot run this command whilst the campaign is in: {status}");
+
     public string StatusIsReady() => "I am not open for people to sign up yet. Just waiting on an admin to say \"ready\"";
 
     public string StatusIsOpen(int memberCount)

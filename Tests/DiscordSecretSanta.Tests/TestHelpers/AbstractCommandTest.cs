@@ -1,19 +1,21 @@
+using DiscordSecretSanta.Commands;
 using FakeItEasy.Configuration;
 
 namespace DiscordSecretSanta.Tests.TestHelpers;
 
-public abstract class AbstractCommandTest<T>
+public abstract class AbstractCommandTest<T, TInput, TResponse> 
+    where T : AbstractCommand<TInput, TResponse> 
+    where TInput : class, ICommandInput
+    where TResponse : class, ICommandResponse, new ()
 {
     protected IDataStore DataStore;
     protected IMessages Messages = new EnglishMessages();
-    protected ICampaignStatusService StatusService;
     protected T Command;
 
     [SetUp]
     public void SetupAbstract()
     {
         // Create this so that any un-faked calls throw an exception
-        StatusService = A.Fake<ICampaignStatusService>(opts => opts.Strict());
         DataStore = A.Fake<IDataStore>();
         Command = InitCommand();
     }
@@ -38,5 +40,19 @@ public abstract class AbstractCommandTest<T>
         
         return A.CallTo(() =>
             DataStore.SetStatus(A<CampaignStatusId>._, A<CancellationToken>.Ignored));
+    }
+
+    protected async Task AssertShouldOnlyAllowStatus(TInput input, params CampaignStatusId[] expectedStatus)
+    {
+        var statuses = Enum.GetValues(typeof(CampaignStatusId)).Cast<CampaignStatusId>().ToList();
+        foreach (var status in statuses)
+        {
+            if (expectedStatus.Contains(status))
+                continue;
+            
+            var response = await Command.Handle(input, CancellationToken.None);
+            response.Output.ShouldNotBeNull();
+            response.Output.ShouldBe(Messages.StatusNotSupported());
+        }
     }
 }

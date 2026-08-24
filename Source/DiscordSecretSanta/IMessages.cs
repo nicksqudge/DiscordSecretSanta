@@ -1,9 +1,12 @@
+using System.Text;
 using DiscordSecretSanta.Commands;
 
 namespace DiscordSecretSanta;
 
 public interface IMessages
 {
+    StringBuilder StatusNotSupported(CampaignStatusId status);
+    
     string StatusIsReady();
     string StatusIsOpen(int memberCount);
     string StatusIsDrawn();

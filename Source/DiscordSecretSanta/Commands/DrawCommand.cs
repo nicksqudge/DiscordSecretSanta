@@ -3,31 +3,50 @@ using DiscordSecretSanta.Permissions;
 
 namespace DiscordSecretSanta.Commands;
 
-public class DrawCommand(IDataStore dataStore, IMessages messages, ICanStartDraw canStartDraw)
+public class DrawCommand : AbstractCommand<DrawCommand.Input, DrawCommand.Output>
 {
-    public sealed record DirectMessage(DiscordUserId TargetUserId, DiscordUserId SecretSantaId, Uri WishlistUrl);
-
-    public async Task<(StringBuilder Response, DirectMessage[] DirectMessages)> Handle(InputUser requestingUser, CancellationToken cancellationToken)
+    private readonly ICanStartDraw CanStartDraw;
+    public DrawCommand(IDataStore dataStore, IMessages messages, ICanStartDraw canStartDraw) : base(dataStore, messages)
     {
-        if (!await canStartDraw.Can(requestingUser, cancellationToken))
-            return Fail(messages.YouDoNotHavePermissionToDraw());
-
-        if (await dataStore.GetNumberOfMembers(cancellationToken) < 3)
-            return Fail(messages.CouldNotDraw());
-        
-        if (await dataStore.GetStatus(cancellationToken) != CampaignStatusId.Open)
-            return Fail(messages.CouldNotDraw());
-
-        var directMessages = await DrawSecretSantas(cancellationToken);
-        await dataStore.SetStatus(CampaignStatusId.Drawn, cancellationToken);
-        return (new StringBuilder().AppendLine(messages.DrawComplete()), directMessages.ToArray());
+        CanStartDraw = canStartDraw;
+        AllowedStatuses = [ CampaignStatusId.Open ];
     }
 
-    private async Task<List<DirectMessage>> DrawSecretSantas(CancellationToken cancellationToken)
+    public sealed record Input(InputUser RequestingUser) : ICommandInput;
+
+    public sealed record Output : ICommandOutput
     {
-        var members = await dataStore.GetMembers(cancellationToken);
+        public sealed record DirectMessage(DiscordUserId TargetUserId, DiscordUserId SecretSantaId, Uri WishlistUrl);
+        public StringBuilder Reply { get; set; } = null!;
+
+        public DirectMessage[] DirectMessages { get; set; } = [];
+    }
+
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
+    {
+        if (!await CanStartDraw.Can(input.RequestingUser, cancellationToken))
+            return Fail(Messages.YouDoNotHavePermissionToDraw());
+
+        if (await DataStore.GetNumberOfMembers(cancellationToken) < 3)
+            return Fail(Messages.CouldNotDraw());
+        
+        if (await DataStore.GetStatus(cancellationToken) != CampaignStatusId.Open)
+            return Fail(Messages.CouldNotDraw());
+
+        var directMessages = await DrawSecretSantas(cancellationToken);
+        await DataStore.SetStatus(CampaignStatusId.Drawn, cancellationToken);
+        return new Output()
+        {
+            Reply = new StringBuilder().AppendLine(Messages.DrawComplete()),
+            DirectMessages = directMessages.ToArray()
+        };
+    }
+
+    private async Task<List<Output.DirectMessage>> DrawSecretSantas(CancellationToken cancellationToken)
+    {
+        var members = await DataStore.GetMembers(cancellationToken);
         var unpickedMembers = ShuffledList(members);
-        var result = new List<DirectMessage>();
+        var result = new List<Output.DirectMessage>();
 
         foreach (var member in members)
         {
@@ -39,8 +58,8 @@ public class DrawCommand(IDataStore dataStore, IMessages messages, ICanStartDraw
             ArgumentNullException.ThrowIfNull(secretSanta);
             unpickedMembers.Remove(secretSantaId);
             
-            await dataStore.SetSecretSanta(member.UserId, secretSantaId, cancellationToken);
-            result.Add(new DirectMessage(member.UserId, secretSantaId, secretSanta.WishlistUrl));
+            await DataStore.SetSecretSanta(member.UserId, secretSantaId, cancellationToken);
+            result.Add(new Output.DirectMessage(member.UserId, secretSantaId, secretSanta.WishlistUrl));
         }
 
         return result;
@@ -55,6 +74,9 @@ public class DrawCommand(IDataStore dataStore, IMessages messages, ICanStartDraw
         return unpickedMembers.ToList();
     }
 
-    private (StringBuilder Response, DirectMessage[] DirectMessages) Fail(string message)
-        => (new StringBuilder().AppendLine(message), new List<DirectMessage>().ToArray());
+    private Output Fail(string message)
+        => new ()
+        {
+            Reply = new StringBuilder().AppendLine(message)
+        };
 }

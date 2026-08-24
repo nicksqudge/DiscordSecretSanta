@@ -84,14 +84,14 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<DrawCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessages) = await command.Handle(requester, CancellationToken.None);
-            if (directMessages.Length != 0)
+            var output = await command.Handle(new DrawCommand.Input(requester), CancellationToken.None);
+            if (output.DirectMessages.Length != 0)
             {
-                foreach (var dm in directMessages)
+                foreach (var dm in output.DirectMessages)
                     await SendDirectMessage(dm, messages);
             }
             
-            await ReplyAsync(reply.ToString());
+            await ReplyAsync(output.Reply.ToString());
         });
     }
     
@@ -141,7 +141,7 @@ public class CommandsModule : ModuleBase
             if (response.DirectMessageTo != null)
                 await SendDirectMessage(response.DirectMessageTo, messages);
             
-            await ReplyAsync(response.Output.ToString());
+            await ReplyAsync(response.Reply.ToString());
         });
     }
 
@@ -162,7 +162,7 @@ public class CommandsModule : ModuleBase
         await action(new InputUser(new DiscordUserId(Context.User.Id), Context.User.GlobalName));
     }
 
-    private async Task SendDirectMessage(DrawCommand.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(DrawCommand.Output.DirectMessage dm, IMessages message)
     {
         var recipient = await GetGuildUser(dm.TargetUserId.Value);
         if (recipient is null)
@@ -215,7 +215,7 @@ public class CommandsModule : ModuleBase
         await channel.SendMessageAsync(message.YourGiftIsOnTheWay());
     }
     
-    private async Task SendDirectMessage(ArrivedCommand.Response.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(ArrivedCommand.Output.DirectMessage dm, IMessages message)
     {
         var secretSanta = await GetGuildUser(dm.Sender.Value);
         if (secretSanta is null)

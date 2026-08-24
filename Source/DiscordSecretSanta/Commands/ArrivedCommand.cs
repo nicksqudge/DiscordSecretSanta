@@ -2,36 +2,50 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class ArrivedCommand(IDataStore dataStore, IMessages messages, ICampaignStatusService statusService)
+public class ArrivedCommand: AbstractCommand<ArrivedCommand.Input, ArrivedCommand.Response>
 {
-    public sealed record DirectMessage(DiscordUserId Sender);
-
-    public async Task<(StringBuilder Response, DirectMessage? ToSend)> Handle(DiscordUserId requestingUserId,
-        CancellationToken cancellationToken)
+    public ArrivedCommand(IDataStore dataStore, IMessages messages) : base(dataStore, messages)
     {
-        var status = await dataStore.GetStatus(cancellationToken);
-        if (!statusService.CanDoArrived(status))
-            return ReturnFail(messages.StatusNotValidForArrived());
-        
-        var secretSanta = await dataStore.GetMembersSecretSanta(requestingUserId, cancellationToken);
-        if (secretSanta is null)
-            return UnexpectedError($"UNABLE TO FETCH SECRET SANTA FOR USER ID: {requestingUserId}");
-
-        if (secretSanta.SecretSantaId is null || secretSanta.SecretSantaId != requestingUserId)
-            return UnexpectedError(
-                $"THE FETCHED SECRET SANTA OF {requestingUserId} IS UNEXPECTEDLY {secretSanta.SecretSantaId}");
-        
-        if (secretSanta.SecretSantaStatus == SecretSantaStatus.Arrived)
-            return ReturnFail(messages.AlreadyArrived());
-        
-        await dataStore.SetSecretSantaStatus(secretSanta.UserId, SecretSantaStatus.Arrived, cancellationToken);
-        var directMessage = new DirectMessage(secretSanta.UserId);
-        return (new StringBuilder(messages.MarkedAsArrived()), directMessage);
+        AllowedStatuses = [CampaignStatusId.Drawn];
     }
     
-    private (StringBuilder Response, DirectMessage? ToSend) ReturnFail(string message)
-        => (new StringBuilder(message), null);
+    public sealed record Input(DiscordUserId RequestingUserId) : ICommandInput
+    {
+        
+    }
     
-    private (StringBuilder Response, DirectMessage? ToSend) UnexpectedError(string error)
-        => ReturnFail(messages.UnexpectedError(nameof(SentCommand), error));
+    public sealed record Response : ICommandResponse
+    {
+        public sealed record DirectMessage(DiscordUserId Sender);
+        
+        public StringBuilder Output { get; set; } = null!;
+
+        public DirectMessage? DirectMessageTo { get; set; }
+    }
+    
+
+    protected override async Task<Response> HandleAction(Input input,
+        CancellationToken cancellationToken)
+    {
+        var secretSanta = await DataStore.GetMembersSecretSanta(input.RequestingUserId, cancellationToken);
+        if (secretSanta is null)
+            throw new CommandException($"UNABLE TO FETCH SECRET SANTA FOR USER ID: {input.RequestingUserId}");
+
+        if (secretSanta.SecretSantaId is null || secretSanta.SecretSantaId != input.RequestingUserId)
+            throw new CommandException($"THE FETCHED SECRET SANTA OF {input.RequestingUserId} IS UNEXPECTEDLY {secretSanta.SecretSantaId}");
+        
+        if (secretSanta.SecretSantaStatus == SecretSantaStatus.Arrived)
+            return new()
+            {
+                Output = new(Messages.AlreadyArrived()),
+                DirectMessageTo = null
+            };
+        
+        await DataStore.SetSecretSantaStatus(secretSanta.UserId, SecretSantaStatus.Arrived, cancellationToken);
+        return new()
+        {
+            Output = new(Messages.MarkedAsArrived()),
+            DirectMessageTo = new (secretSanta.UserId)
+        };
+    }
 }

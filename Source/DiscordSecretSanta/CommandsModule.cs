@@ -137,11 +137,11 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<ArrivedCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessage) = await command.Handle(requester.Id, CancellationToken.None);
-            if (directMessage != null)
-                await SendDirectMessage(directMessage, messages);
+            var response = await command.Handle(new ArrivedCommand.Input(requester.Id), CancellationToken.None);
+            if (response.DirectMessageTo != null)
+                await SendDirectMessage(response.DirectMessageTo, messages);
             
-            await ReplyAsync(reply.ToString());
+            await ReplyAsync(response.Output.ToString());
         });
     }
 
@@ -215,7 +215,7 @@ public class CommandsModule : ModuleBase
         await channel.SendMessageAsync(message.YourGiftIsOnTheWay());
     }
     
-    private async Task SendDirectMessage(ArrivedCommand.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(ArrivedCommand.Response.DirectMessage dm, IMessages message)
     {
         var secretSanta = await GetGuildUser(dm.Sender.Value);
         if (secretSanta is null)

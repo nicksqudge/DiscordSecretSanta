@@ -3,12 +3,14 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand>
+public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand, ArrivedCommand.Input, ArrivedCommand.Response>
 {
-    protected override ArrivedCommand InitCommand()
+    protected override ArrivedCommand InitCommand() => new(DataStore, Messages);
+
+    [Test]
+    public async Task OnlySupportsDrawn()
     {
-        A.CallTo(() => StatusService.CanDoArrived(A<CampaignStatusId>._)).Returns(true);
-        return new ArrivedCommand(DataStore, Messages, StatusService);
+        await AssertShouldOnlyAllowStatus(new ArrivedCommand.Input(TestFactory.DiscordUserId()), CampaignStatusId.Drawn);
     }
 
     [TestCase(SecretSantaStatus.Arrived)]
@@ -16,20 +18,20 @@ public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand>
     {
         // ARRANGE
         var sender = TestFactory.DiscordUserId();
-        var receiver = TestFactory.DiscordUserId();
+        var receiver = new ArrivedCommand.Input(TestFactory.DiscordUserId());
         ArrangeGetStatusReturns(CampaignStatusId.Drawn);
-        ArrangeGetMembersSecretSanta(receiver, new SecretSantaMember(sender, TestFactory.WishlistUrl())
+        ArrangeGetMembersSecretSanta(receiver.RequestingUserId, new SecretSantaMember(sender, TestFactory.WishlistUrl())
         {
-            SecretSantaId = receiver,
+            SecretSantaId = receiver.RequestingUserId,
             SecretSantaStatus = status
         });
         
         // ACT
-        var (response, directMessage) = await Command.Handle(receiver, CancellationToken.None);
+        var response = await Command.Handle(receiver, CancellationToken.None);
         
         // ASSERT
-        response.ToString().ShouldBe(Messages.AlreadyArrived());
-        directMessage.ShouldBeNull();
+        response.Output.ToString().ShouldBe(Messages.AlreadyArrived());
+        response.DirectMessageTo.ShouldBeNull();
     }
 
     [TestCase(SecretSantaStatus.Pending)]
@@ -39,26 +41,24 @@ public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand>
     {
         // ARRANGE
         var sender = TestFactory.DiscordUserId();
-        var receiver = TestFactory.DiscordUserId();
+        var receiver = new ArrivedCommand.Input(TestFactory.DiscordUserId());
         ArrangeGetStatusReturns(CampaignStatusId.Drawn);
-        ArrangeGetMembersSecretSanta(receiver, new SecretSantaMember(sender, TestFactory.WishlistUrl())
+        ArrangeGetMembersSecretSanta(receiver.RequestingUserId, new SecretSantaMember(sender, TestFactory.WishlistUrl())
         {
-            SecretSantaId = receiver,
+            SecretSantaId = receiver.RequestingUserId,
             SecretSantaStatus = status
         });
         
         // ACT
-        var (response, directMessage) = await Command.Handle(receiver, CancellationToken.None);
+        var response = await Command.Handle(receiver, CancellationToken.None);
         
         // ASSERT
-        A.CallTo(() => StatusService.CanDoArrived(A<CampaignStatusId>._))
-            .MustHaveHappened();
         A.CallTo(() => DataStore.SetSecretSantaStatus(A<DiscordUserId>.That.Matches(x => x == sender),
                 A<SecretSantaStatus>.That.Matches(x => x == SecretSantaStatus.Arrived), A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();
-        response.ToString().ShouldBe(Messages.MarkedAsArrived());
-        directMessage.ShouldNotBeNull();
-        directMessage.Sender.ShouldBe(sender);
+        response.Output.ToString().ShouldBe(Messages.MarkedAsArrived());
+        response.DirectMessageTo.ShouldNotBeNull();
+        response.DirectMessageTo.Sender.ShouldBe(sender);
     }
 
     private void ArrangeGetMembersSecretSanta(DiscordUserId targetUser, SecretSantaMember result)

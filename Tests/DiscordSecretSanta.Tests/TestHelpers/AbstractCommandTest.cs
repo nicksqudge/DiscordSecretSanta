@@ -6,7 +6,7 @@ namespace DiscordSecretSanta.Tests.TestHelpers;
 public abstract class AbstractCommandTest<T, TInput, TResponse> 
     where T : AbstractCommand<TInput, TResponse> 
     where TInput : class, ICommandInput
-    where TResponse : class, ICommandResponse, new ()
+    where TResponse : class, ICommandOutput, new ()
 {
     protected IDataStore DataStore;
     protected IMessages Messages = new EnglishMessages();
@@ -51,8 +51,8 @@ public abstract class AbstractCommandTest<T, TInput, TResponse>
                 continue;
             
             var response = await Command.Handle(input, CancellationToken.None);
-            response.Output.ShouldNotBeNull();
-            response.Output.ShouldBe(Messages.StatusNotSupported());
+            response.Reply.ShouldNotBeNull();
+            response.Reply.ShouldBe(Messages.StatusNotSupported(status));
         }
     }
 }

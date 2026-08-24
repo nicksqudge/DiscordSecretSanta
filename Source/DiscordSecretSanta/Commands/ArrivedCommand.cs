@@ -2,29 +2,26 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class ArrivedCommand: AbstractCommand<ArrivedCommand.Input, ArrivedCommand.Response>
+public class ArrivedCommand: AbstractCommand<ArrivedCommand.Input, ArrivedCommand.Output>
 {
     public ArrivedCommand(IDataStore dataStore, IMessages messages) : base(dataStore, messages)
     {
         AllowedStatuses = [CampaignStatusId.Drawn];
     }
+
+    public sealed record Input(DiscordUserId RequestingUserId) : ICommandInput;
     
-    public sealed record Input(DiscordUserId RequestingUserId) : ICommandInput
-    {
-        
-    }
-    
-    public sealed record Response : ICommandResponse
+    public sealed record Output : ICommandOutput
     {
         public sealed record DirectMessage(DiscordUserId Sender);
         
-        public StringBuilder Output { get; set; } = null!;
+        public StringBuilder Reply { get; set; } = null!;
 
         public DirectMessage? DirectMessageTo { get; set; }
     }
     
 
-    protected override async Task<Response> HandleAction(Input input,
+    protected override async Task<Output> HandleAction(Input input,
         CancellationToken cancellationToken)
     {
         var secretSanta = await DataStore.GetMembersSecretSanta(input.RequestingUserId, cancellationToken);
@@ -37,14 +34,14 @@ public class ArrivedCommand: AbstractCommand<ArrivedCommand.Input, ArrivedComman
         if (secretSanta.SecretSantaStatus == SecretSantaStatus.Arrived)
             return new()
             {
-                Output = new(Messages.AlreadyArrived()),
+                Reply = new(Messages.AlreadyArrived()),
                 DirectMessageTo = null
             };
         
         await DataStore.SetSecretSantaStatus(secretSanta.UserId, SecretSantaStatus.Arrived, cancellationToken);
         return new()
         {
-            Output = new(Messages.MarkedAsArrived()),
+            Reply = new(Messages.MarkedAsArrived()),
             DirectMessageTo = new (secretSanta.UserId)
         };
     }

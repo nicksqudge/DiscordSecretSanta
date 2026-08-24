@@ -3,7 +3,7 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand, ArrivedCommand.Input, ArrivedCommand.Response>
+public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand, ArrivedCommand.Input, ArrivedCommand.Output>
 {
     protected override ArrivedCommand InitCommand() => new(DataStore, Messages);
 
@@ -30,7 +30,7 @@ public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand, ArrivedCo
         var response = await Command.Handle(receiver, CancellationToken.None);
         
         // ASSERT
-        response.Output.ToString().ShouldBe(Messages.AlreadyArrived());
+        response.Reply.ToString().ShouldBe(Messages.AlreadyArrived());
         response.DirectMessageTo.ShouldBeNull();
     }
 
@@ -56,7 +56,7 @@ public class ArrivedCommandTests : AbstractCommandTest<ArrivedCommand, ArrivedCo
         A.CallTo(() => DataStore.SetSecretSantaStatus(A<DiscordUserId>.That.Matches(x => x == sender),
                 A<SecretSantaStatus>.That.Matches(x => x == SecretSantaStatus.Arrived), A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();
-        response.Output.ToString().ShouldBe(Messages.MarkedAsArrived());
+        response.Reply.ToString().ShouldBe(Messages.MarkedAsArrived());
         response.DirectMessageTo.ShouldNotBeNull();
         response.DirectMessageTo.Sender.ShouldBe(sender);
     }

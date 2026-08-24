@@ -2,9 +2,9 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public abstract class AbstractCommand<TInput, TResponse> 
+public abstract class AbstractCommand<TInput, TOutput> 
     where TInput : class, ICommandInput
-    where TResponse : class, ICommandResponse, new ()
+    where TOutput : class, ICommandOutput, new ()
 {
     protected IDataStore DataStore;
     protected IMessages Messages;
@@ -16,16 +16,16 @@ public abstract class AbstractCommand<TInput, TResponse>
         Messages = messages;
     }
     
-    public async Task<TResponse> Handle(TInput input, CancellationToken cancellationToken)
+    public async Task<TOutput> Handle(TInput input, CancellationToken cancellationToken)
     {
         var status = await DataStore.GetStatus(cancellationToken);
         if (!AllowedStatuses.Contains(status))
         {
-            var response = new TResponse()
+            var response = new TOutput()
             {
-                Output = Messages.StatusNotSupported(status)
+                Reply = Messages.StatusNotSupported(status)
             };
-            return response as TResponse;
+            return response;
         }
 
         try
@@ -34,14 +34,14 @@ public abstract class AbstractCommand<TInput, TResponse>
         }
         catch (Exception e)
         {
-            return new TResponse()
+            return new TOutput()
             {
-                Output = new StringBuilder(e.Message).AppendLine("Command: " + this.GetType().Name)
+                Reply = new StringBuilder(e.Message).AppendLine("Command: " + this.GetType().Name)
             };
         }
     }
     
-    protected abstract Task<TResponse> HandleAction(TInput input, CancellationToken cancellationToken);
+    protected abstract Task<TOutput> HandleAction(TInput input, CancellationToken cancellationToken);
 }
 
 public interface ICommandInput
@@ -49,7 +49,7 @@ public interface ICommandInput
     
 }
 
-public interface ICommandResponse
+public interface ICommandOutput
 {
-    StringBuilder Output { get; set; }
+    StringBuilder Reply { get; set; }
 }

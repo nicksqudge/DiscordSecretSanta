@@ -57,8 +57,8 @@ public class CommandsModule : ModuleBase
         await IfUserIsValid(async (requester) =>
         {
             var command = _services.GetRequiredService<SetMaxPriceCommand>();
-            var reply = await command.Handle(requester, maxPrice, CancellationToken.None);
-            await ReplyAsync(reply.ToString());
+            var reply = await command.Handle(new SetMaxPriceCommand.Input(requester, maxPrice), CancellationToken.None);
+            await ReplyToCommandOutput(reply);
         });
     }
     

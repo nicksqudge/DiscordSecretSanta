@@ -4,25 +4,39 @@ using DiscordSecretSanta.Validators;
 
 namespace DiscordSecretSanta.Commands;
 
-public class SetMaxPriceCommand(
-    IDataStore dataStore, 
-    IMessages messages, 
-    ICanSetMaxPrice canSetMaxPrice)
+public class SetMaxPriceCommand : AbstractCommand<SetMaxPriceCommand.Input, SetMaxPriceCommand.Output>
 {
-    public async Task<StringBuilder> Handle(InputUser requestingUser, string maxPrice, CancellationToken cancellationToken)
+    public sealed record Input(InputUser RequestingUser, string MaxPrice) : ICommandInput;
+
+    public sealed record Output : ICommandOutput
     {
-        if (!await canSetMaxPrice.Can(requestingUser, cancellationToken))
-            return new StringBuilder(messages.YouAreNotAnAdmin());
-
-        if (new NotEmptyStringValidator().Validate(maxPrice).IsValid == false)
-            return new StringBuilder(messages.MaxPriceMustHaveAValue());
-
-        var status = await dataStore.GetStatus(cancellationToken);
-        if (status == CampaignStatusId.Drawn)
-            return new StringBuilder(messages.AlreadyDrawn());
-
-        Logger.Debug($"Setting max price: {maxPrice}");
-        await dataStore.SetMaxPrice(maxPrice, cancellationToken);
-        return new StringBuilder(messages.MaxPriceSaved());
+        public StringBuilder Reply { get; set; } = null!;
     }
+
+    private readonly ICanSetMaxPrice _canSetMaxPrice;
+    
+    public SetMaxPriceCommand(IDataStore dataStore, IMessages messages, ICanSetMaxPrice canSetMaxPrice) : base(dataStore, messages)
+    {
+        _canSetMaxPrice = canSetMaxPrice;
+        AllowedStatuses = [CampaignStatusId.Ready, CampaignStatusId.NotConfigured];
+    }
+
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
+    {
+        if (!await _canSetMaxPrice.Can(input.RequestingUser, cancellationToken))
+            return ReturnMessage(Messages.YouAreNotAnAdmin());
+
+        if (new NotEmptyStringValidator().Validate(input.MaxPrice).IsValid == false)
+            return ReturnMessage(Messages.MaxPriceMustHaveAValue());
+        
+        Logger.Debug($"Setting max price: {input.MaxPrice}");
+        await DataStore.SetMaxPrice(input.MaxPrice, cancellationToken);
+        return ReturnMessage(Messages.MaxPriceSaved());
+    }
+
+    private Output ReturnMessage(string message)
+        => new()
+        {
+            Reply = new StringBuilder(message)
+        };
 }

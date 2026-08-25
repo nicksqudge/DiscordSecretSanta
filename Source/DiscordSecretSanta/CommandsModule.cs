@@ -33,7 +33,7 @@ public class CommandsModule : ModuleBase
     {
         var command = _services.GetRequiredService<OpenCommand>();
         var reply = await command.Handle(new OpenCommand.Input(), CancellationToken.None);
-        await Reply(reply);
+        await ReplyToCommandOutput(reply);
     }
 
     [Command("add")]
@@ -71,7 +71,7 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<JoinCommand>();
             var reply = await command.Handle(new JoinCommand.Input(requester.Id, wishlistUrl), CancellationToken.None);
-            await Reply(reply);
+            await ReplyToCommandOutput(reply);
         });
     }
 
@@ -91,7 +91,7 @@ public class CommandsModule : ModuleBase
                     await SendDirectMessage(dm, messages);
             }
 
-            await Reply(output);
+            await ReplyToCommandOutput(output);
         });
     }
     
@@ -120,11 +120,11 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<SentCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessage) = await command.Handle(requester.Id, CancellationToken.None);
-            if (directMessage != null)
-                await SendDirectMessage(directMessage, messages);
-            
-            await ReplyAsync(reply.ToString());
+            var response = await command.Handle(new SentCommand.Input(requester.Id), CancellationToken.None);
+            if (response.ToSend != null)
+                await SendDirectMessage(response.ToSend, messages);
+
+            await ReplyToCommandOutput(response);
         });
     }
     
@@ -141,11 +141,11 @@ public class CommandsModule : ModuleBase
             if (response.DirectMessageTo != null)
                 await SendDirectMessage(response.DirectMessageTo, messages);
             
-            await Reply(response);
+            await ReplyToCommandOutput(response);
         });
     }
 
-    private Task Reply(ICommandOutput output)
+    private Task ReplyToCommandOutput(ICommandOutput output)
     {
         return ReplyAsync(output.Reply.ToString());
     }
@@ -207,7 +207,7 @@ public class CommandsModule : ModuleBase
         await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.DisplayName, dm.SecretSantaWishlist));
     }
 
-    private async Task SendDirectMessage(SentCommand.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(SentCommand.Output.DirectMessage dm, IMessages message)
     {
         var secretSanta = await GetGuildUser(dm.Receiver.Value);
         if (secretSanta is null)

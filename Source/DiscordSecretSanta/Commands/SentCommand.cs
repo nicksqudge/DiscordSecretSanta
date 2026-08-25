@@ -2,34 +2,52 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class SentCommand(IDataStore dataStore, IMessages messages)
+public class SentCommand : AbstractCommand<SentCommand.Input, SentCommand.Output>
 {
-    public sealed record DirectMessage(DiscordUserId Receiver);
-    
-    public async Task<(StringBuilder Response, DirectMessage? ToSend)> Handle(DiscordUserId requestingUserId, CancellationToken cancellationToken)
+    public sealed record Input(DiscordUserId RequestingUserId) : ICommandInput;
+
+    public sealed record Output : ICommandOutput
     {
-        var status = await dataStore.GetStatus(cancellationToken);
-        if (status != CampaignStatusId.Drawn)
-            return ReturnFail(messages.StatusNotValidForSent());
+        public sealed record DirectMessage(DiscordUserId Receiver);
+
+        public StringBuilder Reply { get; set; } = null!;
         
-        var requester = await dataStore.GetMember(requestingUserId, cancellationToken);
+        public DirectMessage? ToSend { get; set; }
+    }
+
+    public SentCommand(IDataStore dataStore, IMessages messages) : base(dataStore, messages)
+    {
+        AllowedStatuses = [CampaignStatusId.Drawn];
+    }
+
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
+    {
+        var status = await DataStore.GetStatus(cancellationToken);
+        if (status != CampaignStatusId.Drawn)
+            return ReturnFail(Messages.StatusNotValidForSent());
+        
+        var requester = await DataStore.GetMember(input.RequestingUserId, cancellationToken);
         if (requester is null)
-            return UnexpectedError($"UNABLE TO FETCH REQUESTING USER ID: {requestingUserId}");
+            throw new CommandException($"UNABLE TO FETCH REQUESTING USER ID: {input.RequestingUserId}");
 
         if (requester.SecretSantaId is null)
-            return UnexpectedError($"REQUESTING USER ID: {requestingUserId} DOES NOT HAVE AN ASSIGNED SECRET SANTA");
+            throw new CommandException($"REQUESTING USER ID: {input.RequestingUserId} DOES NOT HAVE AN ASSIGNED SECRET SANTA");
 
         if (requester.SecretSantaStatus != SecretSantaStatus.Pending && requester.SecretSantaStatus is not null)
-            return ReturnFail(messages.AlreadySent());
+            return ReturnFail(Messages.AlreadySent());
         
-        await dataStore.SetSecretSantaStatus(requester.UserId, SecretSantaStatus.Sent, cancellationToken);
-        var directMessage = new DirectMessage(requester.SecretSantaId);
-        return (new StringBuilder(messages.MarkedAsSent()), directMessage);
+        await DataStore.SetSecretSantaStatus(requester.UserId, SecretSantaStatus.Sent, cancellationToken);
+        var directMessage = new Output.DirectMessage(requester.SecretSantaId);
+        return new Output()
+        {
+            Reply = new StringBuilder(Messages.MarkedAsSent()),
+            ToSend = directMessage
+        };
     }
     
-    private (StringBuilder Response, DirectMessage? ToSend) ReturnFail(string message)
-        => (new StringBuilder(message), null);
-
-    private (StringBuilder Response, DirectMessage? ToSend) UnexpectedError(string error)
-        => ReturnFail(messages.UnexpectedError(nameof(SentCommand), error));
+    private Output ReturnFail(string message)
+        => new ()
+        {
+            Reply = new StringBuilder(message)
+        };
 }

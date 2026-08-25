@@ -3,26 +3,15 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class SentCommandTests : AbstractCommandTest<SentCommand>
+public class SentCommandTests : AbstractCommandTest<SentCommand, SentCommand.Input, SentCommand.Output>
 {
     protected override SentCommand InitCommand()
         => new(DataStore, Messages);
 
-    [TestCase(CampaignStatusId.Open)]
-    [TestCase(CampaignStatusId.NotConfigured)]
-    [TestCase(CampaignStatusId.Ready)]
-    [TestCase(CampaignStatusId.Closed)]
-    public async Task NotRightCampaignStatus(CampaignStatusId status)
+    [Test]
+    public async Task NotRightCampaignStatus()
     {
-        // ARRANGE
-        ArrangeGetStatusReturns(status);
-        
-        // ACT
-        var (response, directMessage) = await Command.Handle(TestFactory.DiscordUserId(), CancellationToken.None);
-        
-        // ASSERT
-        response.ToString().ShouldBe(Messages.StatusNotValidForSent());
-        directMessage.ShouldBeNull();
+        await AssertShouldOnlyAllowStatus(new SentCommand.Input(TestFactory.DiscordUserId()), CampaignStatusId.Drawn);
     }
 
     [TestCase(SecretSantaStatus.Sent)]
@@ -30,21 +19,21 @@ public class SentCommandTests : AbstractCommandTest<SentCommand>
     public async Task NotAlreadySent(SecretSantaStatus status)
     {
         // ARRANGE
-        var sender = TestFactory.DiscordUserId();
+        var input = new SentCommand.Input(TestFactory.DiscordUserId());
         var receiver = TestFactory.DiscordUserId();
         ArrangeGetStatusReturns(CampaignStatusId.Drawn);
-        ArrangeGetMemberReturns(sender, new SecretSantaMember(sender, TestFactory.WishlistUrl())
+        ArrangeGetMemberReturns(input.RequestingUserId, new SecretSantaMember(input.RequestingUserId, TestFactory.WishlistUrl())
         {
             SecretSantaId = receiver,
             SecretSantaStatus = status
         });
         
         // ACT
-        var (response, directMessage) = await Command.Handle(sender, CancellationToken.None);
+        var response = await Command.Handle(input, CancellationToken.None);
         
         // ASSERT
-        response.ToString().ShouldBe(Messages.AlreadySent());
-        directMessage.ShouldBeNull();
+        response.Reply.ToString().ShouldBe(Messages.AlreadySent());
+        response.ToSend.ShouldBeNull();
     }
 
     [TestCase(SecretSantaStatus.Pending)]
@@ -52,24 +41,24 @@ public class SentCommandTests : AbstractCommandTest<SentCommand>
     public async Task Sends(SecretSantaStatus? status)
     {
         // ARRANGE
-        var sender = TestFactory.DiscordUserId();
+        var input = new SentCommand.Input(TestFactory.DiscordUserId());
         var receiver = TestFactory.DiscordUserId();
         ArrangeGetStatusReturns(CampaignStatusId.Drawn);
-        ArrangeGetMemberReturns(sender, new SecretSantaMember(sender, TestFactory.WishlistUrl())
+        ArrangeGetMemberReturns(input.RequestingUserId, new SecretSantaMember(input.RequestingUserId, TestFactory.WishlistUrl())
         {
             SecretSantaId = receiver,
             SecretSantaStatus = status
         });
         
         // ACT
-        var (response, directMessage) = await Command.Handle(sender, CancellationToken.None);
+        var response = await Command.Handle(input, CancellationToken.None);
         
         // ASSERT
-        A.CallTo(() => DataStore.SetSecretSantaStatus(A<DiscordUserId>.That.Matches(x => x == sender),
+        A.CallTo(() => DataStore.SetSecretSantaStatus(A<DiscordUserId>.That.Matches(x => x == input.RequestingUserId),
                 A<SecretSantaStatus>.That.Matches(x => x == SecretSantaStatus.Sent), A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();
-        response.ToString().ShouldBe(Messages.MarkedAsSent());
-        directMessage.ShouldNotBeNull();
-        directMessage.Receiver.ShouldBe(receiver);
+        response.Reply.ToString().ShouldBe(Messages.MarkedAsSent());
+        response.ToSend.ShouldNotBeNull();
+        response.ToSend.Receiver.ShouldBe(receiver);
     }
 }

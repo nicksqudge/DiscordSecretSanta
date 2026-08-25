@@ -19,7 +19,7 @@ public abstract class AbstractCommand<TInput, TOutput>
     public async Task<TOutput> Handle(TInput input, CancellationToken cancellationToken)
     {
         var status = await DataStore.GetStatus(cancellationToken);
-        if (!AllowedStatuses.Contains(status))
+        if (AllowedStatuses.Length > 0 && !AllowedStatuses.Contains(status))
         {
             var response = new TOutput()
             {

@@ -32,8 +32,8 @@ public class CommandsModule : ModuleBase
     public async Task OpenAsync()
     {
         var command = _services.GetRequiredService<OpenCommand>();
-        var reply = await command.Handle(CancellationToken.None);
-        await ReplyAsync(reply.ToString());
+        var reply = await command.Handle(new OpenCommand.Input(), CancellationToken.None);
+        await Reply(reply);
     }
 
     [Command("add")]
@@ -71,7 +71,7 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<JoinCommand>();
             var reply = await command.Handle(new JoinCommand.Input(requester.Id, wishlistUrl), CancellationToken.None);
-            await ReplyAsync(reply.Reply.ToString());
+            await Reply(reply);
         });
     }
 
@@ -90,8 +90,8 @@ public class CommandsModule : ModuleBase
                 foreach (var dm in output.DirectMessages)
                     await SendDirectMessage(dm, messages);
             }
-            
-            await ReplyAsync(output.Reply.ToString());
+
+            await Reply(output);
         });
     }
     
@@ -141,8 +141,13 @@ public class CommandsModule : ModuleBase
             if (response.DirectMessageTo != null)
                 await SendDirectMessage(response.DirectMessageTo, messages);
             
-            await ReplyAsync(response.Reply.ToString());
+            await Reply(response);
         });
+    }
+
+    private Task Reply(ICommandOutput output)
+    {
+        return ReplyAsync(output.Reply.ToString());
     }
 
     private async Task IfUserIsValid(Func<InputUser, Task> action)

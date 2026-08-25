@@ -2,46 +2,47 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class OpenCommand
+public class OpenCommand : AbstractCommand<OpenCommand.Input, OpenCommand.Output>
 {
-    private readonly IDataStore _dataStore;
-    private readonly IMessages _messages;
-
-    public OpenCommand(IDataStore dataStore, IMessages messages)
+    public OpenCommand(IDataStore dataStore, IMessages messages) : base(dataStore, messages)
     {
-        _dataStore = dataStore;
-        _messages = messages;
+        AllowedStatuses = [ CampaignStatusId.NotConfigured, CampaignStatusId.Ready ];
     }
+    
+    public sealed record Input : ICommandInput;
 
-    public async Task<StringBuilder> Handle(CancellationToken token)
+    public sealed record Output : ICommandOutput
+    {
+        public StringBuilder Reply { get; set; } = null!;
+    }
+    
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
     {
         var result = new StringBuilder();
-        var status = await _dataStore.GetStatus(token);
-        var config = await _dataStore.GetConfig(token);
+        var status = await DataStore.GetStatus(cancellationToken);
+        var config = await DataStore.GetConfig(cancellationToken);
 
-        switch (status)
+        if (status == CampaignStatusId.NotConfigured)
         {
-            case CampaignStatusId.NotConfigured:
-                var validator = new SecretSantaConfigValidator(_messages);
-                var validationResult = await validator.ValidateAsync(config, token);
+            var validator = new SecretSantaConfigValidator(Messages);
+            var validationResult = await validator.ValidateAsync(config, cancellationToken);
 
-                if (!validationResult.IsValid)
+            if (!validationResult.IsValid)
+            {
+                result.AppendLine(Messages.OpenNotConfigured());
+                result.AppendLines(validationResult.Errors.Select(x => x.ErrorMessage));
+                return new Output()
                 {
-                    result.AppendLine(_messages.OpenNotConfigured());
-                    result.AppendLines(validationResult.Errors.Select(x => x.ErrorMessage));
-                    return result;
-                }
-
-                break;
-            
-            case CampaignStatusId.Drawn:
-                return result.AppendLine(_messages.AlreadyDrawn());
-            
-            case CampaignStatusId.Open:
-                return result.AppendLine(_messages.AlreadyOpen());
+                    Reply = result
+                };
+            }
         }
         
-        await _dataStore.SetStatus(CampaignStatusId.Open, token);
-        return result.AppendLine(_messages.NowOpen());
+        await DataStore.SetStatus(CampaignStatusId.Open, cancellationToken);
+        result.AppendLine(Messages.NowOpen());
+        return new Output()
+        {
+            Reply = result
+        };
     }
 }

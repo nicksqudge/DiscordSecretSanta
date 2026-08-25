@@ -3,7 +3,7 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class OpenCommandTests : AbstractCommandTest<OpenCommand>
+public class OpenCommandTests : AbstractCommandTest<OpenCommand, OpenCommand.Input, OpenCommand.Output>
 {
     [SetUp]
     public void Setup()
@@ -25,7 +25,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         });
         
         // ACT
-        var result = await Command.Handle(CancellationToken.None);
+        var result = await Command.Handle(new OpenCommand.Input(), CancellationToken.None);
 
         // ASSERT
         result.ToString().ShouldBe(ViaStringBuilder(Messages.OpenNotConfigured(), Messages.MustHaveMaxPrice()));
@@ -41,7 +41,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
-        await Command.Handle(CancellationToken.None);
+        await Command.Handle(new OpenCommand.Input(), CancellationToken.None);
 
         // ASSERT
         AssertSetStatus(CampaignStatusId.Open).MustHaveHappened();
@@ -55,43 +55,27 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand>
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
-        var result = await Command.Handle(CancellationToken.None);
+        var result = await Command.Handle(new OpenCommand.Input(), CancellationToken.None);
         
         // ASSERT
         result.ToString().ShouldBe(ViaStringBuilder(Messages.NowOpen()));
         AssertSetStatus(CampaignStatusId.Open).MustHaveHappened();
     }
-
-    [TestCaseSource(typeof(TestData), nameof(TestData.TestCases))]
+    
     public async Task CannotBeOpenedBecauseOfWrongStatus(CampaignStatusId status, string expectedMessage)
     {
         // ARRANGE
-        ArrangeGetStatusReturns(status);
         A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
         
         // ACT
-        var result = await Command.Handle(CancellationToken.None);
+        await AssertShouldOnlyAllowStatus(new  OpenCommand.Input(), status);
         
         // ASSERT
-        result.ToString().ShouldBe(ViaStringBuilder(expectedMessage));
         AssertSetStatus(CampaignStatusId.Open).MustNotHaveHappened();
     }
 
     private string ViaStringBuilder(params string[] input)
     {
         return input.ToStringBuilder().ToString();
-    }
-    
-    private class TestData
-    {
-        public static IEnumerable<TestCaseData> TestCases
-        {
-            get
-            {
-                yield return new TestCaseData(CampaignStatusId.Drawn, new EnglishMessages().AlreadyDrawn());
-                yield return new TestCaseData(CampaignStatusId.Open, new EnglishMessages().AlreadyOpen());
-                yield return new TestCaseData(CampaignStatusId.Closed, new EnglishMessages().StatusIsClosed());
-            }
-        }
     }
 }

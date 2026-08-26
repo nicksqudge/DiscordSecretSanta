@@ -3,7 +3,7 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class StatusCommandTests : AbstractCommandTest<StatusCommand>
+public class StatusCommandTests : AbstractCommandTest<StatusCommand, StatusCommand.Input, StatusCommand.Output>
 {
     [SetUp]
     public void Setup()
@@ -28,7 +28,7 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
             .Returns(status);
 
         // ACT
-        var result = await Command.Handle(CancellationToken.None);
+        var result = await Command.Handle(new StatusCommand.Input(), CancellationToken.None);
 
         // ASSERT
         result.ToString().ShouldContain(expectedResult);
@@ -58,7 +58,7 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
             .Returns(status);
 
         // ACT
-        var result = await Command.Handle(CancellationToken.None);
+        var result = await Command.Handle(new StatusCommand.Input(), CancellationToken.None);
 
         // ASSERT
         if (status != CampaignStatusId.NotConfigured)

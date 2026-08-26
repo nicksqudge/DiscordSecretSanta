@@ -2,39 +2,41 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class StatusCommand
+public class StatusCommand : AbstractCommand<StatusCommand.Input, StatusCommand.Output>
 {
-    private readonly IDataStore _dataStore;
-    private readonly IMessages _messages;
+    public sealed record Input : ICommandInput;
 
-    public StatusCommand(IDataStore dataStore, IMessages messages)
+    public sealed record Output : ICommandOutput
     {
-        _dataStore = dataStore;
-        _messages = messages;
+        public StringBuilder Reply { get; set; } = null!;
     }
 
-    public async Task<StringBuilder> Handle(CancellationToken cancellationToken)
+    public StatusCommand(IDataStore dataStore, IMessages messages) : base(dataStore, messages)
     {
-        var status = await _dataStore.GetStatus(cancellationToken);
+    }
+
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
+    {
+        var status = await DataStore.GetStatus(cancellationToken);
         var result = new StringBuilder();
 
         switch (status)
         {
             case CampaignStatusId.Ready:
-                result.AppendLine(_messages.StatusIsReady());
+                result.AppendLine(Messages.StatusIsReady());
                 break;
             
             case CampaignStatusId.Drawn:
-                result.AppendLine(_messages.StatusIsDrawn());
+                result.AppendLine(Messages.StatusIsDrawn());
                 break;
             
             case CampaignStatusId.Open:
-                var memberCount = await _dataStore.GetNumberOfMembers(cancellationToken);
-                result.AppendLine(_messages.StatusIsOpen(memberCount));
+                var memberCount = await DataStore.GetNumberOfMembers(cancellationToken);
+                result.AppendLine(Messages.StatusIsOpen(memberCount));
                 break;
             
             case CampaignStatusId.NotConfigured:
-                result.AppendLine(_messages.StatusIsNotConfigured());
+                result.AppendLine(Messages.StatusIsNotConfigured());
                 break;
          
             default:
@@ -44,10 +46,13 @@ public class StatusCommand
 
         if (status != CampaignStatusId.NotConfigured)
         {
-            var config = await _dataStore.GetConfig(cancellationToken);
-            result.AppendLine(_messages.StatusMaxPrice(config.MaxPrice));
+            var config = await DataStore.GetConfig(cancellationToken);
+            result.AppendLine(Messages.StatusMaxPrice(config.MaxPrice));
         }
 
-        return result;
+        return new Output()
+        {
+            Reply = result
+        };
     }
 }

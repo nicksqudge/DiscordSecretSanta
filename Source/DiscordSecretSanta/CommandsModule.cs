@@ -22,8 +22,8 @@ public class CommandsModule : ModuleBase
     public async Task StatusAsync()
     {
         var command = _services.GetRequiredService<StatusCommand>();
-        var reply = await command.Handle(CancellationToken.None);
-        await ReplyAsync(reply.ToString());
+        var reply = await command.Handle(new StatusCommand.Input(), CancellationToken.None);
+        await ReplyToCommandOutput(reply);
     }
 
     [RequireContext(ContextType.Guild)]

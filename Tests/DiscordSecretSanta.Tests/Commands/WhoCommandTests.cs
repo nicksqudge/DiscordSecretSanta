@@ -3,27 +3,15 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class WhoCommandTests : AbstractCommandTest<WhoCommand>
+public class WhoCommandTests : AbstractCommandTest<WhoCommand, WhoCommand.Input, WhoCommand.Output>
 {
     protected override WhoCommand InitCommand()
         => new (DataStore, Messages);
-
-    [TestCase(CampaignStatusId.NotConfigured)]
-    [TestCase(CampaignStatusId.Open)]
-    [TestCase(CampaignStatusId.Ready)]
-    [TestCase(CampaignStatusId.Closed)]
-    public async Task GivenStatus_ShouldSayCannotShowValue(CampaignStatusId status)
+    
+    [Test]
+    public async Task OnlyViableDuringDrawn()
     {
-        // ARRANGE
-        ArrangeGetStatusReturns(status);
-        var requestingUser = TestFactory.InputUser();
-        
-        // ACT
-        var (result, directMessage) = await Command.Handle(requestingUser, CancellationToken.None);
-
-        // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.CouldNotShowWho());
-        directMessage.ShouldBeNull();
+        await AssertShouldOnlyAllowStatus(new WhoCommand.Input(TestFactory.InputUser()), CampaignStatusId.Drawn);
     }
 
     [Test]
@@ -40,12 +28,13 @@ public class WhoCommandTests : AbstractCommandTest<WhoCommand>
         ArrangeGetMemberReturns(secretSanta, new SecretSantaMember(secretSanta, TestFactory.WishlistUrl()));
 
         // ACT
-        var (result, directMessage) = await Command.Handle(requestingUser, CancellationToken.None);
+        var response = await Command.Handle(new WhoCommand.Input(requestingUser), CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.CouldShow());
-        directMessage.SecretSantaId.ShouldBe(secretSanta);
-        directMessage.WhoAskedId.ShouldBe(requestingUser.Id);
-        directMessage.SecretSantaWishlist.ShouldNotBeNull();
+        response.Reply.ToString().Trim().ShouldBe(Messages.CouldShow());
+        response.Who.ShouldNotBeNull();
+        response.Who.SecretSantaId.ShouldBe(secretSanta);
+        response.Who.WhoAskedId.ShouldBe(requestingUser.Id);
+        response.Who.SecretSantaWishlist.ShouldNotBeNull();
     }
 }

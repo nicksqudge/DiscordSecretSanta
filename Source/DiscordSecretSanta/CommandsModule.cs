@@ -103,11 +103,11 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<WhoCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessage) = await command.Handle(requester, CancellationToken.None);
-            if (directMessage != null)
-                await SendDirectMessage(directMessage, messages);
-            
-            await ReplyAsync(reply.ToString());
+            var response = await command.Handle(new WhoCommand.Input(requester), CancellationToken.None);
+            if (response.Who != null)
+                await SendDirectMessage(response.Who, messages);
+
+            await ReplyToCommandOutput(response);
         });
     }
 
@@ -187,7 +187,7 @@ public class CommandsModule : ModuleBase
         await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.DisplayName, dm.WishlistUrl));
     }
 
-    private async Task SendDirectMessage(WhoCommand.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(WhoCommand.Output.DirectMessage dm, IMessages message)
     {
         var recipient = await GetGuildUser(dm.WhoAskedId.Value);
         if (recipient is null)

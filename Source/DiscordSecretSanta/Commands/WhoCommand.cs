@@ -2,38 +2,52 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class WhoCommand(IDataStore dataStore, IMessages messages)
+public class WhoCommand : AbstractCommand<WhoCommand.Input, WhoCommand.Output>
 {
-    public sealed record DirectMessage(DiscordUserId WhoAskedId, DiscordUserId SecretSantaId, Uri SecretSantaWishlist);
-    
-    public async Task<(StringBuilder Response, DirectMessage? DirectMessages)> Handle(InputUser requestingUser,
-        CancellationToken cancellationToken)
+    public sealed record Input(InputUser RequestingUser) : ICommandInput;
+
+    public sealed record Output : ICommandOutput
     {
-        var status = await dataStore.GetStatus(cancellationToken);
+        public sealed record DirectMessage(DiscordUserId WhoAskedId, DiscordUserId SecretSantaId, Uri SecretSantaWishlist);
+        public StringBuilder Reply { get; set; } = null!;
+        public DirectMessage? Who { get; set; } = null;
+    }
+    
+
+    public WhoCommand(IDataStore dataStore, IMessages messages) : base(dataStore, messages)
+    {
+        AllowedStatuses = [CampaignStatusId.Drawn];
+    }
+
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
+    {
+        var status = await DataStore.GetStatus(cancellationToken);
         if (status != CampaignStatusId.Drawn)
         {
-            return JustMessage(messages.CouldNotShowWho());
+            return JustMessage(Messages.CouldNotShowWho());
         }
         
-        var requester = await dataStore.GetMember(requestingUser.Id, cancellationToken);
+        var requester = await DataStore.GetMember(input.RequestingUser.Id, cancellationToken);
         if (requester == null)
-            return UnexpectedError($"COULD NOT FIND MEMBER: {requestingUser.Id}");
+            throw new CommandException($"Could not find member: {input.RequestingUser.Id}");
 
         if (requester.SecretSantaId is null)
-            return UnexpectedError($"STATUS IS DRAWN MEMBER DOES NOT HAVE SECRET SANTA: {requestingUser.Id}");
+            throw new CommandException($"STATUS IS DRAWN MEMBER DOES NOT HAVE SECRET SANTA: {input.RequestingUser.Id}");
         
-        var secretSanta = await dataStore.GetMember(requester.SecretSantaId, cancellationToken);
+        var secretSanta = await DataStore.GetMember(requester.SecretSantaId, cancellationToken);
         if (secretSanta == null)
-            return UnexpectedError($"COULD NOT FIND MEMBER: {requestingUser.Id}");
-        
-        return (new StringBuilder().AppendLine(messages.CouldShow()), new DirectMessage(requester.UserId, secretSanta.UserId, secretSanta.WishlistUrl));
+            throw new CommandException($"COULD NOT FIND MEMBER: {input.RequestingUser.Id}");
+
+        return new Output()
+        {
+            Reply = new StringBuilder(Messages.CouldShow()),
+            Who = new Output.DirectMessage(requester.UserId, secretSanta.UserId, secretSanta.WishlistUrl)
+        };
     }
 
-    private (StringBuilder Response, DirectMessage? DirectMessages) JustMessage(string message)
-    {
-        return (new StringBuilder().AppendLine(message), null);
-    }
-    
-    private (StringBuilder Response, DirectMessage? DirectMessages) UnexpectedError(string message)
-        => JustMessage(messages.UnexpectedError(nameof(WhoCommand), message));   
+    private Output JustMessage(string message)
+        => new()
+        {
+            Reply = new StringBuilder(message)
+        };
 }

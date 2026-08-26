@@ -3,7 +3,7 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
+public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand, ToggleAdminCommand.Input, ToggleAdminCommand.Output>
 {
     [Test]
     public async Task AGuildAdmin()
@@ -15,7 +15,7 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         ArrangeUserIsAdmin(targetUser, false);
 
         // ACT
-        var result = await Command.Handle(targetUser, requestingUser, CancellationToken.None);
+        var result = await Command.Handle(new ToggleAdminCommand.Input(targetUser, requestingUser), CancellationToken.None);
 
         // ASSERT
         result.ToString().Trim().ShouldBe(Messages.IsGuidAdmin(targetUser.Name));
@@ -31,7 +31,7 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         ArrangeUserIsAdmin(targetUser, true);
 
         // ACT
-        var result = await Command.Handle(targetUser, requestingUser, CancellationToken.None);
+        var result = await Command.Handle(new ToggleAdminCommand.Input(targetUser, requestingUser), CancellationToken.None);
 
         // ASSERT
         result.ToString().Trim().ShouldBe(Messages.IsNoLongerAnAdmin(targetUser.Name));
@@ -49,7 +49,7 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         ArrangeUserIsAdmin(targetUser, false);
 
         // ACT
-        var result = await Command.Handle(targetUser, requestingUser, CancellationToken.None);
+        var result = await Command.Handle(new ToggleAdminCommand.Input(targetUser, requestingUser), CancellationToken.None);
 
         // ASSERT
         result.ToString().Trim().ShouldBe(Messages.IsNowAnAdmin(targetUser.Name));
@@ -67,7 +67,7 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         ArrangeUserIsAdmin(targetUser, false);
 
         // ACT
-        var result = await Command.Handle(targetUser, requestingUser, CancellationToken.None);
+        var result = await Command.Handle(new ToggleAdminCommand.Input(targetUser, requestingUser), CancellationToken.None);
 
         // ASSERT
         result.ToString().Trim().ShouldBe(Messages.YouDoNotHavePermissionToMakeAdmin());

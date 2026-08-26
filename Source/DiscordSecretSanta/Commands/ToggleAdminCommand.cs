@@ -2,41 +2,42 @@ using System.Text;
 
 namespace DiscordSecretSanta.Commands;
 
-public class ToggleAdminCommand
+public class ToggleAdminCommand : AbstractCommand<ToggleAdminCommand.Input, ToggleAdminCommand.Output>
 {
-    private readonly IDataStore _dataStore;
-    private readonly IMessages _messages;
+    public sealed record Input(InputUser TargetUser, InputUser RequestingUser) : ICommandInput;
 
-    public ToggleAdminCommand(IDataStore dataStore, IMessages messages)
+    public sealed record Output : ICommandOutput
     {
-        _dataStore = dataStore;
-        _messages = messages;
+        public StringBuilder Reply { get; set; } = null!;
+    }
+    
+    public ToggleAdminCommand(IDataStore dataStore, IMessages messages) : base(dataStore, messages)
+    {
     }
 
-    public async Task<StringBuilder> Handle(InputUser targetUser, InputUser requestingUser, CancellationToken token)
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
     {
-        Logger.Debug($"{requestingUser.Name} is trying to make {targetUser.Name} an admin");
+        Logger.Debug($"{input.RequestingUser.Name} is trying to make {input.TargetUser.Name} an admin");
         
-        var result = new StringBuilder();
-        if (!await IsAdmin(requestingUser, token))
+        if (!await IsAdmin(input.RequestingUser, cancellationToken))
         {
-            Logger.Debug($"{requestingUser.Name} does not have permission");
-            return result.AppendLine(_messages.YouDoNotHavePermissionToMakeAdmin());
+            Logger.Debug($"{input.RequestingUser.Name} does not have permission");
+            return ReturnMessage(Messages.YouDoNotHavePermissionToMakeAdmin());
         }
 
-        if (targetUser.IsServerAdmin)
+        if (input.TargetUser.IsServerAdmin)
         {
-            Logger.Debug($"{targetUser.Name} is already an admin");
-            return result.AppendLine(_messages.IsGuidAdmin(targetUser.Name));
+            Logger.Debug($"{input.TargetUser.Name} is already an admin");
+            return ReturnMessage(Messages.IsGuidAdmin(input.TargetUser.Name));
         }
 
-        var isAdmin = await _dataStore.IsAdminInConfig(targetUser.Id, token);
-        await _dataStore.ToggleAdmin(targetUser.Id, !isAdmin, token);
+        var isAdmin = await DataStore.IsAdminInConfig(input.TargetUser.Id, cancellationToken);
+        await DataStore.ToggleAdmin(input.TargetUser.Id, !isAdmin, cancellationToken);
         
         if (isAdmin)
-            return result.AppendLine(_messages.IsNoLongerAnAdmin(targetUser.Name));
+            return ReturnMessage(Messages.IsNoLongerAnAdmin(input.TargetUser.Name));
         
-        return result.AppendLine(_messages.IsNowAnAdmin(targetUser.Name));
+        return ReturnMessage(Messages.IsNowAnAdmin(input.TargetUser.Name));
     }
 
     private async Task<bool> IsAdmin(InputUser user, CancellationToken token)
@@ -44,6 +45,12 @@ public class ToggleAdminCommand
         if (user.IsServerAdmin)
             return true;
 
-        return await _dataStore.IsAdminInConfig(user.Id, token);
+        return await DataStore.IsAdminInConfig(user.Id, token);
     }
+
+    private Output ReturnMessage(string message)
+        => new()
+        {
+            Reply = new StringBuilder(message)
+        };
 }

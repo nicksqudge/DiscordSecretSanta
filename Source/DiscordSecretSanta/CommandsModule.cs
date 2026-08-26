@@ -44,8 +44,8 @@ public class CommandsModule : ModuleBase
         {
             var targetUser = InputUser.From(target);
             var command = _services.GetRequiredService<ToggleAdminCommand>();
-            var reply = await command.Handle(targetUser, requester, CancellationToken.None);
-            await ReplyAsync(reply.ToString());
+            var reply = await command.Handle(new ToggleAdminCommand.Input(targetUser, requester), CancellationToken.None);
+            await ReplyToCommandOutput(reply);
         });
     }
 

@@ -19,18 +19,22 @@ public class StatusCommand : AbstractCommand<StatusCommand.Input, StatusCommand.
     {
         var status = await DataStore.GetStatus(cancellationToken);
         var result = new StringBuilder();
+        var showMaxPrice = false;
 
         switch (status)
         {
             case CampaignStatusId.Ready:
+                showMaxPrice = true;
                 result.AppendLine(Messages.StatusIsReady());
                 break;
             
             case CampaignStatusId.Drawn:
+                showMaxPrice = true;
                 result.AppendLine(Messages.StatusIsDrawn());
                 break;
             
             case CampaignStatusId.Open:
+                showMaxPrice = true;
                 var memberCount = await DataStore.GetNumberOfMembers(cancellationToken);
                 result.AppendLine(Messages.StatusIsOpen(memberCount));
                 break;
@@ -38,13 +42,17 @@ public class StatusCommand : AbstractCommand<StatusCommand.Input, StatusCommand.
             case CampaignStatusId.NotConfigured:
                 result.AppendLine(Messages.StatusIsNotConfigured());
                 break;
+            
+            case CampaignStatusId.Closed:
+                result.AppendLine(Messages.StatusIsClosed());
+                break;
          
             default:
                 result.AppendLine($"I don't know my status... {status} is not supported :(");
                 break;
         }
 
-        if (status != CampaignStatusId.NotConfigured)
+        if (showMaxPrice)
         {
             var config = await DataStore.GetConfig(cancellationToken);
             result.AppendLine(Messages.StatusMaxPrice(config.MaxPrice));

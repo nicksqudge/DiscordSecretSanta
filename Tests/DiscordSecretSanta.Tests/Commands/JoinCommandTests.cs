@@ -7,12 +7,6 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand, JoinCommand.Inp
     private readonly DiscordUserId _targetUserId = TestFactory.DiscordUserId();
     private readonly List<IWishlistUrlValidator> _validators = new();
     private const string ValidWishlistUrl = "https://www.amazon.co.uk/hz/wishlist/ls/35GHJDXGIAUDIAK?ref_=wl_share";
-    
-    [SetUp]
-    public void Setup()
-    {
-        
-    }
 
     protected override JoinCommand InitCommand()
         => new(DataStore, Messages, _validators);
@@ -38,7 +32,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand, JoinCommand.Inp
         var result = await Command.Handle(new JoinCommand.Input(_targetUserId, "anything"), CancellationToken.None);
         
         // ASSERT
-        result.ToString().ShouldBe(Messages.NotAValidWishlistUrl());
+        result.Reply.ToString().ShouldBe(Messages.NotAValidWishlistUrl());
         A.CallTo(() => DataStore.AddMember(A<DiscordUserId>._, A<Uri>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
@@ -54,7 +48,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand, JoinCommand.Inp
         var result = await Command.Handle(new JoinCommand.Input(_targetUserId, ValidWishlistUrl), CancellationToken.None);
         
         // ASSERT
-        result.ToString().ShouldBe(Messages.YouHaveAlreadyJoined());
+        result.Reply.ToString().ShouldBe(Messages.YouHaveAlreadyJoined());
         A.CallTo(() => DataStore.AddMember(A<DiscordUserId>._, A<Uri>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
     
@@ -71,7 +65,7 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand, JoinCommand.Inp
         var result = await Command.Handle(new JoinCommand.Input(_targetUserId, ValidWishlistUrl), CancellationToken.None);
         
         // ASSERT
-        result.ToString().ShouldBe(Messages.YouHaveSuccessfullyJoined());
+        result.Reply.ToString().ShouldBe(Messages.YouHaveSuccessfullyJoined());
         A.CallTo(() => DataStore.AddMember(A<DiscordUserId>._, A<Uri>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
 

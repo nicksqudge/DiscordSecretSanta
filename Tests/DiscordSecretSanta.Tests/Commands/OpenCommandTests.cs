@@ -28,7 +28,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand, OpenCommand.Inp
         var result = await Command.Handle(new OpenCommand.Input(), CancellationToken.None);
 
         // ASSERT
-        result.ToString().ShouldBe(ViaStringBuilder(Messages.OpenNotConfigured(), Messages.MustHaveMaxPrice()));
+        result.Reply.ToString().ShouldBe(ViaStringBuilder(Messages.OpenNotConfigured(), Messages.MustHaveMaxPrice()));
         
         AssertSetStatus().MustNotHaveHappened();
     }
@@ -58,7 +58,7 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand, OpenCommand.Inp
         var result = await Command.Handle(new OpenCommand.Input(), CancellationToken.None);
         
         // ASSERT
-        result.ToString().ShouldBe(ViaStringBuilder(Messages.NowOpen()));
+        result.Reply.ToString().ShouldBe(ViaStringBuilder(Messages.NowOpen()));
         AssertSetStatus(CampaignStatusId.Open).MustHaveHappened();
     }
     

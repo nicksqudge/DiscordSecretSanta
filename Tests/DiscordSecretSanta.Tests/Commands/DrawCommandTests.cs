@@ -15,7 +15,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand, DrawCommand.Inp
     public async Task OnlySupportsOpen()
     {
         await AssertShouldOnlyAllowStatus(new DrawCommand.Input(TestFactory.InputUser()), CampaignStatusId.Open);
-        AssertDidNotDraw([]);
+        AssertDidNotDraw();
     }
 
     [TestCase(10)]
@@ -68,28 +68,11 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand, DrawCommand.Inp
         AssertDidNotDraw(output.DirectMessages);
     }
 
-    [TestCase(CampaignStatusId.Drawn)]
-    [TestCase(CampaignStatusId.NotConfigured)]
-    [TestCase(CampaignStatusId.Ready)]
-    [TestCase(CampaignStatusId.Closed)]
-    public async Task GivenStatus_ShouldNotDraw(CampaignStatusId startingStatus)
-    {
-        // ARRANGE
-        ArrangeGetStatusReturns(startingStatus);
-        var requestingUser = new DrawCommand.Input(TestFactory.InputUser(isServerAdmin: true));
-        
-        // ACT
-        var output = await Command.Handle(requestingUser, CancellationToken.None);
-        
-        // ASSERT
-        output.Reply.ToString().Trim().ShouldBe(Messages.CouldNotDraw());
-        AssertDidNotDraw(output.DirectMessages);
-    }
-
     [Test]
     public async Task UserDoesNotHavePermission()
     {
         // ARRANGE
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         var requestingUser = new DrawCommand.Input(TestFactory.InputUser(isServerAdmin: false));
         
         // ACT
@@ -119,11 +102,12 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand, DrawCommand.Inp
             });
     }
 
-    private void AssertDidNotDraw(DrawCommand.Output.DirectMessage[] messages)
+    private void AssertDidNotDraw(DrawCommand.Output.DirectMessage[]? messages=null)
     {
         AssertSetStatus(CampaignStatusId.Drawn).MustNotHaveHappened();
         A.CallTo(() => DataStore.SetSecretSanta(A<DiscordUserId>._, A<DiscordUserId>._, CancellationToken.None)).MustNotHaveHappened();
         _secretSantas.Count.ShouldBe(0);
-        messages.Length.ShouldBe(0);
+        if (messages is not null)
+            messages.Length.ShouldBe(0);
     }
 }

@@ -16,14 +16,11 @@ public class JoinCommand : AbstractCommand<JoinCommand.Input, JoinCommand.Output
     public JoinCommand(IDataStore dataStore, IMessages messages, IEnumerable<IWishlistUrlValidator> validators) : base(dataStore, messages)
     {
         _validators = validators;
+        AllowedStatuses = [CampaignStatusId.Open];
     }
 
     protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
     {
-        var status = await DataStore.GetStatus(cancellationToken);
-        if (status != CampaignStatusId.Open)
-            return ReturnMessage(Messages.NotOpenForJoining());
-
         var validWishlistUrl = await IsValidWishlistUrl(input.WishlistUrl, cancellationToken);
         if (validWishlistUrl is null)
             return ReturnMessage(Messages.NotAValidWishlistUrl());

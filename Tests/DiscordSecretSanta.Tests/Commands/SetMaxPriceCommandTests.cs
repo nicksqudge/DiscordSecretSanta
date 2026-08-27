@@ -48,7 +48,7 @@ public class SetMaxPriceCommandTests : AbstractCommandTest<SetMaxPriceCommand, S
     }
 
     [Theory]
-    [TestCase("£10", CampaignStatusId.Open)]
+    [TestCase("£10", CampaignStatusId.Ready)]
     [TestCase("$10", CampaignStatusId.NotConfigured)]
     [TestCase("Whatever you want", CampaignStatusId.NotConfigured)]
     public async Task HappyPath(string maxPrice, CampaignStatusId status)
@@ -56,7 +56,7 @@ public class SetMaxPriceCommandTests : AbstractCommandTest<SetMaxPriceCommand, S
         // ARRANGE
         var requestingUser = TestFactory.InputUser();
         A.CallTo(() => _permission.Can(A<InputUser>._,  A<CancellationToken>._)).Returns(true);
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>._)).Returns(status);
+        ArrangeGetStatusReturns(status);
 
         // ACT
         var result = await Command.Handle(new SetMaxPriceCommand.Input(requestingUser, maxPrice), CancellationToken.None);

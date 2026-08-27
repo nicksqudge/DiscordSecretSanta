@@ -50,10 +50,9 @@ public abstract class AbstractCommandTest<T, TInput, TResponse>
             if (expectedStatus.Contains(status))
                 continue;
 
-            AssertSetStatus(status);
+            ArrangeGetStatusReturns(status);
             var response = await Command.Handle(input, CancellationToken.None);
-            response.Reply.ShouldNotBeNull();
-            response.Reply.ShouldBe(Messages.StatusNotSupported(status));
+            response.Reply.ToString().ShouldBe(Messages.StatusNotSupported(status).ToString());
         }
     }
 }

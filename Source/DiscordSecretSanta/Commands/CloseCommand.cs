@@ -1,13 +1,37 @@
 using System.Text;
+using DiscordSecretSanta.Permissions;
 
 namespace DiscordSecretSanta.Commands;
 
-#pragma warning disable CS9113 // Parameter is unread.
-public class CloseCommand(IDataStore dataStore, IMessages messages)
-#pragma warning restore CS9113 // Parameter is unread.
+public class CloseCommand : AbstractCommand<CloseCommand.Input, CloseCommand.Output>
 {
-    public Task<StringBuilder> Handle(DiscordUserId requestingUserId, CancellationToken cancellationToken)
+    public sealed record Input(InputUser RequestingUser) : ICommandInput;
+
+    public sealed record Output : ICommandOutput
     {
-        return Task.FromResult(new StringBuilder());
+        public StringBuilder Reply { get; set; } = null!;
     }
+
+    private readonly ICanClose _permission;
+
+    public CloseCommand(IDataStore dataStore, IMessages messages, ICanClose permission) : base(dataStore, messages)
+    {
+        _permission = permission;
+        AllowedStatuses = [CampaignStatusId.Drawn, CampaignStatusId.Open];
+    }
+
+    protected override async Task<Output> HandleAction(Input input, CancellationToken cancellationToken)
+    {
+        if (!await _permission.Can(input.RequestingUser, cancellationToken))
+            return ReturnMessage(Messages.YouAreNotAnAdmin());
+
+        await DataStore.SetStatus(CampaignStatusId.Closed, cancellationToken);
+        return ReturnMessage(Messages.CampaignClosed());
+    }
+
+    private Output ReturnMessage(string message)
+        => new ()
+        {
+            Reply = new StringBuilder(message)
+        };
 }

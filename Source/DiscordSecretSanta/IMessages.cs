@@ -16,8 +16,6 @@ public interface IMessages
     string OpenNotConfigured();
     string MustHaveMaxPrice();
     string NowOpen();
-    string AlreadyOpen();
-    string AlreadyDrawn();
     string IsGuidAdmin(string name);
     string IsNoLongerAnAdmin(string name);
     string IsNowAnAdmin(string name);
@@ -26,7 +24,6 @@ public interface IMessages
     string YouAreNotAnAdmin();
     string MaxPriceMustHaveAValue();
     string MaxPriceSaved();
-    string NotOpenForJoining();
     string YouHaveAlreadyJoined();
     string YouHaveSuccessfullyJoined();
     string NotAValidWishlistUrl();
@@ -35,13 +32,13 @@ public interface IMessages
     string SecretSantaDrawnDirectMessage(string guildName, string secretSanta, Uri url);
     string CouldNotShowWho();
     string CouldShow();
-    string UnexpectedError(string command, string detail);
     string StatusNotValidForSent();
     string AlreadySent();
     string MarkedAsSent();
     string YourGiftIsOnTheWay();
-    string StatusNotValidForArrived();
     string AlreadyArrived();
     string MarkedAsArrived();
     string YourGiftHasArrived();
+    string CampaignClosed();
+    string CampaignNotClosed();
 }

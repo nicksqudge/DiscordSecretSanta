@@ -53,6 +53,7 @@ public static class ServiceCollectionExtensions
         // Permissions
         services.AddTransient<ICanSetMaxPrice, CanSetMaxPrice>();
         services.AddTransient<ICanStartDraw, CanStartDraw>();
+        services.AddTransient<ICanClose, CanClose>();
         
         return new SecretSantaServices(services);
     }

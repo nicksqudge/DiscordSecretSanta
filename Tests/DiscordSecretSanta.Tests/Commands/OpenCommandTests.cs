@@ -62,13 +62,10 @@ public class OpenCommandTests : AbstractCommandTest<OpenCommand, OpenCommand.Inp
         AssertSetStatus(CampaignStatusId.Open).MustHaveHappened();
     }
     
-    public async Task CannotBeOpenedBecauseOfWrongStatus(CampaignStatusId status, string expectedMessage)
+    [Test]
+    public async Task CannotBeOpenedBecauseOfWrongStatus()
     {
-        // ARRANGE
-        A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored)).Returns(TestConstants.ValidConfig());
-        
-        // ACT
-        await AssertShouldOnlyAllowStatus(new  OpenCommand.Input(), status);
+        await AssertShouldOnlyAllowStatus(new OpenCommand.Input(), CampaignStatusId.Ready, CampaignStatusId.NotConfigured);
         
         // ASSERT
         AssertSetStatus(CampaignStatusId.Open).MustNotHaveHappened();

@@ -4,6 +4,9 @@ namespace DiscordSecretSanta.Translations.English;
 
 public class EnglishMessages : IMessages
 {
+    public StringBuilder StatusNotSupported(CampaignStatusId status)
+        => new ($"Sorry, I cannot run this command whilst the campaign is in: {status}");
+
     public string StatusIsReady() => "I am not open for people to sign up yet. Just waiting on an admin to say \"ready\"";
 
     public string StatusIsOpen(int memberCount)
@@ -25,6 +28,9 @@ public class EnglishMessages : IMessages
     public string StatusMaxPrice(string maxPrice)
         => "Max Gift Price is " + maxPrice;
 
+    public string StatusIsClosed()
+        => "This campaign has been closed.";
+
     public string OpenNotConfigured()
         => "Sorry I cannot be opened, I have not been configured. Please make sure the following is configured: ";
 
@@ -33,12 +39,6 @@ public class EnglishMessages : IMessages
 
     public string NowOpen()
         => "Your Secret Santa is now open for people to join";
-
-    public string AlreadyOpen()
-     => "I am already open for people to join";
-
-    public string AlreadyDrawn()
-        => "The secret santa names have already been drawn, I cannot be opened";
 
     public string IsGuidAdmin(string name)
         => $"{name} are already an admin of this discord server and will always be an admin for secret santa";
@@ -63,9 +63,6 @@ public class EnglishMessages : IMessages
 
     public string MaxPriceSaved()
         => "Max price has been saved";
-
-    public string NotOpenForJoining()
-        => "Sorry, Secret Santa hasn't opened yet";
 
     public string YouHaveAlreadyJoined()
      => "You have already joined";
@@ -101,9 +98,6 @@ public class EnglishMessages : IMessages
     public string CouldShow()
         => "I have sent you a direct message with who you have drawn for secret santa.";
 
-    public string UnexpectedError(string command, string detail)
-        => $"I am sorry an unexpected error has occured. Please contact an admin. Code: {command}-{detail}";
-
     public string StatusNotValidForSent()
         => "The campaign is not in the right stage for you to be able to mark this as sent.";
 
@@ -116,9 +110,6 @@ public class EnglishMessages : IMessages
     public string YourGiftIsOnTheWay()
         => "Your gift is on the way. When it arrives just send me the message \"arrived\"";
 
-    public string StatusNotValidForArrived()
-        => "The campaign is not in the right stage for you to be able to mark this as arrived.";
-
     public string AlreadyArrived()
         => "You have already told your secret santa that your gift has arrived.";
 
@@ -127,4 +118,10 @@ public class EnglishMessages : IMessages
 
     public string YourGiftHasArrived()
         => "Your secret santa has received their gift.";
+
+    public string CampaignClosed()
+        => "Secret Santa is closed";
+
+    public string CampaignNotClosed()
+        => "You do not have the right permissions to close Secret Santa";
 }

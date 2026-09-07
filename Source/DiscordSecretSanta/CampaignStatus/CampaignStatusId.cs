@@ -1,6 +1,6 @@
 namespace DiscordSecretSanta;
 
-public enum Status
+public enum CampaignStatusId
 {
     /// <summary>
     /// The secret santa campaign has not been configured yet and cannot be opened
@@ -17,5 +17,9 @@ public enum Status
     /// <summary>
     /// The secret santa campaign has been drawn and so no one can join
     /// </summary>
-    Drawn
+    Drawn,
+    /// <summary>
+    /// The campaign has closed
+    /// </summary>
+    Closed,
 }

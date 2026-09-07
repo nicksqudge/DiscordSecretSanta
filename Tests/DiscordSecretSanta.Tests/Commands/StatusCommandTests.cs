@@ -3,7 +3,7 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class StatusCommandTests : AbstractCommandTest<StatusCommand>
+public class StatusCommandTests : AbstractCommandTest<StatusCommand, StatusCommand.Input, StatusCommand.Output>
 {
     [SetUp]
     public void Setup()
@@ -15,7 +15,7 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
      => new  (DataStore, Messages);
 
     [TestCaseSource(typeof(TestData), nameof(TestData.TestCases))]
-    public async Task NotOpenOrDrawn(Status status, string expectedResult, bool expectShowMaxPrice)
+    public async Task NotOpenOrDrawn(CampaignStatusId status, string expectedResult, bool expectShowMaxPrice)
     {
         // ARRANGE
         var maxPrice = "£10";
@@ -28,42 +28,19 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
             .Returns(status);
 
         // ACT
-        var result = await Command.Handle(CancellationToken.None);
+        var result = await Command.Handle(new StatusCommand.Input(), CancellationToken.None);
 
         // ASSERT
-        result.ToString().ShouldContain(expectedResult);
+        result.Reply.ToString().ShouldContain(expectedResult);
 
         if (expectShowMaxPrice)
         {
-            result.ToString().ShouldContain(Messages.StatusMaxPrice(maxPrice));
+            result.Reply.ToString().ShouldContain(Messages.StatusMaxPrice(maxPrice));
         }
         else
         {
-            result.ToString().ShouldNotContain(Messages.StatusMaxPrice(maxPrice));
+            result.Reply.ToString().ShouldNotContain(Messages.StatusMaxPrice(maxPrice));
         }
-    }
-
-    [TestCaseSource(typeof(StatusTestCaseData), nameof(StatusTestCaseData.AllStatuses))]
-    public async Task ShowMaxPrice(Status status)
-    {
-        // ARRANGE
-        var maxPrice = "£10";
-        A.CallTo(() => DataStore.GetConfig(A<CancellationToken>.Ignored))
-            .Returns(new SecretSantaConfig()
-            {
-                MaxPrice = maxPrice
-            });
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>.Ignored))
-            .Returns(status);
-
-        // ACT
-        var result = await Command.Handle(CancellationToken.None);
-
-        // ASSERT
-        if (status != Status.NotConfigured)
-            result.ToString().ShouldContain(Messages.StatusMaxPrice(maxPrice));
-        else
-            result.ToString().ShouldNotContain(Messages.StatusMaxPrice(maxPrice));
     }
     
     private class TestData
@@ -72,10 +49,11 @@ public class StatusCommandTests : AbstractCommandTest<StatusCommand>
         {
             get
             {
-                yield return new TestCaseData(Status.NotConfigured, new EnglishMessages().StatusIsNotConfigured(), false);
-                yield return new TestCaseData(Status.Ready, new EnglishMessages().StatusIsReady(), true);
-                yield return new TestCaseData(Status.Drawn, new EnglishMessages().StatusIsDrawn(), true);
-                yield return new TestCaseData(Status.Open, new EnglishMessages().StatusIsOpen(0), true);
+                yield return new TestCaseData(CampaignStatusId.NotConfigured, new EnglishMessages().StatusIsNotConfigured(), false);
+                yield return new TestCaseData(CampaignStatusId.Ready, new EnglishMessages().StatusIsReady(), true);
+                yield return new TestCaseData(CampaignStatusId.Drawn, new EnglishMessages().StatusIsDrawn(), true);
+                yield return new TestCaseData(CampaignStatusId.Open, new EnglishMessages().StatusIsOpen(0), true);
+                yield return new TestCaseData(CampaignStatusId.Closed, new EnglishMessages().StatusIsClosed(), false);
             }
         }
     }

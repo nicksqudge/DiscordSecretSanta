@@ -3,7 +3,7 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
+public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand, ToggleAdminCommand.Input, ToggleAdminCommand.Output>
 {
     [Test]
     public async Task AGuildAdmin()
@@ -15,10 +15,10 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         ArrangeUserIsAdmin(targetUser, false);
 
         // ACT
-        var result = await Command.Handle(targetUser, requestingUser, CancellationToken.None);
+        var result = await Command.Handle(new ToggleAdminCommand.Input(targetUser, requestingUser), CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.IsGuidAdmin(targetUser.Name));
+        result.Reply.ToString().Trim().ShouldBe(Messages.IsGuidAdmin(targetUser.Name));
     }
 
     [Test]
@@ -31,10 +31,10 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         ArrangeUserIsAdmin(targetUser, true);
 
         // ACT
-        var result = await Command.Handle(targetUser, requestingUser, CancellationToken.None);
+        var result = await Command.Handle(new ToggleAdminCommand.Input(targetUser, requestingUser), CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.IsNoLongerAnAdmin(targetUser.Name));
+        result.Reply.ToString().Trim().ShouldBe(Messages.IsNoLongerAnAdmin(targetUser.Name));
         A.CallTo(() => DataStore.ToggleAdmin(A<DiscordUserId>._, A<bool>.That.Matches(x => x == false), A<CancellationToken>._))
             .MustHaveHappened();
     }
@@ -49,10 +49,10 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         ArrangeUserIsAdmin(targetUser, false);
 
         // ACT
-        var result = await Command.Handle(targetUser, requestingUser, CancellationToken.None);
+        var result = await Command.Handle(new ToggleAdminCommand.Input(targetUser, requestingUser), CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.IsNowAnAdmin(targetUser.Name));
+        result.Reply.ToString().Trim().ShouldBe(Messages.IsNowAnAdmin(targetUser.Name));
         A.CallTo(() => DataStore.ToggleAdmin(A<DiscordUserId>._, A<bool>.That.Matches(x => x == true), A<CancellationToken>._))
             .MustHaveHappened();
     }
@@ -67,10 +67,10 @@ public class ToggleAdminCommandTests : AbstractCommandTest<ToggleAdminCommand>
         ArrangeUserIsAdmin(targetUser, false);
 
         // ACT
-        var result = await Command.Handle(targetUser, requestingUser, CancellationToken.None);
+        var result = await Command.Handle(new ToggleAdminCommand.Input(targetUser, requestingUser), CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.YouDoNotHavePermissionToMakeAdmin());
+        result.Reply.ToString().Trim().ShouldBe(Messages.YouDoNotHavePermissionToMakeAdmin());
         A.CallTo(() => DataStore.ToggleAdmin(A<DiscordUserId>._, A<bool>._, A<CancellationToken>._))
             .MustNotHaveHappened();
     }

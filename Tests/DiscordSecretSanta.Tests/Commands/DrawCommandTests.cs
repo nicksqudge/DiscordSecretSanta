@@ -4,12 +4,19 @@ using DiscordSecretSanta.Tests.TestHelpers;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class DrawCommandTests : AbstractCommandTest<DrawCommand>
+public class DrawCommandTests : AbstractCommandTest<DrawCommand, DrawCommand.Input, DrawCommand.Output>
 {
     private Dictionary<DiscordUserId, DiscordUserId> _secretSantas = new();
     private List<SecretSantaMember> _members = new();
     
     protected override DrawCommand InitCommand() => new(DataStore, Messages, new CanStartDraw());
+    
+    [Test]
+    public async Task OnlySupportsOpen()
+    {
+        await AssertShouldOnlyAllowStatus(new DrawCommand.Input(TestFactory.InputUser()), CampaignStatusId.Open);
+        AssertDidNotDraw();
+    }
 
     [TestCase(10)]
     [TestCase(100)]
@@ -17,19 +24,19 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     public async Task ShouldAssignPeopleSecretSantas(int numberOfMembers)
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeNumberOfMembers(numberOfMembers);
-        var requestingUser = TestFactory.InputUser(isServerAdmin: true);
+        var requestingUser = new DrawCommand.Input(TestFactory.InputUser(isServerAdmin: true));
         
         // ACT
-        var (result, directMessages) = await Command.Handle(requestingUser, CancellationToken.None);
+        var output = await Command.Handle(requestingUser, CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.DrawComplete());
+        output.Reply.ToString().Trim().ShouldBe(Messages.DrawComplete());
         
         A.CallTo(() => DataStore.SetSecretSanta(A<DiscordUserId>._, A<DiscordUserId>._, CancellationToken.None))
             .MustHaveHappened(numberOfMembers, Times.Exactly);
-        A.CallTo(() => DataStore.SetStatus(A<Status>.That.Matches(x => x == Status.Drawn), A<CancellationToken>._)).MustHaveHappened();
+        AssertSetStatus(CampaignStatusId.Drawn).MustHaveHappened();
         
         _secretSantas.Count.ShouldBe(numberOfMembers);
         
@@ -38,7 +45,7 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
             _secretSantas.ContainsKey(member.UserId).ShouldBe(true);
             _secretSantas.Any(x => x.Key == member.UserId && x.Value == member.UserId).ShouldBeFalse();
             _secretSantas.Count(x => x.Value == member.UserId).ShouldBe(1);
-            directMessages.Any(dm => dm.TargetUserId == member.UserId).ShouldBe(true);
+            output.DirectMessages.Any(dm => dm.TargetUserId == member.UserId).ShouldBe(true);
         }
     }
 
@@ -49,47 +56,31 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
     public async Task ShouldHaveAtLeast3People(int members)
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeNumberOfMembers(members);
-        var requestingUser = TestFactory.InputUser(isServerAdmin: true);
+        var requestingUser = new DrawCommand.Input(TestFactory.InputUser(isServerAdmin: true));
         
         // ACT
-        var (result, directMessages) = await Command.Handle(requestingUser, CancellationToken.None);
+        var output = await Command.Handle(requestingUser, CancellationToken.None);
         
         // ASSERT
-        result.ToString().Trim().ShouldContain(Messages.CouldNotDraw());
-        AssertDidNotDraw(directMessages);
-    }
-
-    [TestCase(Status.Drawn)]
-    [TestCase(Status.NotConfigured)]
-    [TestCase(Status.Ready)]
-    public async Task GivenStatus_CanTheDrawCommandBeRan(Status startingStatus)
-    {
-        // ARRANGE
-        ArrangeGetStatusReturns(startingStatus);
-        var requestingUser = TestFactory.InputUser(isServerAdmin: true);
-        
-        // ACT
-        var (result, directMessages) = await Command.Handle(requestingUser, CancellationToken.None);
-        
-        // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.CouldNotDraw());
-        AssertDidNotDraw(directMessages);
+        output.Reply.ToString().Trim().ShouldContain(Messages.CouldNotDraw());
+        AssertDidNotDraw(output.DirectMessages);
     }
 
     [Test]
     public async Task UserDoesNotHavePermission()
     {
         // ARRANGE
-        var requestingUser = TestFactory.InputUser(isServerAdmin: false);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
+        var requestingUser = new DrawCommand.Input(TestFactory.InputUser(isServerAdmin: false));
         
         // ACT
-        var (result, directMessages) = await Command.Handle(requestingUser, CancellationToken.None);
+        var output = await Command.Handle(requestingUser, CancellationToken.None);
         
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.YouDoNotHavePermissionToDraw());
-        AssertDidNotDraw(directMessages);
+        output.Reply.ToString().Trim().ShouldBe(Messages.YouDoNotHavePermissionToDraw());
+        AssertDidNotDraw(output.DirectMessages);
     }
 
     private void ArrangeNumberOfMembers(int members)
@@ -111,11 +102,12 @@ public class DrawCommandTests : AbstractCommandTest<DrawCommand>
             });
     }
 
-    private void AssertDidNotDraw(DrawCommand.DirectMessage[] messages)
+    private void AssertDidNotDraw(DrawCommand.Output.DirectMessage[]? messages=null)
     {
-        A.CallTo(() => DataStore.SetStatus(A<Status>.That.Matches(x => x == Status.Drawn), A<CancellationToken>._)).MustNotHaveHappened();
+        AssertSetStatus(CampaignStatusId.Drawn).MustNotHaveHappened();
         A.CallTo(() => DataStore.SetSecretSanta(A<DiscordUserId>._, A<DiscordUserId>._, CancellationToken.None)).MustNotHaveHappened();
         _secretSantas.Count.ShouldBe(0);
-        messages.Length.ShouldBe(0);
+        if (messages is not null)
+            messages.Length.ShouldBe(0);
     }
 }

@@ -49,10 +49,12 @@ public static class ServiceCollectionExtensions
         services.AddTransient<WhoCommand>();
         services.AddTransient<SentCommand>();
         services.AddTransient<ArrivedCommand>();
+        services.AddTransient<CloseCommand>();
         
         // Permissions
         services.AddTransient<ICanSetMaxPrice, CanSetMaxPrice>();
         services.AddTransient<ICanStartDraw, CanStartDraw>();
+        services.AddTransient<ICanClose, CanClose>();
         
         return new SecretSantaServices(services);
     }

@@ -1,10 +1,11 @@
 using DiscordSecretSanta.Commands;
 using DiscordSecretSanta.Permissions;
 using DiscordSecretSanta.Tests.TestHelpers;
+using NUnit.Framework.Internal;
 
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class SetMaxPriceCommandTests : AbstractCommandTest<SetMaxPriceCommand>
+public class SetMaxPriceCommandTests : AbstractCommandTest<SetMaxPriceCommand, SetMaxPriceCommand.Input, SetMaxPriceCommand.Output>
 {
     private ICanSetMaxPrice _permission;
     
@@ -22,10 +23,10 @@ public class SetMaxPriceCommandTests : AbstractCommandTest<SetMaxPriceCommand>
         A.CallTo(() => _permission.Can(A<InputUser>._,  A<CancellationToken>._)).Returns(false);
 
         // ACT
-        var result = await Command.Handle(requestingUser, "£10", CancellationToken.None);
+        var result = await Command.Handle(new SetMaxPriceCommand.Input(requestingUser, "£10"), CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.YouAreNotAnAdmin());
+        result.Reply.ToString().Trim().ShouldBe(Messages.YouAreNotAnAdmin());
         A.CallTo(() => DataStore.SetMaxPrice(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
@@ -39,45 +40,37 @@ public class SetMaxPriceCommandTests : AbstractCommandTest<SetMaxPriceCommand>
         A.CallTo(() => _permission.Can(A<InputUser>._,  A<CancellationToken>._)).Returns(true);
 
         // ACT
-        var result = await Command.Handle(requestingUser, maxPrice, CancellationToken.None);
+        var result = await Command.Handle(new SetMaxPriceCommand.Input(requestingUser, maxPrice), CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.MaxPriceMustHaveAValue());
+        result.Reply.ToString().Trim().ShouldBe(Messages.MaxPriceMustHaveAValue());
         A.CallTo(() => DataStore.SetMaxPrice(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     [Theory]
-    [TestCase("£10", Status.Open)]
-    [TestCase("$10", Status.NotConfigured)]
-    [TestCase("Whatever you want", Status.NotConfigured)]
-    public async Task HappyPath(string maxPrice, Status status)
+    [TestCase("£10", CampaignStatusId.Ready)]
+    [TestCase("$10", CampaignStatusId.NotConfigured)]
+    [TestCase("Whatever you want", CampaignStatusId.NotConfigured)]
+    public async Task HappyPath(string maxPrice, CampaignStatusId status)
     {
         // ARRANGE
         var requestingUser = TestFactory.InputUser();
         A.CallTo(() => _permission.Can(A<InputUser>._,  A<CancellationToken>._)).Returns(true);
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>._)).Returns(status);
+        ArrangeGetStatusReturns(status);
 
         // ACT
-        var result = await Command.Handle(requestingUser, maxPrice, CancellationToken.None);
+        var result = await Command.Handle(new SetMaxPriceCommand.Input(requestingUser, maxPrice), CancellationToken.None);
 
         // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.MaxPriceSaved());
+        result.Reply.ToString().Trim().ShouldBe(Messages.MaxPriceSaved());
         A.CallTo(() => DataStore.SetMaxPrice(A<string>.That.Matches(x => x == maxPrice), A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
 
     [Test]
-    public async Task AlreadyDrawn()
+    public async Task OnlySupportsReadyOrNotConfigured()
     {
-        // ARRANGE
-        var requestingUser = TestFactory.InputUser();
-        A.CallTo(() => _permission.Can(A<InputUser>._,  A<CancellationToken>._)).Returns(true);
-        A.CallTo(() => DataStore.GetStatus(A<CancellationToken>._)).Returns(Status.Drawn);
-
-        // ACT
-        var result = await Command.Handle(requestingUser, "$30", CancellationToken.None);
-
-        // ASSERT
-        result.ToString().Trim().ShouldBe(Messages.AlreadyDrawn());
+        await AssertShouldOnlyAllowStatus(new SetMaxPriceCommand.Input(TestFactory.InputUser(), "£40"),
+            CampaignStatusId.NotConfigured, CampaignStatusId.Ready);
         A.CallTo(() => DataStore.SetMaxPrice(A<string>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 }

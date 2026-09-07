@@ -2,48 +2,37 @@ using DiscordSecretSanta.Commands;
 using DiscordSecretSanta.Tests.TestHelpers;
 namespace DiscordSecretSanta.Tests.Commands;
 
-public class JoinCommandTests : AbstractCommandTest<JoinCommand>
+public class JoinCommandTests : AbstractCommandTest<JoinCommand, JoinCommand.Input, JoinCommand.Output>
 {
     private readonly DiscordUserId _targetUserId = TestFactory.DiscordUserId();
     private readonly List<IWishlistUrlValidator> _validators = new();
     private const string ValidWishlistUrl = "https://www.amazon.co.uk/hz/wishlist/ls/35GHJDXGIAUDIAK?ref_=wl_share";
-    
-    [SetUp]
-    public void Setup()
-    {
-        
-    }
 
     protected override JoinCommand InitCommand()
         => new(DataStore, Messages, _validators);
-
-    [TestCaseSource(typeof(StatusTestCaseData), nameof(StatusTestCaseData.StatusThatAreNotOpen))]
-    public async Task NotOpen(Status status)
+    
+    [Test]
+    public async Task OnlySupportsOpen()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(status);
+        var input = new JoinCommand.Input(_targetUserId, "https://amazon.com");
         
-        // ACT
-        var result = await Command.Handle(_targetUserId, "https://amazon.com", CancellationToken.None);
-        
-        // ASSERT
-        result.ToString().ShouldBe(Messages.NotOpenForJoining());
-        A.CallTo(() => DataStore.AddMember(A<DiscordUserId>._, A<Uri>._, A<CancellationToken>._)).MustNotHaveHappened();
+        await AssertShouldOnlyAllowStatus(input, CampaignStatusId.Open);
     }
 
     [Test]
     public async Task AllValidatorsReturnFalseToValidWishlistUrl()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeValidatorReturns(false);
         ArrangeValidatorReturns(false);
         
         // ACT
-        var result = await Command.Handle(_targetUserId, "anything", CancellationToken.None);
+        var result = await Command.Handle(new JoinCommand.Input(_targetUserId, "anything"), CancellationToken.None);
         
         // ASSERT
-        result.ToString().ShouldBe(Messages.NotAValidWishlistUrl());
+        result.Reply.ToString().ShouldBe(Messages.NotAValidWishlistUrl());
         A.CallTo(() => DataStore.AddMember(A<DiscordUserId>._, A<Uri>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
@@ -51,15 +40,15 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
     public async Task AlreadyAMember()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeValidatorReturns(true);
         ArrangeHasMemberAlreadySignedUp(true);
         
         // ACT
-        var result = await Command.Handle(_targetUserId, ValidWishlistUrl, CancellationToken.None);
+        var result = await Command.Handle(new JoinCommand.Input(_targetUserId, ValidWishlistUrl), CancellationToken.None);
         
         // ASSERT
-        result.ToString().ShouldBe(Messages.YouHaveAlreadyJoined());
+        result.Reply.ToString().ShouldBe(Messages.YouHaveAlreadyJoined());
         A.CallTo(() => DataStore.AddMember(A<DiscordUserId>._, A<Uri>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
     
@@ -67,16 +56,16 @@ public class JoinCommandTests : AbstractCommandTest<JoinCommand>
     public async Task ValidUrl()
     {
         // ARRANGE
-        ArrangeGetStatusReturns(Status.Open);
+        ArrangeGetStatusReturns(CampaignStatusId.Open);
         ArrangeValidatorReturns(true);
         ArrangeValidatorReturns(false);
         ArrangeHasMemberAlreadySignedUp(false);
         
         // ACT
-        var result = await Command.Handle(_targetUserId, ValidWishlistUrl, CancellationToken.None);
+        var result = await Command.Handle(new JoinCommand.Input(_targetUserId, ValidWishlistUrl), CancellationToken.None);
         
         // ASSERT
-        result.ToString().ShouldBe(Messages.YouHaveSuccessfullyJoined());
+        result.Reply.ToString().ShouldBe(Messages.YouHaveSuccessfullyJoined());
         A.CallTo(() => DataStore.AddMember(A<DiscordUserId>._, A<Uri>._, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
 

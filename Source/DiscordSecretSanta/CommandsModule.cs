@@ -22,8 +22,8 @@ public class CommandsModule : ModuleBase
     public async Task StatusAsync()
     {
         var command = _services.GetRequiredService<StatusCommand>();
-        var reply = await command.Handle(CancellationToken.None);
-        await ReplyAsync(reply.ToString());
+        var reply = await command.Handle(new StatusCommand.Input(), CancellationToken.None);
+        await ReplyToCommandOutput(reply);
     }
 
     [RequireContext(ContextType.Guild)]
@@ -32,8 +32,8 @@ public class CommandsModule : ModuleBase
     public async Task OpenAsync()
     {
         var command = _services.GetRequiredService<OpenCommand>();
-        var reply = await command.Handle(CancellationToken.None);
-        await ReplyAsync(reply.ToString());
+        var reply = await command.Handle(new OpenCommand.Input(), CancellationToken.None);
+        await ReplyToCommandOutput(reply);
     }
 
     [Command("add")]
@@ -44,8 +44,8 @@ public class CommandsModule : ModuleBase
         {
             var targetUser = InputUser.From(target);
             var command = _services.GetRequiredService<ToggleAdminCommand>();
-            var reply = await command.Handle(targetUser, requester, CancellationToken.None);
-            await ReplyAsync(reply.ToString());
+            var reply = await command.Handle(new ToggleAdminCommand.Input(targetUser, requester), CancellationToken.None);
+            await ReplyToCommandOutput(reply);
         });
     }
 
@@ -57,8 +57,8 @@ public class CommandsModule : ModuleBase
         await IfUserIsValid(async (requester) =>
         {
             var command = _services.GetRequiredService<SetMaxPriceCommand>();
-            var reply = await command.Handle(requester, maxPrice, CancellationToken.None);
-            await ReplyAsync(reply.ToString());
+            var reply = await command.Handle(new SetMaxPriceCommand.Input(requester, maxPrice), CancellationToken.None);
+            await ReplyToCommandOutput(reply);
         });
     }
     
@@ -70,8 +70,8 @@ public class CommandsModule : ModuleBase
         await IfUserIsValid(async (requester) =>
         {
             var command = _services.GetRequiredService<JoinCommand>();
-            var reply = await command.Handle(requester.Id, wishlistUrl, CancellationToken.None);
-            await ReplyAsync(reply.ToString());
+            var reply = await command.Handle(new JoinCommand.Input(requester.Id, wishlistUrl), CancellationToken.None);
+            await ReplyToCommandOutput(reply);
         });
     }
 
@@ -84,14 +84,14 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<DrawCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessages) = await command.Handle(requester, CancellationToken.None);
-            if (directMessages.Length != 0)
+            var output = await command.Handle(new DrawCommand.Input(requester), CancellationToken.None);
+            if (output.DirectMessages.Length != 0)
             {
-                foreach (var dm in directMessages)
+                foreach (var dm in output.DirectMessages)
                     await SendDirectMessage(dm, messages);
             }
-            
-            await ReplyAsync(reply.ToString());
+
+            await ReplyToCommandOutput(output);
         });
     }
     
@@ -103,11 +103,11 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<WhoCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessage) = await command.Handle(requester, CancellationToken.None);
-            if (directMessage != null)
-                await SendDirectMessage(directMessage, messages);
-            
-            await ReplyAsync(reply.ToString());
+            var response = await command.Handle(new WhoCommand.Input(requester), CancellationToken.None);
+            if (response.Who != null)
+                await SendDirectMessage(response.Who, messages);
+
+            await ReplyToCommandOutput(response);
         });
     }
 
@@ -120,11 +120,11 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<SentCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessage) = await command.Handle(requester.Id, CancellationToken.None);
-            if (directMessage != null)
-                await SendDirectMessage(directMessage, messages);
-            
-            await ReplyAsync(reply.ToString());
+            var response = await command.Handle(new SentCommand.Input(requester.Id), CancellationToken.None);
+            if (response.ToSend != null)
+                await SendDirectMessage(response.ToSend, messages);
+
+            await ReplyToCommandOutput(response);
         });
     }
     
@@ -137,12 +137,29 @@ public class CommandsModule : ModuleBase
         {
             var command = _services.GetRequiredService<ArrivedCommand>();
             var messages = _services.GetRequiredService<IMessages>();
-            var (reply, directMessage) = await command.Handle(requester.Id, CancellationToken.None);
-            if (directMessage != null)
-                await SendDirectMessage(directMessage, messages);
+            var response = await command.Handle(new ArrivedCommand.Input(requester.Id), CancellationToken.None);
+            if (response.DirectMessageTo != null)
+                await SendDirectMessage(response.DirectMessageTo, messages);
             
-            await ReplyAsync(reply.ToString());
+            await ReplyToCommandOutput(response);
         });
+    }
+
+    [Command("close")]
+    [Summary("Close the secret santa campaign")]
+    public async Task CloseAsync()
+    {
+        await IfUserIsValid(async (requester) =>
+        {
+            var command = _services.GetRequiredService<CloseCommand>();
+            var reply = await command.Handle(new CloseCommand.Input(requester), CancellationToken.None);
+            await ReplyToCommandOutput(reply);
+        });
+    }
+
+    private Task ReplyToCommandOutput(ICommandOutput output)
+    {
+        return ReplyAsync(output.Reply.ToString());
     }
 
     private async Task IfUserIsValid(Func<InputUser, Task> action)
@@ -162,7 +179,7 @@ public class CommandsModule : ModuleBase
         await action(new InputUser(new DiscordUserId(Context.User.Id), Context.User.GlobalName));
     }
 
-    private async Task SendDirectMessage(DrawCommand.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(DrawCommand.Output.DirectMessage dm, IMessages message)
     {
         var recipient = await GetGuildUser(dm.TargetUserId.Value);
         if (recipient is null)
@@ -182,7 +199,7 @@ public class CommandsModule : ModuleBase
         await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.DisplayName, dm.WishlistUrl));
     }
 
-    private async Task SendDirectMessage(WhoCommand.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(WhoCommand.Output.DirectMessage dm, IMessages message)
     {
         var recipient = await GetGuildUser(dm.WhoAskedId.Value);
         if (recipient is null)
@@ -202,7 +219,7 @@ public class CommandsModule : ModuleBase
         await channel.SendMessageAsync(message.SecretSantaDrawnDirectMessage(Context.Guild.Name, secretSanta.DisplayName, dm.SecretSantaWishlist));
     }
 
-    private async Task SendDirectMessage(SentCommand.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(SentCommand.Output.DirectMessage dm, IMessages message)
     {
         var secretSanta = await GetGuildUser(dm.Receiver.Value);
         if (secretSanta is null)
@@ -215,7 +232,7 @@ public class CommandsModule : ModuleBase
         await channel.SendMessageAsync(message.YourGiftIsOnTheWay());
     }
     
-    private async Task SendDirectMessage(ArrivedCommand.DirectMessage dm, IMessages message)
+    private async Task SendDirectMessage(ArrivedCommand.Output.DirectMessage dm, IMessages message)
     {
         var secretSanta = await GetGuildUser(dm.Sender.Value);
         if (secretSanta is null)

@@ -145,6 +145,18 @@ public class CommandsModule : ModuleBase
         });
     }
 
+    [Command("close")]
+    [Summary("Close the secret santa campaign")]
+    public async Task CloseAsync()
+    {
+        await IfUserIsValid(async (requester) =>
+        {
+            var command = _services.GetRequiredService<CloseCommand>();
+            var reply = await command.Handle(new CloseCommand.Input(requester), CancellationToken.None);
+            await ReplyToCommandOutput(reply);
+        });
+    }
+
     private Task ReplyToCommandOutput(ICommandOutput output)
     {
         return ReplyAsync(output.Reply.ToString());

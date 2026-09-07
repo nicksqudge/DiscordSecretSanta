@@ -9,7 +9,7 @@
 | open          | Guild   | Opens a secret santa for people to join                        | Admin                      | v1      |
 | draw          | Guild   | Draws the names for secret santa and closes new people to join | Admin                      | v1      |
 | status        | Guild   | Displays the status of the secret santa                        | Anyone                     | v1      |
-| close         | Guild   | Closes the secret santa without drawing                        | Admin                      | N/A     |
+| close         | Guild   | Closes secret santa                                            | Admin                      | v1      |
 | max-price     | Guild   | Sets the max price for the campaign (only before draw)         | Admin                      | v1      |
 | help          | Any     | Provides a link to the github and the version number           | Anyone                     | N/A     |
 | who           | Any     | Find out who you drew in secret santa (only done after draw)   | People in secret santa     | v1      |
